@@ -1,0 +1,48 @@
+
+.cabecalho {
+    justify-content: flex-end;
+    margin-bottom: 64px;
+}
+
+.titulo-pagina {
+    text-align: center;
+    font-size: 40px;
+    font-style: normal;
+    line-height: normal;
+    margin-bottom: 64px;
+}
+
+.secao-etiqueta {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    padding: 0 32px;
+}
+
+.texto-etiqueta {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.aviso {
+    text-align: center;
+    margin-top: 32px;
+}
+
+.grupo-botao {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 0 32px;
+}
+
+.botao {
+    margin: 0;
+}
+
+.botao-editar {
+    margin-top: 128px;
+}

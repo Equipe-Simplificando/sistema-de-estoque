@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+/* --- VARIÁVEIS --- */
+:root {
+    --cor-fundo: #FFFFFF;
+    --cor-texto: #000000;
+    --cor-primaria: #2C2C2C;
+    --cor-secundaria: #1a1a1a;
+    --cinza-claro: #C3C3C3;
+    --cinza-medio: #9d9d9d;
+    --cinza-escuro: #909090;
+    --cor-sucesso: #05A51D;
+    --cor-erro: #D32F2F;
+    --fonte-principal: "Inter", sans-serif;
+    --tamanho-borda: 3px;
+    --raio-borda: 16px;
+}
+
+/* --- RESET GLOBAL --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    font-family: var(--fonte-principal);
+    color: var(--cor-texto);
+    min-height: 100vh;
+}
+
+/* --- LAYOUT PADRÃO --- */
+.container-geral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 32px;
+}
+
+.conteudo-principal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* --- CABEÇALHO PADRÃO --- */
+.cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 128px;
+}
+
+.titulo-pagina {
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.botao-fechar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* --- FORMULÁRIOS --- */
+.secao-formulario {
+    width: 100%;
+    max-width: 800px;
+    /* Largura padrão para Cadastrar/Editar */
+    margin: 0 auto;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.grupo-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rotulo-campo {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.campo-entrada {
+    width: 100%;
+    height: 56px;
+    border-radius: var(--raio-borda);
+    border: var(--tamanho-borda) solid var(--cor-texto);
+    background: var(--cinza-claro);
+    padding: 0 16px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--fonte-principal);
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Remove estilo nativo */
+}
+
+/* --- COMPONENTES ESPECÍFICOS --- */
+/* Select com seta customizada */
+.container-select {
+    position: relative;
+    width: 100%;
+}
+
+.icone-seta {
+    position: absolute;
+    right: 16px;
+    top: 56%;
+    transform: translateY(-56%);
+    pointer-events: none;
+}
+
+/* Radio Buttons Customizados */
+.grupo-radio {
+    display: flex;
+    width: 100%;
+    height: 56px;
+    border: var(--tamanho-borda) solid var(--cor-texto);
+    border-radius: var(--raio-borda);
+    overflow: hidden;
+    background: var(--cinza-medio);
+}
+
+.grupo-radio input[type="radio"] {
+    display: none;
+}
+
+.rotulo-radio {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+    background-color: var(--cinza-escuro);
+}
+
+.grupo-radio input[type="radio"]:checked+.rotulo-radio {
+    background-color: var(--cinza-claro);
+}
+
+/* Botão de Ação */
+.botao {
+    margin-top: 160px;
+    width: 100%;
+    height: 56px;
+    border-radius: var(--raio-borda);
+    background: var(--cor-primaria);
+    border: none;
+    color: #FFF;
+    font-family: var(--fonte-principal);
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+/* Mensagens */
+.mensagem-erro {
+    color: var(--cor-erro);
+    text-align: center;
+    font-weight: 700;
+}
+
+.mensagem-sucesso-titulo {
+    color: var(--cor-sucesso);
+    /* Verde padrão */
+    text-align: center;
+    margin-top: 120px;
+}
+
+.texto-centro {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 20px;
+}
+

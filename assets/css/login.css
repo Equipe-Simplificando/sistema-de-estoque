@@ -1,0 +1,25 @@
+.container-geral {
+    padding: 88px 32px;
+}
+
+.cabecalho {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 96px;
+}
+
+.titulo-pagina {
+    font-style: normal;
+    line-height: normal;
+}
+
+.logo-login {
+    width: 192px;
+    height: 192px;
+}
+
+.botao {
+    margin-top: 48px;
+}
