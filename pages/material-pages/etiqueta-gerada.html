@@ -13,7 +13,7 @@
     <div class="container-geral">
         <header class="cabecalho">
             <button class="botao-fechar" type="button" aria-label="Fechar janela">
-                <img src="../../assets/icons/botao_fechar.svg" alt="Botão fechar">
+                <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
             </button>
         </header>
         <main>
@@ -47,6 +47,21 @@
             </div>
         </main>
     </div>
-</body>
+    <script>
+    // 1. Pega os dados que vieram pela URL
+    const params = new URLSearchParams(window.location.search);
+    
+    const nome = params.get('nome');
+    const cod = params.get('cod');
+    const id = params.get('id');
 
+    // 2. Se o dado existir, substitui o texto do elemento HTML
+    if (nome) document.getElementById('view_nome').innerText = nome;
+    if (cod) document.getElementById('view_cod').innerText = cod;
+    if (id) document.getElementById('view_id').innerText = id;
+
+    // Dica extra: O código de barras visual não muda sozinho, 
+    // mas o número do ID ou Código agora estará correto na tela.
+</script>
+</body>
 </html>

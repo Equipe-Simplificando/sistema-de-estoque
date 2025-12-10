@@ -16,7 +16,7 @@
             <h1 class="titulo-pagina">CADASTRAR <br> MATERIAL</h1>
 
             <button class="botao-fechar" type="button" aria-label="Fechar janela">
-                <img src="../../assets/icons/botao_fechar.svg" alt="Botão fechar">
+                <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
             </button>
         </header>
 
@@ -74,5 +74,45 @@
             </section>
         </main>
     </div>
+    <script>
+    document.getElementById('formCadastro').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Impede o recarregamento padrão
+
+        // Pega os valores baseados nos IDs que você adicionou
+        const dados = {
+            nome: document.getElementById('nome').value,
+            cod_referencia: document.getElementById('cod').value,
+            custo_unitario: document.getElementById('custo').value,
+            categoria_id: document.getElementById('cat_id').value
+        };
+
+        try {
+            // Envia para o servidor Node.js
+            const response = await fetch('http://localhost:3000/api/cadastrar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Monta o link com os dados para a próxima página
+                const params = new URLSearchParams({
+                    nome: dados.nome,
+                    cod: dados.cod_referencia,
+                    id: result.id
+                });
+                // Redireciona
+                window.location.href = `etiqueta-gerada.html?${params.toString()}`;
+            } else {
+                alert('Erro: ' + result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Erro de conexão. O servidor (node server.js) está rodando?');
+        }
+    });
+</script>
 </body>
 </html>
