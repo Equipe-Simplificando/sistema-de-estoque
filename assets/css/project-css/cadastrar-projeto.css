@@ -1,20 +1,32 @@
 .cabecalho {
-    margin-bottom: 52px;
-}
-
-#manutencao:checked+.rotulo-radio, #robotica:checked+.rotulo-radio {
-    background: var(--cor-secundaria);
-    color: var(--cor-texto-escuro);
+    margin-bottom: 82px;
 }
 
 .botao {
-    background: var(--cor-secundaria);
-    box-shadow: inset 0 -4px 0 1.5px var(--shadow-secundaria);
-    color: var(--cor-texto-escuro);
-
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
-.container-pesquisa .campo-entrada {
-    padding: 0 50px 0 15px;
+/* RESPONSIVIDADE ESPECÍFICA DESTA PÁGINA */
+@media screen and (max-width: 768px) {
+    .cabecalho {
+        margin-bottom: 40px;
+    }
+    
+    .botao {
+        margin-top: 30px;
+    }
+}
+
+/* Para telas muito pequenas, empilha os radios se necessário */
+@media screen and (max-width: 400px) {
+    .grupo-radio {
+        height: auto;
+        flex-direction: column;
+    }
+    
+    .rotulo-radio {
+        padding: 15px 0;
+        width: 100%;
+        border-radius: 0 !important;
+    }
 }
