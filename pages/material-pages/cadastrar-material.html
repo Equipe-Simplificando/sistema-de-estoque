@@ -71,19 +71,33 @@
                     <button type="submit" class="botao">GERAR ETIQUETA</button>
 
                 </form>
+
+                <a href="listar-materiais.html" class="botao" style="background-color: #666; margin-top: 10px; text-align:center; text-decoration:none; display:block;">
+    VER ESTOQUE
+</a>
             </section>
         </main>
     </div>
     <script>
-    document.getElementById('formCadastro').addEventListener('submit', async (e) => {
-        e.preventDefault(); // Impede o recarregamento padrão
+    document.getElementById('formulario').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Evita que a página recarregue (Live Update)
 
-        // Pega os valores baseados nos IDs que você adicionou
+        // Captura os valores dos campos corretos do HTML
+        const itemNome = document.getElementById('item').value;
+        
+        // Pega o valor do rádio selecionado (Destino)
+        const destinoSelecionado = document.querySelector('input[name="destino"]:checked');
+        const destino = destinoSelecionado ? destinoSelecionado.value : null;
+
+        const projeto = document.getElementById('projeto').value;
+        const observacoes = document.getElementById('observacoes').value;
+
+        // Objeto com os dados para enviar ao backend
         const dados = {
-            nome: document.getElementById('nome').value,
-            cod_referencia: document.getElementById('cod').value,
-            custo_unitario: document.getElementById('custo').value,
-            categoria_id: document.getElementById('cat_id').value
+            item: itemNome,
+            destino: destino,
+            projeto: projeto,
+            observacoes: observacoes
         };
 
         try {
@@ -97,20 +111,20 @@
             const result = await response.json();
 
             if (result.success) {
-                // Monta o link com os dados para a próxima página
+                console.log('Sucesso:', result);
+                // Redireciona para a etiqueta gerada passando os dados
                 const params = new URLSearchParams({
-                    nome: dados.nome,
-                    cod: dados.cod_referencia,
-                    id: result.id
+                    nome: dados.item,
+                    id: result.id,
+                    cod: 'MAT-' + result.id // Exemplo de código gerado
                 });
-                // Redireciona
                 window.location.href = `etiqueta-gerada.html?${params.toString()}`;
             } else {
-                alert('Erro: ' + result.error);
+                alert('Erro ao cadastrar: ' + (result.error || 'Erro desconhecido'));
             }
         } catch (err) {
             console.error(err);
-            alert('Erro de conexão. O servidor (node server.js) está rodando?');
+            alert('Erro de conexão. Verifique se o servidor (server.js) está rodando.');
         }
     });
 </script>
