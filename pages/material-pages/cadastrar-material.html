@@ -112,12 +112,21 @@
 
             if (result.success) {
                 console.log('Sucesso:', result);
-                // Redireciona para a etiqueta gerada passando os dados
+                
+                // Formata o ID para ter 4 dígitos (ex: 0001, 0015)
+                const idFormatado = String(result.id).padStart(4, '0');
+
+                // Prepara os parâmetros para enviar para a próxima página
                 const params = new URLSearchParams({
+                    id: idFormatado,
                     nome: dados.item,
-                    id: result.id,
-                    cod: 'MAT-' + result.id // Exemplo de código gerado
+                    destino: dados.destino,
+                    projeto: dados.projeto || '-', // Se vazio, envia traço
+                    obs: dados.observacoes || '-', // Se vazio, envia traço
+                    cod: 'MAT-' + idFormatado
                 });
+
+                // Redireciona
                 window.location.href = `etiqueta-gerada.html?${params.toString()}`;
             } else {
                 alert('Erro ao cadastrar: ' + (result.error || 'Erro desconhecido'));

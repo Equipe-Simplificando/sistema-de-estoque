@@ -21,31 +21,20 @@
                 <h1 class="titulo-pagina">ETIQUETA <br> GERADA!</h1>
                 <section class="secao-etiqueta">
                     <p>ID:</p>
-                    <p>0001</p>
+                    <p id="view_id">...</p>
 
                     <p>ITEM:</p>
-                    <p>Fonte</p>
+                    <p id="view_nome">...</p>
 
                     <p>DESTINO:</p>
-                    <p>Robótica</p>
+                    <p id="view_destino">...</p>
 
                     <p>PROJETO:</p>
-                    <p>-</p>
+                    <p id="view_projeto">...</p>
 
                     <p>OBS:</p>
-                    <p>-</p>
+                    <p id="view_obs" style="word-break: break-word;">...</p>
                 </section>
-                
-<section class="secao-etiqueta">
-    <p>ID:</p>
-    <p id="view_id">...</p> <p>ITEM:</p>
-    <p id="view_nome">...</p> <p>DESTINO:</p>
-    <p>Robótica</p> <p>PROJETO:</p>
-    <p>-</p>
-
-    <p>OBS:</p>
-    <p>-</p>
-</section>
                 <div class="container-lembrete">
                     <p class="texto-lembrete">Lembre-se de conferir a etiqueta antes de finalizar o cadastro.</p>
                 </div>
@@ -61,17 +50,25 @@
     // 1. Pega os dados que vieram pela URL
     const params = new URLSearchParams(window.location.search);
     
-    const nome = params.get('nome');
-    const cod = params.get('cod');
+    // Recupera cada parâmetro
     const id = params.get('id');
+    const nome = params.get('nome');
+    const destino = params.get('destino');
+    const projeto = params.get('projeto');
+    const obs = params.get('obs');
 
-    // 2. Se o dado existir, substitui o texto do elemento HTML
-    if (nome) document.getElementById('view_nome').innerText = nome;
-    if (cod) document.getElementById('view_cod').innerText = cod;
+    // 2. Preenche os campos na tela se o dado existir
     if (id) document.getElementById('view_id').innerText = id;
+    if (nome) document.getElementById('view_nome').innerText = nome;
+    
+    // Formata o destino para ficar bonito (primeira letra maiúscula)
+    if (destino) {
+        const destinoFormatado = destino.charAt(0).toUpperCase() + destino.slice(1);
+        document.getElementById('view_destino').innerText = destinoFormatado;
+    }
 
-    // Dica extra: O código de barras visual não muda sozinho, 
-    // mas o número do ID ou Código agora estará correto na tela.
-</script>
+    if (projeto) document.getElementById('view_projeto').innerText = projeto;
+    if (obs) document.getElementById('view_obs').innerText = obs;
+    </script>
 </body>
 </html>

@@ -28,6 +28,7 @@ db.connect((err) => {
 });
 
 // Rota para Cadastrar Material
+// Rota para Cadastrar Material com ID Sequencial (Tapa-buracos)
 app.post('/api/cadastrar', (req, res) => {
     const { item, destino, projeto, observacoes } = req.body;
 
@@ -36,18 +37,43 @@ app.post('/api/cadastrar', (req, res) => {
         return res.status(400).json({ success: false, error: 'Campos obrigatórios faltando.' });
     }
 
-    const sql = `INSERT INTO materiais (nome_item, destino, projeto, observacoes) VALUES (?, ?, ?, ?)`;
-    
-    db.query(sql, [item, destino, projeto, observacoes], (err, result) => {
+    // 1. Busca todos os IDs existentes em ordem crescente
+    const queryIds = 'SELECT id FROM materiais ORDER BY id ASC';
+
+    db.query(queryIds, (err, results) => {
         if (err) {
-            console.error('Erro ao inserir:', err);
+            console.error('Erro ao verificar IDs:', err);
             return res.status(500).json({ success: false, error: 'Erro no banco de dados' });
         }
+
+        // 2. Lógica para encontrar o primeiro ID livre (buraco)
+        let novoId = 1; // Começa tentando o 1
+        for (const row of results) {
+            if (row.id === novoId) {
+                novoId++; // Se o ID existe, tenta o próximo
+            } else {
+                break; // Se encontrou um buraco (ex: tem 1 e 3, novoId é 2), para aqui
+            }
+        }
+
+        // 3. Insere o material forçando o ID encontrado
+        const sqlInsert = `INSERT INTO materiais (id, nome_item, destino, projeto, observacoes) VALUES (?, ?, ?, ?, ?)`;
         
-        res.json({ 
-            success: true, 
-            message: 'Material cadastrado com sucesso!',
-            id: result.insertId 
+        db.query(sqlInsert, [novoId, item, destino, projeto, observacoes], (err, result) => {
+            if (err) {
+                console.error('Erro ao inserir:', err);
+                // Tratamento especial para chave duplicada (caso raro de concorrência)
+                if (err.code === 'ER_DUP_ENTRY') {
+                    return res.status(409).json({ success: false, error: 'O ID foi ocupado durante o processo. Tente novamente.' });
+                }
+                return res.status(500).json({ success: false, error: 'Erro no banco de dados' });
+            }
+            
+            res.json({ 
+                success: true, 
+                message: 'Material cadastrado com sucesso!',
+                id: novoId // Retorna o ID que calculamos
+            });
         });
     });
 });
