@@ -1,8 +1,9 @@
+/* FONTES */
+
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
 
-/* =========================================================
-   VARIÁVEIS
-========================================================= */
+/* VARIÁVEIS GLOBAIS */
+
 :root {
     --cor-fundo: #FEFEFE;
     --cor-fundo-lembrete: #05A51D;
@@ -12,6 +13,8 @@
 
     --cor-primaria: #1F731D;
     --shadow-primaria: rgba(0, 52, 16, 0.50);
+    --cor-secundaria: #F2D16D;
+    --shadow-secundaria: rgba(69, 11, 0, 0.50);
 
     --cor-sucesso: #00FF26;
     --cor-erro: #FF0000;
@@ -27,9 +30,7 @@
 
 }
 
-/* =========================================================
-   RESET
-========================================================= */
+/* RESET */
 * {
     margin: 0;
     padding: 0;
@@ -43,9 +44,7 @@ body {
     color: var(--cor-texto-escuro);
 }
 
-/* =========================================================
-   LAYOUT
-========================================================= */
+/* LAYOUT */
 .container-geral {
     display: flex;
     flex-direction: column;
@@ -55,6 +54,7 @@ body {
 }
 
 .conteudo-principal {
+    Width: 100%;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -62,13 +62,11 @@ body {
     gap: 82px;
 }
 
-/* =========================================================
-   CABEÇALHO
-========================================================= */
+/* CABEÇALHO */
 .cabecalho {
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    width: 100%;
 }
 
 .titulo-pagina {
@@ -87,9 +85,7 @@ body {
     cursor: pointer;
 }
 
-/* =========================================================
-   FORMULÁRIOS
-========================================================= */
+/* FORMULÁRIOS*/
 .secao-formulario {
     width: 100%;
 }
@@ -99,6 +95,7 @@ body {
     flex-direction: column;
     gap: 32px;
 }
+
 
 .grupo-campo {
     display: flex;
@@ -118,9 +115,7 @@ body {
     color: var(--cor-texto-escuro);
 }
 
-/* =========================================================
-   CAMPOS DE ENTRADA
-========================================================= */
+/* CAMPOS DE ENTRADA */
 
 .campo-entrada {
     width: 100%;
@@ -144,7 +139,7 @@ body {
     height: 170px;
     padding: 12px 16px;
 
-    border: var(--borda);
+   border: var(--borda);
     border-radius: var(--radius);
     background: var(--cor-input);
 
@@ -152,9 +147,7 @@ body {
     resize: vertical;
 }
 
-/* =========================================================
-   SELECT CUSTOMIZADO
-========================================================= */
+/* SELECT CUSTOMIZADO */
 .container-select {
     position: relative;
     width: 100%;
@@ -168,15 +161,64 @@ body {
     pointer-events: none;
 }
 
-/* =========================================================
-   RADIO BUTTONS
-========================================================= */
+/* BARRA PESQUISA CUSTOMIZADO */
+.container-pesquisa {
+    display: flex;
+    position: relative;
+    width: 100%;
+}
+
+.icone-pesquisa {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 10;
+    width: 25px;  
+    height: 29px;
+}
+
+.botao-pesquisa img {
+    width: 25px;  
+    height: 29px; 
+    display: block; 
+}
+
+
+.grupo-pesquisa-filtro {
+    display: flex;
+    width: 100%;
+    gap: 24px;
+    align-items: center;
+}
+
+.icone-filtro {
+    top: 50%;
+    width: 35px;
+    height: 39px;
+    cursor: pointer;
+}
+
+.botao-filtro img {
+    width: 35px;  
+    height: 39px; 
+    display: block; 
+}
+
+.grupo-tabela {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/*RADIO BUTTONS */
 .grupo-radio {
     display: flex;
     width: 100%;
     height: 55px;
 
-    border: var(--borda);
+   border: var(--borda);
     border-radius: var(--radius);
     background: var(--cor-input);
 
@@ -201,7 +243,7 @@ body {
     cursor: pointer;
 }
 
-/* --- Robótica selecionado --- */
+/* Robótica selecionado */
 #robotica:checked+.rotulo-radio {
     background: var(--cor-primaria);
     color: var(--cor-texto-claro);
@@ -211,11 +253,10 @@ body {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 
-    /* Custom inset shadow for selected radio button (left side) */
     box-shadow: inset -2px -2px 4px 0 var(--shadow-primaria);
 }
 
-/* --- Manutenção selecionado --- */
+/* Manutenção selecionado */
 #manutencao:checked+.rotulo-radio {
     background: var(--cor-primaria);
     color: var(--cor-texto-claro);
@@ -228,9 +269,7 @@ body {
     box-shadow: inset 2px -2px 0 1.5px var(--shadow-primaria);
 }
 
-/* =========================================================
-   BOTÃO PRINCIPAL
-========================================================= */
+/* BOTÃO PRINCIPAL */
 .botao {
     width: 100%;
     max-width: 316px;
@@ -252,6 +291,75 @@ body {
     font-weight: 700;
     cursor: pointer;
 }
+
+/* TABELA */
+
+/* Estrutura da Tabela (container) */
+.grupo-tabela {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabela-itens {
+    width: 100%;
+    border-collapse: separate; 
+    border-spacing: 0;
+    
+    border: var(--borda); 
+    border-radius: var(--radius);
+    
+    overflow: hidden; 
+}
+
+/* Células (TH e TD) */
+.tabela-itens th,
+.tabela-itens td {
+    padding: 12px 10px;
+    text-align: center;
+    vertical-align: middle;
+    
+    border-bottom: var(--borda);
+    border-right: var(--borda); 
+}
+
+.tabela-itens tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-itens th:last-child,
+.tabela-itens td:last-child {
+    border-right: none;
+}
+
+.tabela-itens thead {
+    background: var(--cor-secundaria);
+    color: var(--cor-texto-escuro);
+}
+
+.tabela-itens th {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.tabela-itens tbody tr:nth-child(odd) {
+    background: var(--cor-fundo);
+}
+
+.tabela-itens tbody tr:nth-child(even) {
+    background: var(--cor-input);
+}
+
+.tabela-itens td:nth-child(2) {
+    text-align: left;
+}
+
+.botao-excluir, .botao-fechar, .botao-pesquisa, .botao-filtro {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
 
 /* =========================================================
    RESPONSIVIDADE
