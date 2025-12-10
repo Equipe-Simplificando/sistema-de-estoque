@@ -7,68 +7,118 @@
     <title>Etiqueta Gerada</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/material-css/etiqueta-gerada.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        /* Área do QRCode */
+        #qrcode {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+        #qrcode img {
+            border: 2px solid #fff;
+            padding: 2px;
+        }
+
+        /* Configuração para IMPRESSÃO: Esconde tudo, menos a etiqueta */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .secao-etiqueta, .secao-etiqueta * {
+                visibility: visible;
+            }
+            .secao-etiqueta {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                border: 2px solid #000;
+                box-shadow: none;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div class="container-geral">
         <header class="cabecalho">
-            <button class="botao-fechar" type="button" aria-label="Fechar janela">
+            <button class="botao-fechar" type="button" onclick="window.location.href='listar-materiais.html'" aria-label="Fechar janela">
                 <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
             </button>
         </header>
         <main>
             <div class="conteudo-principal">
                 <h1 class="titulo-pagina">ETIQUETA <br> GERADA!</h1>
+                
                 <section class="secao-etiqueta">
-                    <p>ID:</p>
-                    <p id="view_id">...</p>
-
-                    <p>ITEM:</p>
-                    <p id="view_nome">...</p>
-
-                    <p>DESTINO:</p>
-                    <p id="view_destino">...</p>
-
-                    <p>PROJETO:</p>
-                    <p id="view_projeto">...</p>
-
-                    <p>OBS:</p>
-                    <p id="view_obs" style="word-break: break-word;">...</p>
+                    <div class="info-linha"><strong>ID:</strong> <span id="view_id">...</span></div>
+                    <div class="info-linha"><strong>ITEM:</strong> <span id="view_nome">...</span></div>
+                    <div class="info-linha"><strong>DESTINO:</strong> <span id="view_destino">...</span></div>
+                    <div class="info-linha"><strong>PROJETO:</strong> <span id="view_projeto">...</span></div>
+                    <div class="info-linha"><strong>OBS:</strong> <span id="view_obs" style="font-size: 0.9em;">...</span></div>
+                    
+                    <div id="qrcode"></div>
                 </section>
+
+                <button type="button" class="botao" onclick="window.print()" style="background-color: #2196F3; width: auto; padding: 8px 20px; font-size: 0.85rem; height: auto;">
+                    Imprimir Etiqueta
+                </button>
+
                 <div class="container-lembrete">
-                    <p class="texto-lembrete">Lembre-se de conferir a etiqueta antes de finalizar o cadastro.</p>
+                    <p class="texto-lembrete">Confira os dados antes de finalizar.</p>
                 </div>
             </div>
 
-            <div class="grupo-botao">
-                <button type="#" class="botao botao-editar">EDITAR</button>
-                <button type="#" class="botao">CADASTRAR OUTRO</button>
+
+            <div class="grupo-botao" style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%;">
+                
+                <button type="button" class="botao botao-editar" onclick="alert('Funcionalidade de editar pendente')">EDITAR</button>
+
+                <button type="button" class="botao" onclick="window.location.href='cadastrar-material.html'">CADASTRAR OUTRO</button>
+            
             </div>
         </main>
     </div>
+
     <script>
-    // 1. Pega os dados que vieram pela URL
     const params = new URLSearchParams(window.location.search);
-    
-    // Recupera cada parâmetro
     const id = params.get('id');
     const nome = params.get('nome');
     const destino = params.get('destino');
     const projeto = params.get('projeto');
     const obs = params.get('obs');
+    const codigoParaQRCode = params.get('cod') || id || 'ERRO';
 
-    // 2. Preenche os campos na tela se o dado existir
     if (id) document.getElementById('view_id').innerText = id;
     if (nome) document.getElementById('view_nome').innerText = nome;
     
-    // Formata o destino para ficar bonito (primeira letra maiúscula)
     if (destino) {
-        const destinoFormatado = destino.charAt(0).toUpperCase() + destino.slice(1);
-        document.getElementById('view_destino').innerText = destinoFormatado;
+        document.getElementById('view_destino').innerText = destino.charAt(0).toUpperCase() + destino.slice(1);
+    } else {
+        document.getElementById('view_destino').innerText = '-';
     }
 
-    if (projeto) document.getElementById('view_projeto').innerText = projeto;
-    if (obs) document.getElementById('view_obs').innerText = obs;
+    document.getElementById('view_projeto').innerText = (projeto && projeto !== 'null') ? projeto : '-';
+    document.getElementById('view_obs').innerText = (obs && obs !== 'null') ? obs : '-';
+
+    if (id) {
+        new QRCode(document.getElementById("qrcode"), {
+            text: codigoParaQRCode,
+            width: 90,
+            height: 90,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
     </script>
 </body>
 </html>
