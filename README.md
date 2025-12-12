@@ -1,8 +1,33 @@
-CREATE DATABASE IF NOT EXISTS sistemadeestoque
-CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;
+# Sistema de Estoque - Simplificando
 
+Este projeto é um sistema simples de gerenciamento de estoque que permite cadastrar e listar materiais, desenvolvido com Node.js, Express e MySQL.
+
+## 📋 Pré-requisitos
+
+Antes de começar, certifique-se de ter instalado:
+* [Node.js](https://nodejs.org/)
+* [MySQL Server](https://dev.mysql.com/downloads/installer/)
+
+## 🚀 Como Rodar o Projeto
+
+### 1. Instalar Dependências
+Abra o terminal na pasta do projeto e execute:
+```bash
+npm install
+
+-- 1. Cria o Banco de Dados (se não existir)
+CREATE DATABASE IF NOT EXISTS sistemadeestoque;
 USE sistemadeestoque;
+
+-- 2. Cria a tabela principal usada pelo server.js
+CREATE TABLE IF NOT EXISTS materiais (
+    id INT PRIMARY KEY, -- O ID é gerenciado pelo código (logica de tapa-buracos), não usamos AUTO_INCREMENT aqui
+    nome_item VARCHAR(255) NOT NULL,
+    destino VARCHAR(255),
+    projeto VARCHAR(255),
+    observacoes TEXT,
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
