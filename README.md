@@ -23,9 +23,9 @@ USE sistemadeestoque;
 
 -- Tabela utilizada pelo server.js atual (Simples)
 CREATE TABLE IF NOT EXISTS materiais (
-    id INT PRIMARY KEY, -- O ID é gerenciado pela lógica "tapa-buracos" do server.js
+    id INT PRIMARY KEY, 
     nome_item VARCHAR(255) NOT NULL,
-    destino VARCHAR(255),
+    destino VARCHAR(50),
     projeto VARCHAR(255),
     observacoes TEXT,
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
