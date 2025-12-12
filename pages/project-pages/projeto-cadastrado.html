@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etiqueta Gerada</title>
+    <title>Projeto Cadastrado</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/project-css/projeto-cadastrado.css">
 </head>
-
 <body>
     <div class="container-geral">
         <header class="cabecalho">
-            <button class="botao-fechar" type="button" aria-label="Fechar janela">
+            <button class="botao-fechar" type="button" onclick="window.location.href='../material-pages/cadastrar-material.html'">
                 <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="Botão fechar">
             </button>
         </header>
@@ -21,54 +19,38 @@
                 <h1 class="titulo-pagina">PROJETO <br> CADASTRADO!</h1>
                 <section class="secao-etiqueta">
                     <p>NOME:</p>
-                    <p>Projeto 1</p>
-
+                    <p id="exibir-nome">...</p>
                     <p>SETOR:</p>
-                    <p>Robótica</p>
-
+                    <p id="exibir-setor">...</p>
                     <p>OBS:</p>
-                    <p>-</p>
+                    <p id="exibir-obs">...</p>
                 </section>
-
-                <div class="grupo-tabela">
-                    <table class="tabela-itens">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>ITEM</th>
-                                <th>QTD</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>23-002</td>
-                                <td>Cabo</td>
-                                <td>x2</td>
-                                <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                            alt="ícone lixeira"></button></td>
-                            </tr>
-
-                            <tr>
-                                <td>04-001</td>
-                                <td>Fonte</td>
-                                <td>x1</td>
-                                <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                            alt="ícone lixeira"></button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
                 <div class="grupo-botao">
-                    <button type="#" class="botao">EDITAR</button>
-                    <button type="#" class="botao">CADASTRAR MAIS</button>
+                    <button type="button" id="btn-editar" class="botao">EDITAR</button>
+                    <a href="cadastrar-projeto.html" class="botao" style="text-decoration: none; text-align: center;">CADASTRAR MAIS</a>
                 </div>
             </div>
-
-
         </main>
     </div>
-</body>
+    <script>
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const nome = params.get('nome');
+            const setor = params.get('setor');
+            const obs = params.get('obs');
 
+            document.getElementById('exibir-nome').textContent = nome;
+            document.getElementById('exibir-setor').textContent = setor;
+            document.getElementById('exibir-obs').textContent = obs;
+
+            document.getElementById('btn-editar').onclick = function() {
+                if(id) {
+                    const editParams = new URLSearchParams({ id, nome, setor, obs });
+                    window.location.href = `editar-projeto.html?${editParams.toString()}`;
+                }
+            };
+        };
+    </script>
+</body>
 </html>

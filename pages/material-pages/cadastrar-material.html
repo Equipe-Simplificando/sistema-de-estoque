@@ -15,7 +15,7 @@
         <header class="cabecalho">
             <h1 class="titulo-pagina">CADASTRAR <br> MATERIAL</h1>
 
-            <button class="botao-fechar" type="button" aria-label="Fechar janela">
+            <button class="botao-fechar" type="button" aria-label="Fechar janela" onclick="window.location.href='listar-materiais.html'">
                 <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
             </button>
         </header>
@@ -49,10 +49,7 @@
 
                         <div class="container-select">
                             <select id="projeto" name="projeto" class="campo-entrada select-customizado">
-                                <option value="" selected disabled hidden></option>
-                                <option value="projeto1">Projeto 1</option>
-                                <option value="projeto2">Projeto 2</option>
-                                <option value="projeto3">Projeto 3</option>
+                                <option value="" selected disabled hidden>Carregando...</option>
                             </select>
 
                             <div class="icone-seta">
@@ -73,69 +70,94 @@
                 </form>
 
                 <a href="listar-materiais.html" class="botao" style="background-color: #666; margin-top: 10px; text-align:center; text-decoration:none; display:block;">
-    VER ESTOQUE
-</a>
+                    VER ESTOQUE
+                </a>
             </section>
         </main>
     </div>
+    
     <script>
-    document.getElementById('formulario').addEventListener('submit', async (e) => {
-        e.preventDefault(); // Evita que a página recarregue (Live Update)
+        // --- FUNÇÃO PARA CARREGAR PROJETOS DO BANCO DE DADOS ---
+        async function carregarProjetos() {
+            try {
+                // Chama a nova rota criada no server.js
+                const response = await fetch('http://localhost:3000/api/projetos');
+                const projetos = await response.json();
 
-        // Captura os valores dos campos corretos do HTML
-        const itemNome = document.getElementById('item').value;
-        
-        // Pega o valor do rádio selecionado (Destino)
-        const destinoSelecionado = document.querySelector('input[name="destino"]:checked');
-        const destino = destinoSelecionado ? destinoSelecionado.value : null;
+                const selectProjeto = document.getElementById('projeto');
 
-        const projeto = document.getElementById('projeto').value;
-        const observacoes = document.getElementById('observacoes').value;
+                // Limpa opções antigas e coloca o placeholder vazio
+                selectProjeto.innerHTML = '<option value="" selected disabled hidden></option>';
 
-        // Objeto com os dados para enviar ao backend
-        const dados = {
-            item: itemNome,
-            destino: destino,
-            projeto: projeto,
-            observacoes: observacoes
-        };
+                // Adiciona cada projeto retornado do banco
+                projetos.forEach(proj => {
+                    const option = document.createElement('option');
+                    // Aqui usamos o nome do projeto como valor. 
+                    // Se preferir salvar o ID no banco, mude option.value = proj.id;
+                    option.value = proj.nome_projeto; 
+                    option.textContent = proj.nome_projeto;
+                    selectProjeto.appendChild(option);
+                });
+            } catch (err) {
+                console.error('Erro ao carregar projetos:', err);
+                const selectProjeto = document.getElementById('projeto');
+                selectProjeto.innerHTML = '<option value="" disabled>Erro ao carregar</option>';
+            }
+        }
 
-        try {
-            // Envia para o servidor Node.js
-            const response = await fetch('http://localhost:3000/api/cadastrar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dados)
-            });
+        // Executa a função assim que a página termina de carregar
+        window.onload = carregarProjetos;
 
-            const result = await response.json();
+        // --- LÓGICA DE CADASTRO DE MATERIAL (MANTIDA) ---
+        document.getElementById('formulario').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Evita que a página recarregue
 
-            if (result.success) {
-                console.log('Sucesso:', result);
-                
-                // Formata o ID para ter 4 dígitos (ex: 0001, 0015)
-                const idFormatado = String(result.id).padStart(4, '0');
+            const itemNome = document.getElementById('item').value;
+            
+            const destinoSelecionado = document.querySelector('input[name="destino"]:checked');
+            const destino = destinoSelecionado ? destinoSelecionado.value : null;
 
-                // Prepara os parâmetros para enviar para a próxima página
-                const params = new URLSearchParams({
-                    id: idFormatado,
-                    nome: dados.item,
-                    destino: dados.destino,
-                    projeto: dados.projeto || '-', // Se vazio, envia traço
-                    obs: dados.observacoes || '-', // Se vazio, envia traço
-                    cod: 'MAT-' + idFormatado
+            const projeto = document.getElementById('projeto').value;
+            const observacoes = document.getElementById('observacoes').value;
+
+            const dados = {
+                item: itemNome,
+                destino: destino,
+                projeto: projeto,
+                observacoes: observacoes
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/cadastrar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
                 });
 
-                // Redireciona
-                window.location.href = `etiqueta-gerada.html?${params.toString()}`;
-            } else {
-                alert('Erro ao cadastrar: ' + (result.error || 'Erro desconhecido'));
+                const result = await response.json();
+
+                if (result.success) {
+                    // Formata o ID para ter 4 dígitos (ex: 0001)
+                    const idFormatado = String(result.id).padStart(4, '0');
+
+                    const params = new URLSearchParams({
+                        id: idFormatado,
+                        nome: dados.item,
+                        destino: dados.destino,
+                        projeto: dados.projeto || '-', 
+                        obs: dados.observacoes || '-', 
+                        cod: 'MAT-' + idFormatado
+                    });
+
+                    window.location.href = `etiqueta-gerada.html?${params.toString()}`;
+                } else {
+                    alert('Erro ao cadastrar: ' + (result.error || 'Erro desconhecido'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Erro de conexão. Verifique se o servidor (server.js) está rodando.');
             }
-        } catch (err) {
-            console.error(err);
-            alert('Erro de conexão. Verifique se o servidor (server.js) está rodando.');
-        }
-    });
-</script>
+        });
+    </script>
 </body>
 </html>

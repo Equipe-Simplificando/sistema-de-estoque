@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etiqueta Gerada</title>
+    <title>Projeto Editado</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/project-css/projeto-cadastrado.css">
 </head>
@@ -12,22 +12,23 @@
 <body>
     <div class="container-geral">
         <header class="cabecalho">
-            <button class="botao-fechar" type="button" aria-label="Fechar janela">
+            <button class="botao-fechar" type="button" aria-label="Fechar janela" onclick="window.location.href='../material-pages/cadastrar-material.html'">
                 <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="Botão fechar">
             </button>
         </header>
         <main>
             <div class="conteudo-principal">
                 <h1 class="titulo-pagina">PROJETO <br> EDITADO!</h1>
+                
                 <section class="secao-etiqueta">
                     <p>NOME:</p>
-                    <p>Projeto 1</p>
+                    <p id="exibir-nome">Carregando...</p>
 
                     <p>SETOR:</p>
-                    <p>Robótica</p>
+                    <p id="exibir-setor">-</p>
 
                     <p>OBS:</p>
-                    <p>-</p>
+                    <p id="exibir-obs">-</p>
                 </section>
 
                 <div class="grupo-tabela">
@@ -49,26 +50,53 @@
                                 <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
                                             alt="ícone lixeira"></button></td>
                             </tr>
-
-                            <tr>
-                                <td>04-001</td>
-                                <td>Fonte</td>
-                                <td>x1</td>
-                                <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                            alt="ícone lixeira"></button></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
+                
                 <div class="grupo-botao">
-                    <button type="#" class="botao">EDITAR</button>
-                    <button type="#" class="botao">CADASTRAR MAIS</button>
+                    <a href="../material-pages/cadastrar-material.html" class="botao" style="text-decoration: none; text-align: center; background-color: #666;">VOLTAR</a>
+                    
+                    <button type="button" id="btn-editar-novamente" class="botao">EDITAR NOVAMENTE</button>
                 </div>
             </div>
-
-
         </main>
     </div>
-</body>
 
+    <script>
+        window.onload = function() {
+            // 1. Pega os dados que vieram pela URL (após o salvamento)
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const nome = params.get('nome');
+            const setor = params.get('setor');
+            const obs = params.get('obs');
+
+            // 2. Preenche a tela de confirmação
+            document.getElementById('exibir-nome').textContent = nome || 'Erro';
+            document.getElementById('exibir-setor').textContent = setor || '-';
+            document.getElementById('exibir-obs').textContent = obs || '-';
+
+            // 3. Configura o botão "Editar Novamente"
+            const btnEditar = document.getElementById('btn-editar-novamente');
+            
+            btnEditar.onclick = function() {
+                if (id) {
+                    // Monta os parâmetros novamente para enviar de volta ao formulário de edição
+                    const editParams = new URLSearchParams({
+                        id: id,
+                        nome: nome,
+                        setor: setor,
+                        obs: obs
+                    });
+                    
+                    // Redireciona para a página de edição (editar-projeto.html)
+                    window.location.href = `editar-projeto.html?${editParams.toString()}`;
+                } else {
+                    alert('Erro: ID do projeto perdido. Não é possível editar.');
+                }
+            };
+        };
+    </script>
+</body>
 </html>

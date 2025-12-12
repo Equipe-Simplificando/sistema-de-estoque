@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,127 +7,64 @@
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/project-css/cadastrar-projeto.css">
 </head>
-
 <body>
     <div class="container-geral">
-
         <header class="cabecalho">
             <h1 class="titulo-pagina">CADASTRAR <br> PROJETO</h1>
-
-            <button class="botao-fechar" type="button" aria-label="Fechar janela">
+            <button class="botao-fechar" type="button" onclick="history.back()">
                 <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="Botão fechar">
             </button>
         </header>
-
         <main class="conteudo-principal">
             <section class="secao-formulario">
-                <form id="formulario" class="formulario" action="#" method="POST">
-
+                <form id="formulario" class="formulario">
                     <div class="grupo-campo">
                         <label for="item" class="rotulo-campo">NOME</label>
                         <input type="text" id="item" name="item" class="campo-entrada" required>
                     </div>
-
                     <div class="grupo-campo">
                         <label class="rotulo-campo">SETOR</label>
                         <div class="grupo-radio">
-                            <input type="radio" name="destino" id="robotica" value="robotica" required>
+                            <input type="radio" name="destino" id="robotica" value="Robótica" required>
                             <label for="robotica" class="rotulo-radio">Robótica</label>
-                            <input type="radio" name="destino" id="manutencao" value="manutencao">
+                            <input type="radio" name="destino" id="manutencao" value="Manutenção">
                             <label for="manutencao" class="rotulo-radio">Manutenção</label>
                         </div>
                     </div>
-
                     <div class="grupo-campo">
-                        <label for="observacoes" class="rotulo-campo">
-                            OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
-                        </label>
+                        <label for="observacoes" class="rotulo-campo">OBSERVAÇÕES (OPCIONAL)</label>
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
                     </div>
-
-                    <div class="grupo-tabela">
-                        
-                        <div class="grupo-campo">
-                            <label for="pesquisa-item" class="rotulo-campo">ITENS <span
-                                    class="texto-opcional">(OPCIONAL)</span></label>
-                            <div class="grupo-pesquisa-filtro">
-                                <div class="container-pesquisa">
-                                    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisa-item">
-                                    <div class="icone-pesquisa">
-                                        <button type="button" class="botao-pesquisa">
-                                            <img src="../../assets/icons/icon-pesquisa.svg" alt="Ícone Pesquisa">
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="icone-filtro">
-                                    <button class="botao-filtro">
-                                        <img src="../../assets/icons/icon-filtro.svg" alt="Ícone Filtro">
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                        <table class="tabela-itens">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>ITEM</th>
-                                    <th>QTD</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <td>23-002</td>
-                                    <td>Cabo</td>
-                                    <td>x2</td>
-                                    <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                                alt="ícone lixeira"></button></td>
-                                </tr>
-
-                                <tr>
-                                    <td>04-001</td>
-                                    <td>Fonte</td>
-                                    <td>x1</td>
-                                    <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                                alt="ícone lixeira"></button></td>
-                                </tr>
-
-                                <tr>
-                                    <td>00-000</td>
-                                    <td>Parafuso</td>
-                                    <td>x4</td>
-                                    <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                                alt="ícone lixeira"></button></td>
-                                </tr>
-
-                                <tr>
-                                    <td>00-000</td>
-                                    <td>Placa Mãe</td>
-                                    <td>x1</td>
-                                    <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                                alt="ícone lixeira"></button></td>
-                                </tr>
-
-                                <tr>
-                                    <td>00-000</td>
-                                    <td>Memória RAM</td>
-                                    <td>x2</td>
-                                    <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                                alt="ícone lixeira"></button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
                     <button type="submit" class="botao">CADASTRAR</button>
-
                 </form>
             </section>
         </main>
     </div>
-</body>
+    <script>
+        document.getElementById('formulario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('item').value;
+            const obs = document.getElementById('observacoes').value;
+            const setor = document.querySelector('input[name="destino"]:checked')?.value;
 
+            try {
+                const response = await fetch('http://localhost:3000/api/cadastrar-projeto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ item: nome, destino: setor, observacoes: obs })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const params = new URLSearchParams({
+                        id: result.id, nome: nome, setor: setor || '-', obs: obs || '-'
+                    });
+                    window.location.href = `projeto-cadastrado.html?${params.toString()}`;
+                } else {
+                    alert('Erro: ' + result.error);
+                }
+            } catch (err) { alert('Erro de conexão.'); }
+        });
+    </script>
+</body>
 </html>

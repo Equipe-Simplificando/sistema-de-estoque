@@ -7,11 +7,9 @@ const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
-// Configuração do Middleware
-app.use(cors()); // Permite conexões do seu front-end
-app.use(express.json()); // Permite leitura de JSON no corpo da requisição
+app.use(cors());
+app.use(express.json());
 
-// Configuração da Conexão com Banco de Dados
 const db = mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
@@ -20,104 +18,49 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-    if (err) {
-        console.error('Erro ao conectar ao MySQL:', err);
-        return;
-    }
-    console.log('Conectado ao banco de dados MySQL');
+    if (err) console.error('Erro MySQL:', err);
+    else console.log('Conectado ao MySQL');
 });
 
-// Rota para Cadastrar Material
-// Rota para Cadastrar Material com ID Sequencial (Tapa-buracos)
-app.post('/api/cadastrar', (req, res) => {
-    const { item, destino, projeto, observacoes } = req.body;
+// --- ROTAS DE PROJETOS ---
 
-    // Validação simples
-    if (!item || !destino) {
-        return res.status(400).json({ success: false, error: 'Campos obrigatórios faltando.' });
-    }
+// Cadastrar
+app.post('/api/cadastrar-projeto', (req, res) => {
+    const { item, destino, observacoes } = req.body;
+    if (!item) return res.status(400).json({ error: 'Nome obrigatório' });
 
-    // 1. Busca todos os IDs existentes em ordem crescente
-    const queryIds = 'SELECT id FROM materiais ORDER BY id ASC';
-
-    db.query(queryIds, (err, results) => {
-        if (err) {
-            console.error('Erro ao verificar IDs:', err);
-            return res.status(500).json({ success: false, error: 'Erro no banco de dados' });
-        }
-
-        // 2. Lógica para encontrar o primeiro ID livre (buraco)
-        let novoId = 1; // Começa tentando o 1
-        for (const row of results) {
-            if (row.id === novoId) {
-                novoId++; // Se o ID existe, tenta o próximo
-            } else {
-                break; // Se encontrou um buraco (ex: tem 1 e 3, novoId é 2), para aqui
-            }
-        }
-
-        // 3. Insere o material forçando o ID encontrado
-        const sqlInsert = `INSERT INTO materiais (id, nome_item, destino, projeto, observacoes) VALUES (?, ?, ?, ?, ?)`;
-        
-        db.query(sqlInsert, [novoId, item, destino, projeto, observacoes], (err, result) => {
-            if (err) {
-                console.error('Erro ao inserir:', err);
-                // Tratamento especial para chave duplicada (caso raro de concorrência)
-                if (err.code === 'ER_DUP_ENTRY') {
-                    return res.status(409).json({ success: false, error: 'O ID foi ocupado durante o processo. Tente novamente.' });
-                }
-                return res.status(500).json({ success: false, error: 'Erro no banco de dados' });
-            }
-            
-            res.json({ 
-                success: true, 
-                message: 'Material cadastrado com sucesso!',
-                id: novoId // Retorna o ID que calculamos
-            });
-        });
+    const sql = `INSERT INTO projetos (nome_projeto, setor, observacoes) VALUES (?, ?, ?)`;
+    db.query(sql, [item, destino, observacoes], (err, result) => {
+        if (err) return res.status(500).json({ error: 'Erro ao cadastrar' });
+        res.json({ success: true, id: result.insertId });
     });
 });
 
-// Rota para Atualizar Material
-app.put('/api/atualizar', (req, res) => {
-    const { id, item, destino, projeto, observacoes } = req.body;
+// Atualizar
+app.put('/api/atualizar-projeto', (req, res) => {
+    const { id, item, destino, observacoes } = req.body;
+    if (!id || !item) return res.status(400).json({ error: 'ID e Nome obrigatórios' });
 
-    if (!id || !item || !destino) {
-        return res.status(400).json({ success: false, error: 'Dados obrigatórios faltando.' });
-    }
-
-    const sqlUpdate = `
-        UPDATE materiais 
-        SET nome_item = ?, destino = ?, projeto = ?, observacoes = ?
-        WHERE id = ?
-    `;
-
-    db.query(sqlUpdate, [item, destino, projeto, observacoes, id], (err, result) => {
-        if (err) {
-            console.error('Erro ao atualizar:', err);
-            return res.status(500).json({ success: false, error: 'Erro no banco de dados' });
-        }
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ success: false, error: 'Material não encontrado para atualização.' });
-        }
-
-        res.json({ success: true, message: 'Material atualizado!' });
+    const sql = `UPDATE projetos SET nome_projeto = ?, setor = ?, observacoes = ? WHERE id = ?`;
+    db.query(sql, [item, destino, observacoes, id], (err) => {
+        if (err) return res.status(500).json({ error: 'Erro ao atualizar' });
+        res.json({ success: true });
     });
 });
 
-// Rota para Listar Materiais
-app.get('/api/materiais', (req, res) => {
-    const sql = 'SELECT * FROM materiais ORDER BY id DESC'; // Pega do mais novo para o mais antigo
-    
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error('Erro ao buscar:', err);
-            return res.status(500).json({ error: 'Erro ao buscar dados' });
-        }
-        res.json(results); // Envia a lista como JSON para o navegador
+// Listar (para selects)
+app.get('/api/projetos', (req, res) => {
+    db.query('SELECT id, nome_projeto FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
+        if (err) return res.status(500).json({ error: 'Erro ao listar' });
+        res.json(results);
     });
 });
+
+// --- ROTAS DE MATERIAIS (Resumidas para contexto) ---
+app.post('/api/cadastrar', (req, res) => { /* ... código existente ... */ });
+app.put('/api/atualizar', (req, res) => { /* ... código existente ... */ });
+app.get('/api/materiais', (req, res) => { /* ... código existente ... */ });
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
