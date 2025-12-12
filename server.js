@@ -77,6 +77,35 @@ app.post('/api/cadastrar', (req, res) => {
         });
     });
 });
+
+// Rota para Atualizar Material
+app.put('/api/atualizar', (req, res) => {
+    const { id, item, destino, projeto, observacoes } = req.body;
+
+    if (!id || !item || !destino) {
+        return res.status(400).json({ success: false, error: 'Dados obrigatórios faltando.' });
+    }
+
+    const sqlUpdate = `
+        UPDATE materiais 
+        SET nome_item = ?, destino = ?, projeto = ?, observacoes = ?
+        WHERE id = ?
+    `;
+
+    db.query(sqlUpdate, [item, destino, projeto, observacoes, id], (err, result) => {
+        if (err) {
+            console.error('Erro ao atualizar:', err);
+            return res.status(500).json({ success: false, error: 'Erro no banco de dados' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, error: 'Material não encontrado para atualização.' });
+        }
+
+        res.json({ success: true, message: 'Material atualizado!' });
+    });
+});
+
 // Rota para Listar Materiais
 app.get('/api/materiais', (req, res) => {
     const sql = 'SELECT * FROM materiais ORDER BY id DESC'; // Pega do mais novo para o mais antigo

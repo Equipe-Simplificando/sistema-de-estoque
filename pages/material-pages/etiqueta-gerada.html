@@ -80,7 +80,7 @@
 
             <div class="grupo-botao" style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%;">
                 
-                <button type="button" class="botao botao-editar" onclick="alert('Funcionalidade de editar pendente')">EDITAR</button>
+                <button type="button" id="btn-editar" class="botao botao-editar">EDITAR</button>
 
                 <button type="button" class="botao" onclick="window.location.href='cadastrar-material.html'">CADASTRAR OUTRO</button>
             
@@ -119,6 +119,23 @@
             correctLevel : QRCode.CorrectLevel.H
         });
     }
+
+    // ... (código anterior que já existe para exibir os dados)
+
+// Lógica do Botão EDITAR
+document.getElementById('btn-editar').addEventListener('click', () => {
+    // Cria novos parâmetros baseados nos dados atuais da tela
+    const paramsEdit = new URLSearchParams({
+        id: id,       // Variável já existente no seu script atual
+        nome: nome,   // Variável já existente
+        destino: destino, // Variável já existente
+        projeto: projeto, // Variável já existente
+        obs: obs      // Variável já existente
+    });
+
+    // Redireciona para a página de edição levando os dados
+    window.location.href = `editar-material.html?${paramsEdit.toString()}`;
+});
     </script>
 </body>
 </html>

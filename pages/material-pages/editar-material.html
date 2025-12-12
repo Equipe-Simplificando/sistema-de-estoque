@@ -74,5 +74,96 @@
             </section>
         </main>
     </div>
+    <script>
+    // 1. Ao carregar a página, preenche o formulário
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        
+        // Pega o ID (importante para saber qual item atualizar no banco)
+        const idMaterial = params.get('id');
+        if (!idMaterial) {
+            alert('ID do material não encontrado!');
+            window.location.href = 'listar-materiais.html';
+            return;
+        }
+
+        // Preenche Nome
+        if(params.get('nome')) document.getElementById('item').value = params.get('nome');
+
+        // Preenche Destino (Radio Buttons)
+        const destinoVal = params.get('destino');
+        if (destinoVal === 'robotica') {
+            document.getElementById('robotica').checked = true;
+        } else if (destinoVal === 'manutencao') {
+            document.getElementById('manutencao').checked = true;
+        }
+
+        // Preenche Projeto (Select)
+        const projetoVal = params.get('projeto');
+        const selectProjeto = document.getElementById('projeto');
+        if (projetoVal && projetoVal !== '-' && projetoVal !== 'null') {
+            selectProjeto.value = projetoVal;
+        }
+
+        // Preenche Observações
+        const obsVal = params.get('obs');
+        if (obsVal && obsVal !== '-' && obsVal !== 'null') {
+            document.getElementById('observacoes').value = obsVal;
+        }
+
+        // Armazena o ID em um atributo data do formulário para usar no envio
+        document.getElementById('formulario').dataset.id = idMaterial;
+    });
+
+    // 2. Lógica de Envio (Atualização)
+    document.getElementById('formulario').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const id = e.target.dataset.id;
+        const itemNome = document.getElementById('item').value;
+        const destino = document.querySelector('input[name="destino"]:checked')?.value;
+        const projeto = document.getElementById('projeto').value;
+        const observacoes = document.getElementById('observacoes').value;
+
+        const dadosAtualizados = {
+            id: id, // O ID não muda, mas serve para identificar o registro
+            item: itemNome,
+            destino: destino,
+            projeto: projeto,
+            observacoes: observacoes
+        };
+
+        try {
+            const response = await fetch('http://localhost:3000/api/atualizar', {
+                method: 'PUT', // Usamos PUT para atualização
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosAtualizados)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Material atualizado com sucesso!');
+                
+                // Redireciona de volta para a etiqueta gerada com os NOVOS dados
+                const params = new URLSearchParams({
+                    id: String(id).padStart(4, '0'), // Mantém a formatação visual
+                    nome: dadosAtualizados.item,
+                    destino: dadosAtualizados.destino,
+                    projeto: dadosAtualizados.projeto || '-',
+                    obs: dadosAtualizados.observacoes || '-',
+                    cod: 'MAT-' + String(id).padStart(4, '0')
+                });
+                
+                window.location.href = `etiqueta-gerada.html?${params.toString()}`;
+            } else {
+                alert('Erro ao atualizar: ' + result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Erro de conexão com o servidor.');
+        }
+    });
+</script>
 </body>
 </html>
