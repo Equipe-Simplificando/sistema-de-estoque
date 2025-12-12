@@ -43,6 +43,10 @@ body {
     padding: 60px 20px;
 }
 
+main {
+    width: 100%;
+}
+
 .conteudo-principal {
     width: 100%;
     display: flex;
@@ -271,7 +275,6 @@ body {
     border: var(--borda); 
     border-radius: var(--radius);
     overflow: hidden; 
-    min-width: 600px; /* Força largura mínima para aparecer rolagem se necessário */
 }
 
 .tabela-itens th,
@@ -319,69 +322,4 @@ body {
     border: none;
     padding: 0;
     cursor: pointer;
-}
-
-/* =========================================================
-   RESPONSIVIDADE (MOBILE)
-   Aplica estilos apenas se a tela for menor que 768px
-========================================================= */
-@media screen and (max-width: 768px) {
-    
-    /* Ajuste do Container Geral */
-    .container-geral {
-        width: 100%;
-        margin: 0;
-        padding: 30px 15px; /* Menos padding lateral */
-    }
-
-    .conteudo-principal {
-        gap: 40px; /* Menos espaço entre elementos */
-    }
-
-    /* Cabeçalho */
-    .cabecalho {
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-    .titulo-pagina {
-        font-size: 1.8rem; /* Título menor */
-        line-height: 1.2;
-    }
-
-    .botao-fechar {
-        width: 50px;
-        height: 50px;
-    }
-    .botao-fechar img {
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Formulários e Inputs */
-    .campo-entrada, 
-    .campo-texto, 
-    .select-customizado,
-    .grupo-radio {
-        font-size: 1rem; /* Fonte legível (16px) */
-    }
-
-    /* Botões */
-    .botao {
-        width: 100%;
-        max-width: 100%; /* Ocupa largura total */
-        padding: 14px 0;
-        font-size: 1.1rem;
-    }
-    
-    /* Filtros e Pesquisa */
-    .grupo-pesquisa-filtro {
-        flex-direction: column; /* Empilha pesquisa e filtro */
-        align-items: stretch;
-        gap: 15px;
-    }
-    
-    .container-pesquisa {
-        width: 100%;
-    }
 }
