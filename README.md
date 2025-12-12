@@ -124,6 +124,8 @@ CREATE TABLE IF NOT EXISTS projetos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_projeto VARCHAR(150) NOT NULL,
     cliente VARCHAR(150)
+    ADD COLUMN setor VARCHAR(50),
+    ADD COLUMN observacoes TEXT;
 );
 
 CREATE TABLE IF NOT EXISTS alocacao_projetos (
