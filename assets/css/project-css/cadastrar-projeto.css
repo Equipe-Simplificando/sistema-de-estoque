@@ -1,32 +1,24 @@
 .cabecalho {
-    margin-bottom: 82px;
+    margin-bottom: 52px;
 }
 
 .botao {
-    margin-top: 50px;
+    background: var(--cor-secundaria);
+    box-shadow: inset 0 -4px 0 1.5px var(--shadow-secundaria);
+    color: var(--cor-texto-escuro);
 }
 
-/* RESPONSIVIDADE ESPECÍFICA DESTA PÁGINA */
-@media screen and (max-width: 768px) {
-    .cabecalho {
-        margin-bottom: 40px;
-    }
-    
-    .botao {
-        margin-top: 30px;
-    }
+/* Robótica selecionado */
+#robotica:checked+.rotulo-radio {
+    background: var(--cor-secundaria);
+    color: var(--cor-texto-escuro);
+    box-shadow: inset -2px -2px 4px 0 var(--shadow-secundaria);
 }
 
-/* Para telas muito pequenas, empilha os radios se necessário */
-@media screen and (max-width: 400px) {
-    .grupo-radio {
-        height: auto;
-        flex-direction: column;
-    }
-    
-    .rotulo-radio {
-        padding: 15px 0;
-        width: 100%;
-        border-radius: 0 !important;
-    }
+/* Manutenção selecionado */
+#manutencao:checked+.rotulo-radio {
+    background: var(--cor-secundaria);
+    color: var(--cor-texto-escuro);
+    box-shadow: inset 2px -2px 0 1.5px var(--shadow-secundaria);
 }
+
