@@ -1,35 +1,24 @@
-document.getElementById("loginForm").addEventListener("submit", function(e) {
+const form = document.getElementById("loginForm");
+const loader = document.getElementById("loading");
+const msg = document.getElementById("mensagem-erro");
+
+form.addEventListener("submit", function(e) {
     e.preventDefault();
 
     const usuario = document.getElementById("usuario").value.trim();
     const senha = document.getElementById("senha").value.trim();
-    const msg = document.getElementById("mensagem");
-    const loader = document.getElementById("loading");
 
-    // LIMPA MENSAGEM E GARANTE QUE O LOADER ESTÁ OCULTO
+    // Limpa mensagem e esconde loader
     msg.textContent = "";
     loader.style.display = "none";
 
-    // LOGIN CORRETO
     if (usuario === "admin" && senha === "admin") {
+        loader.style.display = "block"; // mostra loader
 
-        msg.style.color = "green";
-        msg.textContent = "Login realizado com sucesso!";
-
-        // MOSTRA O LOADER
-        loader.style.display = "block";
-
-        // AGUARDA 1 SEGUNDO E REDIRECIONA
         setTimeout(() => {
             window.location.href = "pagina-temporaria.html";
         }, 1000);
-
     } else {
-        // LOGIN INCORRETO
-        msg.style.color = "red";
-        msg.textContent = "Usuário ou senha incorretos!";
-        
-        // Garante loader oculto no erro
-        loader.style.display = "none";
+        msg.textContent = "USUÁRIO OU SENHA INCORRETOS!";
     }
 });
