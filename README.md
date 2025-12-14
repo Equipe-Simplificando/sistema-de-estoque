@@ -188,4 +188,9 @@ CREATE TABLE IF NOT EXISTS movimentacoes (
         (produto_id IS NOT NULL AND componente_id IS NULL) OR 
         (produto_id IS NULL AND componente_id IS NOT NULL)
     )
+-- Adiciona colunas para armazenar o arquivo binário, o tipo (imagem/video) e o nome original
+ALTER TABLE materiais 
+ADD COLUMN arquivo_dados LONGBLOB,
+ADD COLUMN arquivo_tipo VARCHAR(50),
+ADD COLUMN arquivo_nome VARCHAR(255);
 );
