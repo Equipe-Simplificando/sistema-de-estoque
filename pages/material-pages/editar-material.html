@@ -6,7 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Material</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/material-css/cadastrar-material.css">
+    <link rel="stylesheet" href="../../assets/css/material-screen/cadastrar-material.css">
+    <style>
+        /* Estilo simples para o container do nome do arquivo */
+        #preview-container {
+            margin-top: 10px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .nome-arquivo {
+            font-weight: bold;
+            color: #333;
+            font-size: 1rem;
+            word-break: break-all; /* Quebra linha se o nome for muito longo */
+        }
+
+        .aviso-preview {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,8 +40,7 @@
 
         <header class="cabecalho">
             <h1 class="titulo-pagina">EDITAR <br> MATERIAL</h1>
-
-            <button class="botao-fechar" type="button" aria-label="Fechar janela">
+            <button class="botao-fechar" type="button" onclick="window.location.href='listar-materiais.html'">
                 <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
             </button>
         </header>
@@ -24,6 +49,8 @@
             <section class="secao-formulario">
 
                 <form id="formulario" class="formulario" action="#" method="POST">
+                    
+                    <input type="hidden" id="material-id">
 
                     <div class="grupo-campo">
                         <label for="item" class="rotulo-campo">NOME DO ITEM</label>
@@ -32,7 +59,6 @@
 
                     <div class="grupo-campo">
                         <label class="rotulo-campo">DESTINO</label>
-
                         <div class="grupo-radio">
                             <input type="radio" name="destino" id="robotica" value="robotica" required>
                             <label for="robotica" class="rotulo-radio">Robótica</label>
@@ -43,18 +69,11 @@
                     </div>
 
                     <div class="grupo-campo">
-                        <label for="projeto" class="rotulo-campo">
-                            Projeto <span class="texto-opcional">(OPCIONAL)</span>
-                        </label>
-
+                        <label for="projeto" class="rotulo-campo">Projeto <span class="texto-opcional">(OPCIONAL)</span></label>
                         <div class="container-select">
                             <select id="projeto" name="projeto" class="campo-entrada select-customizado">
-                                <option value="" selected disabled hidden></option>
-                                <option value="projeto1">Projeto 1</option>
-                                <option value="projeto2">Projeto 2</option>
-                                <option value="projeto3">Projeto 3</option>
+                                <option value="" selected disabled hidden>Carregando...</option>
                             </select>
-
                             <div class="icone-seta">
                                 <img src="../../assets/icons/icon-seta.svg" alt="Ícone seta">
                             </div>
@@ -62,108 +81,131 @@
                     </div>
 
                     <div class="grupo-campo">
-                        <label for="observacoes" class="rotulo-campo">
-                            OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
+                        <label class="rotulo-campo">ARQUIVO ATUAL</label>
+                        
+                        <div id="preview-container">
+                            <span class="aviso-preview">Verificando anexos...</span>
+                        </div>
+
+                        <label for="arquivo" class="rotulo-campo" style="margin-top: 15px;">
+                            SUBSTITUIR ARQUIVO <span class="texto-opcional">(OPCIONAL)</span>
                         </label>
+                        <input type="file" id="arquivo" name="arquivo" class="campo-entrada" accept="image/*,video/*" style="padding: 10px; background: white;">
+                        <small style="color: #666; font-size: 0.8rem; display:block; margin-top:5px;">
+                            Se selecionar um arquivo novo, o anterior será substituído.
+                        </small>
+                    </div>
+
+                    <div class="grupo-campo">
+                        <label for="observacoes" class="rotulo-campo">OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span></label>
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
                     </div>
 
-                    <button type="submit" class="botao">SALVAR</button>
+                    <button type="submit" class="botao">SALVAR ALTERAÇÕES</button>
 
                 </form>
+                
+                <a href="listar-materiais.html" class="botao" style="background-color: #666; margin-top: 10px; text-align:center; text-decoration:none; display:block;">CANCELAR</a>
+
             </section>
         </main>
     </div>
+    
     <script>
-    // 1. Ao carregar a página, preenche o formulário
-    document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);
-        
-        // Pega o ID (importante para saber qual item atualizar no banco)
         const idMaterial = params.get('id');
+
         if (!idMaterial) {
             alert('ID do material não encontrado!');
             window.location.href = 'listar-materiais.html';
-            return;
         }
 
-        // Preenche Nome
-        if(params.get('nome')) document.getElementById('item').value = params.get('nome');
-
-        // Preenche Destino (Radio Buttons)
-        const destinoVal = params.get('destino');
-        if (destinoVal === 'robotica') {
-            document.getElementById('robotica').checked = true;
-        } else if (destinoVal === 'manutencao') {
-            document.getElementById('manutencao').checked = true;
-        }
-
-        // Preenche Projeto (Select)
-        const projetoVal = params.get('projeto');
-        const selectProjeto = document.getElementById('projeto');
-        if (projetoVal && projetoVal !== '-' && projetoVal !== 'null') {
-            selectProjeto.value = projetoVal;
-        }
-
-        // Preenche Observações
-        const obsVal = params.get('obs');
-        if (obsVal && obsVal !== '-' && obsVal !== 'null') {
-            document.getElementById('observacoes').value = obsVal;
-        }
-
-        // Armazena o ID em um atributo data do formulário para usar no envio
-        document.getElementById('formulario').dataset.id = idMaterial;
-    });
-
-    // 2. Lógica de Envio (Atualização)
-    document.getElementById('formulario').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const id = e.target.dataset.id;
-        const itemNome = document.getElementById('item').value;
-        const destino = document.querySelector('input[name="destino"]:checked')?.value;
-        const projeto = document.getElementById('projeto').value;
-        const observacoes = document.getElementById('observacoes').value;
-
-        const dadosAtualizados = {
-            id: id, // O ID não muda, mas serve para identificar o registro
-            item: itemNome,
-            destino: destino,
-            projeto: projeto,
-            observacoes: observacoes
-        };
-
-        try {
-            const response = await fetch('http://localhost:3000/api/atualizar', {
-                method: 'PUT', // Usamos PUT para atualização
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosAtualizados)
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                alert('Material atualizado com sucesso!');
-                
-                // Redireciona de volta para a etiqueta gerada com os NOVOS dados
-                const params = new URLSearchParams({
-                    id: String(id).padStart(4, '0'), // Mantém a formatação visual
-                    nome: dadosAtualizados.item,
-                    destino: dadosAtualizados.destino,
-                    projeto: dadosAtualizados.projeto || '-',
-                    obs: dadosAtualizados.observacoes || '-',
-                    cod: 'MAT-' + String(id).padStart(4, '0')
+        async function carregarDados() {
+            try {
+                // 1. Carregar Projetos
+                const respProj = await fetch('http://localhost:3000/api/projetos');
+                const projetos = await respProj.json();
+                const selectProjeto = document.getElementById('projeto');
+                selectProjeto.innerHTML = '<option value="" selected disabled hidden></option>';
+                projetos.forEach(proj => {
+                    const option = document.createElement('option');
+                    option.value = proj.nome_projeto; 
+                    option.textContent = proj.nome_projeto;
+                    selectProjeto.appendChild(option);
                 });
-                
-                window.location.href = `etiqueta-gerada.html?${params.toString()}`;
-            } else {
-                alert('Erro ao atualizar: ' + result.error);
+
+                // 2. Carregar Dados do Material
+                const respMat = await fetch('http://localhost:3000/api/materiais');
+                const materiais = await respMat.json();
+                const material = materiais.find(m => m.id == idMaterial);
+
+                if (material) {
+                    document.getElementById('material-id').value = material.id;
+                    document.getElementById('item').value = material.nome_item;
+                    document.getElementById('observacoes').value = material.observacoes || '';
+                    if (material.projeto) selectProjeto.value = material.projeto;
+                    if (material.destino === 'robotica') document.getElementById('robotica').checked = true;
+                    else if (material.destino === 'manutencao') document.getElementById('manutencao').checked = true;
+
+                    // --- MUDANÇA AQUI: EXIBIR APENAS O NOME DO ARQUIVO ---
+                    const previewContainer = document.getElementById('preview-container');
+                    
+                    if (material.arquivo_nome) {
+                        // Limpa o conteúdo e adiciona um ícone genérico + nome
+                        previewContainer.innerHTML = `
+                            <img src="../../assets/icons/icon-pesquisa.svg" alt="Arquivo" style="width: 20px; opacity: 0.6;">
+                            <span class="nome-arquivo">${material.arquivo_nome}</span>
+                        `;
+                    } else {
+                        previewContainer.innerHTML = '<span class="aviso-preview">Nenhum arquivo salvo.</span>';
+                    }
+                    // -----------------------------------------------------
+
+                } else {
+                    alert('Material não encontrado.');
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro ao carregar dados.');
             }
-        } catch (err) {
-            console.error(err);
-            alert('Erro de conexão com o servidor.');
         }
-    });
-</script>
+
+        window.onload = carregarDados;
+
+        document.getElementById('formulario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('id', document.getElementById('material-id').value);
+            formData.append('item', document.getElementById('item').value);
+            const destino = document.querySelector('input[name="destino"]:checked');
+            formData.append('destino', destino ? destino.value : '');
+            formData.append('projeto', document.getElementById('projeto').value);
+            formData.append('observacoes', document.getElementById('observacoes').value);
+
+            const arquivoInput = document.getElementById('arquivo');
+            if (arquivoInput.files[0]) {
+                formData.append('arquivo', arquivoInput.files[0]);
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/atualizar', {
+                    method: 'PUT',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Material atualizado com sucesso!');
+                    window.location.href = 'listar-materiais.html';
+                } else {
+                    alert('Erro: ' + (result.error || 'Desconhecido'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Erro de conexão com o servidor.');
+            }
+        });
+    </script>
 </body>
 </html>
