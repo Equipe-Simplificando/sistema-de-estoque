@@ -12,9 +12,14 @@ form.addEventListener("submit", function(e) {
     msg.textContent = "";
     loader.style.display = "none";
 
-    if (usuario === "admin" && senha === "admin") {
+    // LÓGICA DE VALIDAÇÃO ALTERADA AQUI
+    // Verifica se é Admin (senha: admin) OU se é Logistico (senha: logistico)
+    if ((usuario === "admin" && senha === "admin") || 
+        (usuario === "logistico" && senha === "1234")) {
+        
         loader.style.display = "block"; // mostra loader
 
+        // Redireciona para a mesma página temporária
         setTimeout(() => {
             window.location.href = "pagina-temporaria.html";
         }, 1000);
