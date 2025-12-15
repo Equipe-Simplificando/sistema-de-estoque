@@ -25,30 +25,27 @@
 
                 <form id="formulario" class="formulario" method="post">
 
-                    <!-- NOME DO PROJETO -->
                     <div class="campo-grupo">
-                        <label for="preco" class="campo-rotulo">NOME</label>
-                        <input type="text" id="preco" name="nomeProjeto" class="campo-entrada" required>
+                        <label for="item" class="campo-rotulo">NOME</label>
+                        <input type="text" id="item" name="item" class="campo-entrada" required>
                     </div>
 
-                    <!-- SETOR -->
                     <div class="campo-grupo">
                         <span class="campo-rotulo">SETOR</span>
 
                         <div class="grupo-radio">
-                            <input type="radio" name="setor" id="robotica" value="robotica" required>
+                            <input type="radio" name="destino" id="robotica" value="robotica" required>
                             <label for="robotica" class="rotulo-radio">
                                 Robótica
                             </label>
 
-                            <input type="radio" name="setor" id="manutencao" value="manutencao">
+                            <input type="radio" name="destino" id="manutencao" value="manutencao">
                             <label for="manutencao" class="rotulo-radio borda-esquerda">
                                 Manutenção
                             </label>
                         </div>
                     </div>
 
-                    <!-- PREÇO -->
                     <div class="campo-grupo">
                         <label for="preco" class="campo-rotulo">
                             PREÇO <span class="texto-opcional">(OPCIONAL)</span>
@@ -61,7 +58,6 @@
                         </div>
                     </div>
 
-                    <!-- OBSERVAÇÕES -->
                     <div class="campo-grupo">
                         <label for="observacoes" class="campo-rotulo">
                             OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
@@ -70,10 +66,8 @@
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
                     </div>
 
-                    <!-- ITENS -->
                     <div class="grupo-tabela">
 
-                        <!-- PESQUISA -->
                         <div class="campo-grupo">
                             <label for="pesquisa-item" class="campo-rotulo">
                                 ITENS <span class="texto-opcional">(OPCIONAL)</span>
@@ -98,7 +92,6 @@
                             </div>
                         </div>
 
-                        <!-- TABELA -->
                         <table class="tabela-itens">
                             <thead>
                                 <tr>
@@ -135,7 +128,6 @@
                         </table>
                     </div>
 
-                    <!-- AÇÕES -->
                     <div class="grupo-acoes">
                         <button type="submit" class="botao">
                             CADASTRAR
@@ -150,6 +142,7 @@
     <script>
         document.getElementById('formulario').addEventListener('submit', async (e) => {
             e.preventDefault();
+            // Agora estes seletores encontrarão os elementos corretos
             const nome = document.getElementById('item').value;
             const obs = document.getElementById('observacoes').value;
             const setor = document.querySelector('input[name="destino"]:checked')?.value;
@@ -170,7 +163,10 @@
                 } else {
                     alert('Erro: ' + result.error);
                 }
-            } catch (err) { alert('Erro de conexão.'); }
+            } catch (err) { 
+                console.error(err);
+                alert('Erro de conexão.'); 
+            }
         });
     </script>
 </body>
