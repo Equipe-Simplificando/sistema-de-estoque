@@ -7,135 +7,123 @@
     <title>Etiqueta Gerada</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/material-css/etiqueta-gerada.css">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-    <style>
-        /* Área do QRCode */
-        #qrcode {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-        }
-        #qrcode img {
-            border: 2px solid #fff;
-            padding: 2px;
-        }
-
-        /* Configuração para IMPRESSÃO: Esconde tudo, menos a etiqueta */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .secao-etiqueta, .secao-etiqueta * {
-                visibility: visible;
-            }
-            .secao-etiqueta {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 20px;
-                border: 2px solid #000;
-                box-shadow: none;
-            }
-            body {
-                background: white;
-            }
-        }
-    </style>
 </head>
 
 <body>
-    <div class="container-geral">
+    <div class="container">
+
         <header class="cabecalho">
-            <button class="botao-fechar" type="button" onclick="window.location.href='listar-materiais.html'" aria-label="Fechar janela">
+            <button class="botao-fechar" type="button" onclick="window.location.href='listar-materiais.html'"
+                aria-label="Fechar janela">
                 <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
             </button>
         </header>
-        <main>
-            <div class="conteudo-principal">
-                <h1 class="titulo-pagina">ETIQUETA <br> GERADA!</h1>
+
+        <main class="conteudo">
+            <h1 class="titulo-pagina">ETIQUETA <br> GERADA!</h1>
+            
+            <section class="secao-etiqueta">
                 
-                <section class="secao-etiqueta">
-                    <div class="info-linha"><strong>ID:</strong> <span id="view_id">...</span></div>
-                    <div class="info-linha"><strong>ITEM:</strong> <span id="view_nome">...</span></div>
-                    <div class="info-linha"><strong>DESTINO:</strong> <span id="view_destino">...</span></div>
-                    <div class="info-linha"><strong>PROJETO:</strong> <span id="view_projeto">...</span></div>
-                    <div class="info-linha"><strong>OBS:</strong> <span id="view_obs" style="font-size: 0.9em;">...</span></div>
-                    
-                    <div id="qrcode"></div>
+                <div class="container-lembrete">
+                    <p class="texto-lembrete">Lembre-se de conferir a etiqueta antes de colar no material.</p>
+                </div>
+
+                <section class="dados-etiqueta">
+                    <span class="rotulo-dado">ID:</span>
+                    <span class="valor-dado" id="view_id"></span>
+
+                    <span class="rotulo-dado">Item:</span>
+                    <span class="valor-dado" id="view_nome"></span>
+
+                    <span class="rotulo-dado">Destino:</span>
+                    <span class="valor-dado" id="view_destino"></span>
+
+                    <span class="rotulo-dado">Projeto:</span>
+                    <span class="valor-dado" id="view_projeto"></span>
                 </section>
 
-                <button type="button" class="botao" onclick="window.print()" style="background-color: #2196F3; width: auto; padding: 8px 20px; font-size: 0.85rem; height: auto;">
-                    Imprimir Etiqueta
-                </button>
-
-                <div class="container-lembrete">
-                    <p class="texto-lembrete">Confira os dados antes de finalizar.</p>
+                <div class="qrcode-wrapper">
+                    <div id="qrcode"></div>
                 </div>
-            </div>
 
+                <section class="secao-observacoes">
+                    <h2 class="titulo-secao">OBSERVAÇÕES:</h2>
+                    <p class="texto-observacoes" id="view_obs">
+                        -
+                    </p>
+                </section>
 
-            <div class="grupo-botao" style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%;">
-                
-                <button type="button" id="btn-editar" class="botao botao-editar">EDITAR</button>
+                <div class="grupo-acoes">
 
-                <button type="button" class="botao" onclick="window.location.href='cadastrar-material.html'">CADASTRAR OUTRO</button>
-            
-            </div>
+                    <a href="../material-pages/cadastrar-material.html" class="botao">
+                        CADASTRAR MAIS
+                    </a>
+
+                    <button type="button" id="btn-editar" class="botao botao-branco">
+                        EDITAR
+                    </button>
+
+                    <button type="button" class="botao-imprimir" onclick="window.print()">
+                        REIMPRIMIR ETIQUETA
+                    </button>
+
+                </div>
+
+            </section>
         </main>
     </div>
 
     <script>
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    const nome = params.get('nome');
-    const destino = params.get('destino');
-    const projeto = params.get('projeto');
-    const obs = params.get('obs');
-    const codigoParaQRCode = params.get('cod') || id || 'ERRO';
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        const nome = params.get('nome');
+        const destino = params.get('destino');
+        const projeto = params.get('projeto');
+        const obs = params.get('obs');
+        const codigoParaQRCode = params.get('cod') || id || 'ERRO';
 
-    if (id) document.getElementById('view_id').innerText = id;
-    if (nome) document.getElementById('view_nome').innerText = nome;
-    
-    if (destino) {
-        document.getElementById('view_destino').innerText = destino.charAt(0).toUpperCase() + destino.slice(1);
-    } else {
-        document.getElementById('view_destino').innerText = '-';
-    }
+        if (id) document.getElementById('view_id').innerText = id;
+        if (nome) document.getElementById('view_nome').innerText = nome;
 
-    document.getElementById('view_projeto').innerText = (projeto && projeto !== 'null') ? projeto : '-';
-    document.getElementById('view_obs').innerText = (obs && obs !== 'null') ? obs : '-';
+        if (destino) {
+            document.getElementById('view_destino').innerText = destino.charAt(0).toUpperCase() + destino.slice(1);
+        } else {
+            document.getElementById('view_destino').innerText = '-';
+        }
 
-    if (id) {
-        new QRCode(document.getElementById("qrcode"), {
-            text: codigoParaQRCode,
-            width: 90,
-            height: 90,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
+        document.getElementById('view_projeto').innerText = (projeto && projeto !== 'null') ? projeto : '-';
+        
+        // CORREÇÃO: Agora o ID view_obs existe no HTML acima
+        document.getElementById('view_obs').innerText = (obs && obs !== 'null') ? obs : 'Sem observações.';
+
+        if (id) {
+            // Limpa QR Code anterior se houver
+            document.getElementById("qrcode").innerHTML = "";
+            
+            new QRCode(document.getElementById("qrcode"), {
+                text: codigoParaQRCode,
+                width: 128, // Aumentei um pouco para melhor leitura na impressão
+                height: 128,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        // Lógica do Botão EDITAR
+        document.getElementById('btn-editar').addEventListener('click', () => {
+            const paramsEdit = new URLSearchParams({
+                id: id,      
+                nome: nome,   
+                destino: destino, 
+                projeto: projeto, 
+                obs: obs      
+            });
+            window.location.href = `editar-material.html?${paramsEdit.toString()}`;
         });
-    }
-
-    // ... (código anterior que já existe para exibir os dados)
-
-// Lógica do Botão EDITAR
-document.getElementById('btn-editar').addEventListener('click', () => {
-    // Cria novos parâmetros baseados nos dados atuais da tela
-    const paramsEdit = new URLSearchParams({
-        id: id,       // Variável já existente no seu script atual
-        nome: nome,   // Variável já existente
-        destino: destino, // Variável já existente
-        projeto: projeto, // Variável já existente
-        obs: obs      // Variável já existente
-    });
-
-    // Redireciona para a página de edição levando os dados
-    window.location.href = `editar-material.html?${paramsEdit.toString()}`;
-});
     </script>
 </body>
+
 </html>

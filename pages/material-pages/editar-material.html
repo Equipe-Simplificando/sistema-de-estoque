@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Material</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/material-screen/cadastrar-material.css">
+    <link rel="stylesheet" href="../../assets/css/material-css/cadastrar-material.css">
     <style>
         /* Estilo simples para o container do nome do arquivo */
         #preview-container {
-            margin-top: 10px;
             padding: 15px;
             border: 1px solid #ccc;
             border-radius: 8px;
@@ -52,14 +51,13 @@
             <section class="secao-cadastro">
 
                 <form id="formulario" class="formulario" method="POST">
-    <input type="hidden" id="material-id" name="id"> 
+                    <input type="hidden" id="material-id" name="id">
 
-    <div class="campo-grupo">
-        <label for="item" class="campo-rotulo">NOME DO ITEM</label>
-        <input type="text" id="item" name="item" class="campo-entrada" required>
-    </div>
+                    <div class="campo-grupo">
+                        <label for="item" class="campo-rotulo">NOME DO ITEM</label>
+                        <input type="text" id="item" name="item" class="campo-entrada" required>
+                    </div>
 
-                    <!-- DESTINO -->
                     <div class="campo-grupo">
                         <span class="campo-rotulo">DESTINO</span>
 
@@ -76,7 +74,6 @@
                         </div>
                     </div>
 
-                    <!-- PROJETO -->
                     <div class="campo-grupo">
                         <label for="projeto" class="campo-rotulo">
                             PROJETO <span class="texto-opcional">(OPCIONAL)</span>
@@ -92,24 +89,25 @@
                         </div>
                     </div>
 
-                    <div class="grupo-campo">
-                        <label class="rotulo-campo">ARQUIVO ATUAL</label>
-
+                    <div class="campo-grupo">
+                        <label class="campo-rotulo">ARQUIVO ATUAL</label>
                         <div id="preview-container">
                             <span class="aviso-preview">Verificando anexos...</span>
                         </div>
+                    </div>
 
-                        <label for="arquivo" class="rotulo-campo" style="margin-top: 15px;">
+                    <div class="campo-grupo">
+                        <label for="arquivo" class="campo-rotulo">
                             SUBSTITUIR ARQUIVO <span class="texto-opcional">(OPCIONAL)</span>
                         </label>
                         <input type="file" id="arquivo" name="arquivo" class="campo-entrada" accept="image/*,video/*"
                             style="padding: 10px; background: white;">
-                        <small style="color: #666; font-size: 0.8rem; display:block; margin-top:5px;">
+
+                        <small style="color: #666; font-size: 0.8rem; display:block;">
                             Se selecionar um arquivo novo, o anterior será substituído.
                         </small>
                     </div>
 
-                    <!-- OBSERVAÇÕES -->
                     <div class="campo-grupo">
                         <label for="observacoes" class="campo-rotulo">
                             OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
@@ -118,117 +116,21 @@
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
                     </div>
 
-                    <!-- AÇÕES -->
                     <div class="grupo-acoes">
                         <button type="submit" class="botao">
                             SALVAR
                         </button>
+
+                        <a href="../material-pages/listar-materiais.html" class="botao botao-branco">
+                            CANCELAR
+                        </a>
                     </div>
 
                 </form>
-
-                <a href="listar-materiais.html" class="botao"
-                    style="background-color: #666; margin-top: 10px; text-align:center; text-decoration:none; display:block;">CANCELAR</a>
             </section>
         </main>
     </div>
-
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const idMaterial = params.get('id');
-
-        if (!idMaterial) {
-            alert('ID do material não encontrado!');
-            window.location.href = 'listar-materiais.html';
-        }
-
-        async function carregarDados() {
-            try {
-                // 1. Carregar Projetos
-                const respProj = await fetch('http://localhost:3000/api/projetos');
-                const projetos = await respProj.json();
-                const selectProjeto = document.getElementById('projeto');
-                selectProjeto.innerHTML = '<option value="" selected disabled hidden></option>';
-                projetos.forEach(proj => {
-                    const option = document.createElement('option');
-                    option.value = proj.nome_projeto;
-                    option.textContent = proj.nome_projeto;
-                    selectProjeto.appendChild(option);
-                });
-
-                // 2. Carregar Dados do Material
-                const respMat = await fetch('http://localhost:3000/api/materiais');
-                const materiais = await respMat.json();
-                const material = materiais.find(m => m.id == idMaterial);
-
-                if (material) {
-                    document.getElementById('material-id').value = material.id;
-                    document.getElementById('item').value = material.nome_item;
-                    document.getElementById('observacoes').value = material.observacoes || '';
-                    if (material.projeto) selectProjeto.value = material.projeto;
-                    if (material.destino === 'robotica') document.getElementById('robotica').checked = true;
-                    else if (material.destino === 'manutencao') document.getElementById('manutencao').checked = true;
-
-                    // --- MUDANÇA AQUI: EXIBIR APENAS O NOME DO ARQUIVO ---
-                    const previewContainer = document.getElementById('preview-container');
-
-                    if (material.arquivo_nome) {
-                        // Limpa o conteúdo e adiciona um ícone genérico + nome
-                        previewContainer.innerHTML = `
-                            <img src="../../assets/icons/icon-pesquisa.svg" alt="Arquivo" style="width: 20px; opacity: 0.6;">
-                            <span class="nome-arquivo">${material.arquivo_nome}</span>
-                        `;
-                    } else {
-                        previewContainer.innerHTML = '<span class="aviso-preview">Nenhum arquivo salvo.</span>';
-                    }
-                    // -----------------------------------------------------
-
-                } else {
-                    alert('Material não encontrado.');
-                }
-            } catch (err) {
-                console.error('Erro:', err);
-                alert('Erro ao carregar dados.');
-            }
-        }
-
-        window.onload = carregarDados;
-
-        document.getElementById('formulario').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData();
-            formData.append('id', document.getElementById('material-id').value);
-            formData.append('item', document.getElementById('item').value);
-            const destino = document.querySelector('input[name="destino"]:checked');
-            formData.append('destino', destino ? destino.value : '');
-            formData.append('projeto', document.getElementById('projeto').value);
-            formData.append('observacoes', document.getElementById('observacoes').value);
-
-            const arquivoInput = document.getElementById('arquivo');
-            if (arquivoInput.files[0]) {
-                formData.append('arquivo', arquivoInput.files[0]);
-            }
-
-            try {
-                const response = await fetch('http://localhost:3000/api/atualizar', {
-                    method: 'PUT',
-                    body: formData
-                });
-                const result = await response.json();
-
-                if (result.success) {
-                    alert('Material atualizado com sucesso!');
-                    window.location.href = 'listar-materiais.html';
-                } else {
-                    alert('Erro: ' + (result.error || 'Desconhecido'));
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Erro de conexão com o servidor.');
-            }
-        });
-    </script>
+    <script src="../../assets/js/editar-material.js"></script>
 </body>
 
 </html>

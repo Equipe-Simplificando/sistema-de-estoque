@@ -26,13 +26,11 @@
 
                 <form id="formulario" class="formulario" method="POST">
 
-                    <!-- NOME DO ITEM -->
                     <div class="campo-grupo">
                         <label for="item" class="campo-rotulo">NOME DO ITEM</label>
                         <input type="text" id="item" name="item" class="campo-entrada" required>
                     </div>
 
-                    <!-- DESTINO -->
                     <div class="campo-grupo">
                         <span class="campo-rotulo">DESTINO</span>
 
@@ -49,7 +47,6 @@
                         </div>
                     </div>
 
-                    <!-- PROJETO -->
                     <div class="campo-grupo">
                         <label for="projeto" class="campo-rotulo">
                             PROJETO <span class="texto-opcional">(OPCIONAL)</span>
@@ -65,16 +62,14 @@
                         </div>
                     </div>
 
-                    <!-- ANEXOS DE ARQUIVOS -->
-                    <div class="grupo-campo">
-                        <label for="arquivo" class="rotulo-campo">
+                    <div class="campo-grupo">
+                        <label for="arquivo" class="campo-rotulo">
                             ANEXAR FOTO OU VÍDEO <span class="texto-opcional">(OPCIONAL)</span>
                         </label>
                         <input type="file" id="arquivo" name="arquivo" class="campo-entrada" accept="image/*,video/*"
                             style="padding: 10px; background: white;">
                     </div>
 
-                    <!-- OBSERVAÇÕES -->
                     <div class="campo-grupo">
                         <label for="observacoes" class="campo-rotulo">
                             OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
@@ -83,24 +78,22 @@
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
                     </div>
 
-                    <!-- AÇÕES -->
                     <div class="grupo-acoes">
                         <button type="submit" class="botao">
                             GERAR ETIQUETA
                         </button>
+
+                        <a href="listar-materiais.html" class="botao botao-branco">
+                            VER ESTOQUE
+                        </a>
                     </div>
                 </form>
-
-                <a href="listar-materiais.html" class="botao"
-                    style="background-color: #666; margin-top: 10px; text-align:center; text-decoration:none; display:block;">
-                    VER ESTOQUE
-                </a>
             </section>
         </main>
     </div>
 
     <script>
-        // --- FUNÇÃO PARA CARREGAR PROJETOS (MANTIDA IGUAL) ---
+        // --- FUNÇÃO PARA CARREGAR PROJETOS ---
         async function carregarProjetos() {
             try {
                 const response = await fetch('http://localhost:3000/api/projetos');
