@@ -120,12 +120,14 @@ CREATE TABLE IF NOT EXISTS composicao_produtos (
 -- 6. OPERAÇÕES: PROJETOS E VENDAS
 -- ==========================================
 
-CREATE TABLE IF NOT EXISTS projetos (
+DROP TABLE IF EXISTS projetos;
+
+CREATE TABLE projetos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_projeto VARCHAR(150) NOT NULL,
-    cliente VARCHAR(150)
-    ADD COLUMN setor VARCHAR(50),
-    ADD COLUMN observacoes TEXT;
+    cliente VARCHAR(150),
+    setor VARCHAR(50),
+    observacoes TEXT
 );
 
 CREATE TABLE IF NOT EXISTS alocacao_projetos (
