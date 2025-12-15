@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,85 +8,138 @@
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/project-css/cadastrar-projeto.css">
 </head>
+
 <body>
-    <div class="container-geral">
+    <div class="container">
+
         <header class="cabecalho">
             <h1 class="titulo-pagina">EDITAR <br> PROJETO</h1>
-            <button class="botao-fechar" type="button" onclick="history.back()">
-                <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="Botão fechar">
-            </button>
+
+            <a href="../../index.html" class="botao-fechar" aria-label="Fechar cadastro de projeto">
+                <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="">
+            </a>
         </header>
-        <main class="conteudo-principal">
-            <section class="secao-formulario">
-                <form id="formulario" class="formulario">
-                    <input type="hidden" id="projeto-id">
-                    <div class="grupo-campo">
-                        <label for="item" class="rotulo-campo">NOME</label>
+
+        <main class="conteudo">
+            <section class="secao-cadastro">
+
+                <form id="formulario" class="formulario" method="post">
+
+                    <div class="campo-grupo">
+                        <label for="item" class="campo-rotulo">NOME</label>
                         <input type="text" id="item" name="item" class="campo-entrada" required>
                     </div>
-                    <div class="grupo-campo">
-                        <label class="rotulo-campo">SETOR</label>
+
+                    <div class="campo-grupo">
+                        <span class="campo-rotulo">SETOR</span>
+
                         <div class="grupo-radio">
-                            <input type="radio" name="destino" id="robotica" value="Robótica" required>
-                            <label for="robotica" class="rotulo-radio">Robótica</label>
-                            <input type="radio" name="destino" id="manutencao" value="Manutenção">
-                            <label for="manutencao" class="rotulo-radio">Manutenção</label>
+                            <input type="radio" name="destino" id="robotica" value="robotica" required>
+                            <label for="robotica" class="rotulo-radio">
+                                Robótica
+                            </label>
+
+                            <input type="radio" name="destino" id="manutencao" value="manutencao">
+                            <label for="manutencao" class="rotulo-radio borda-esquerda">
+                                Manutenção
+                            </label>
                         </div>
                     </div>
-                    <div class="grupo-campo">
-                        <label for="observacoes" class="rotulo-campo">OBSERVAÇÕES</label>
+
+                    <div class="campo-grupo">
+                        <label for="preco" class="campo-rotulo">
+                            PREÇO <span class="texto-opcional">(OPCIONAL)</span>
+                        </label>
+
+                        <div class="campo-preco">
+                            <span class="prefixo-moeda">R$</span>
+                            <input type="text" id="preco" name="preco" class="campo-entrada" inputmode="decimal"
+                                autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="campo-grupo">
+                        <label for="observacoes" class="campo-rotulo">
+                            OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
+                        </label>
+
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
                     </div>
-                    <button type="submit" class="botao">SALVAR ALTERAÇÕES</button>
+
+                    <div class="grupo-tabela">
+
+                        <div class="campo-grupo">
+                            <label for="pesquisa-item" class="campo-rotulo">
+                                ITENS <span class="texto-opcional">(OPCIONAL)</span>
+                            </label>
+
+                            <div class="grupo-pesquisa-filtro">
+                                <div class="container-pesquisa">
+                                    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisaItem">
+
+                                    <div class="icone-pesquisa">
+                                        <button type="button" class="botao-pesquisa" aria-label="Pesquisar item">
+                                            <img src="../../assets/icons/icon-pesquisa.svg" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="icone-filtro">
+                                    <button type="button" class="botao-filtro" aria-label="Filtrar itens">
+                                        <img src="../../assets/icons/icon-filtro.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="tabela-itens">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">ITEM</th>
+                                    <th scope="col">QTD</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>23-002</td>
+                                    <td>Cabo</td>
+                                    <td>x2</td>
+                                    <td>
+                                        <button type="button" class="botao-excluir" aria-label="Remover item Cabo">
+                                            <img src="../../assets/icons/icon-excluir.svg" alt="">
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>04-001</td>
+                                    <td>Fonte</td>
+                                    <td>x1</td>
+                                    <td>
+                                        <button type="button" class="botao-excluir" aria-label="Remover item Fonte">
+                                            <img src="../../assets/icons/icon-excluir.svg" alt="">
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="grupo-acoes">
+                        <button type="submit" class="botao">
+                            SALVAR
+                        </button>
+                    </div>
+
                 </form>
             </section>
         </main>
     </div>
-    <script>
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            
-            if (id) {
-                document.getElementById('projeto-id').value = id;
-                document.getElementById('item').value = params.get('nome') || '';
-                document.getElementById('observacoes').value = (params.get('obs') && params.get('obs') !== '-') ? params.get('obs') : '';
-                
-                const setor = params.get('setor');
-                if (setor === 'Robótica') document.getElementById('robotica').checked = true;
-                if (setor === 'Manutenção') document.getElementById('manutencao').checked = true;
-            } else {
-                alert('Erro: Projeto não encontrado.');
-                history.back();
-            }
-        };
-
-        document.getElementById('formulario').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('projeto-id').value;
-            const nome = document.getElementById('item').value;
-            const obs = document.getElementById('observacoes').value;
-            const setor = document.querySelector('input[name="destino"]:checked')?.value;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/atualizar-projeto', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, item: nome, destino: setor, observacoes: obs })
-                });
-                const result = await response.json();
-
-                if (result.success) {
-                    // --- REDIRECIONA PARA A TELA DE "PROJETO EDITADO" ---
-                    const params = new URLSearchParams({
-                        id: id, nome: nome, setor: setor, obs: obs || '-'
-                    });
-                    window.location.href = `projeto-editado.html?${params.toString()}`;
-                } else {
-                    alert('Erro: ' + result.error);
-                }
-            } catch (err) { alert('Erro de conexão.'); }
-        });
-    </script>
+    
+    <script src="../../assets/js/project-js/editar-projeto.js"></script>
 </body>
+
 </html>

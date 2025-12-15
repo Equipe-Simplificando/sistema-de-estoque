@@ -1,42 +1,68 @@
-.conteudo-principal {
-    gap: 112px;
-}
-
 .cabecalho {
-    justify-content: flex-end;
-    margin-bottom: 44px;
+  justify-content: flex-end;
+  margin-bottom: 2.5rem;
 }
 
 .titulo-pagina {
-    text-align: center;
-    font-size: 48px;
+  text-align: center;
+  font-size: 3rem;
 }
 
-.secao-etiqueta {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    row-gap: 18px;
-    column-gap: 32px;
-    padding: 0 60px;
-    align-items: center;
+.conteudo {
+  gap: 2rem;
 }
 
-.secao-etiqueta p {
-    color: var(--cor-texto-escuro);
-    font-size: 20px;
-    font-weight: 500;
-    word-break: break-word;
+.secao-projeto {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
 }
 
+.dados-projeto,
 .grupo-botao {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    gap: 32px;
+  align-self: center;
+}
+
+.dados-projeto {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  row-gap: 0.75rem;
+  column-gap: 2rem;
+
+}
+
+/* Coluna esquerda: rótulos */
+.rotulo-dado {
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Coluna direita: valores */
+.valor-dado {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.grupo-acoes {
+  gap: 2rem;
+  margin-top: 3rem;
 }
 
 .botao {
     background: var(--cor-secundaria);
-    box-shadow: inset 0 -4px 0 1.5px var(--shadow-secundaria);
     color: var(--cor-texto-escuro);
+    box-shadow: inset 0 -4px 0 1.5px var(--shadow-secundaria);
 }
+
+.botao-branco {
+  background: var(--cor-fundo);
+  color: var(--cor-texto-escuro);
+  box-shadow: none;
+}
+
+
+
+
+

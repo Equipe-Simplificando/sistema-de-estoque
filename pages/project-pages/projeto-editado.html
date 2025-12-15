@@ -10,35 +10,41 @@
 </head>
 
 <body>
-    <div class="container-geral">
+    <div class="container">
+
         <header class="cabecalho">
-            <button class="botao-fechar" type="button" aria-label="Fechar janela" onclick="window.location.href='../material-pages/cadastrar-material.html'">
+            <a href="../../index.html" class="botao-fechar" type="button" aria-label="Fechar janela">
                 <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="Botão fechar">
-            </button>
+            </a>
         </header>
-        <main>
-            <div class="conteudo-principal">
-                <h1 class="titulo-pagina">PROJETO <br> EDITADO!</h1>
-                
-                <section class="secao-etiqueta">
-                    <p>NOME:</p>
-                    <p id="exibir-nome">Carregando...</p>
 
-                    <p>SETOR:</p>
-                    <p id="exibir-setor">-</p>
+        <main class="conteudo">
+            <h1 class="titulo-pagina">PROJETO <br> EDITADO!</h1>
 
-                    <p>OBS:</p>
-                    <p id="exibir-obs">-</p>
+            <section class="secao-projeto">
+
+                <section class="dados-projeto">
+                    <span class="rotulo-dado">NOME:</span>
+                    <span class="valor-dado" id="nome"></span>
+
+                    <span class="rotulo-dado">SETOR:</span>
+                    <span class="valor-dado" id="setor"></span>
+
+                    <span class="rotulo-dado">PREÇO:</span>
+                    <span class="valor-dado" id="preco"></span>
+
+                    <span class="rotulo-dado">OBS:</span>
+                    <span class="valor-dado" id="obs"></span>
                 </section>
 
-                <div class="grupo-tabela">
+                <section class="secao-tabela">
                     <table class="tabela-itens">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>ITEM</th>
-                                <th>QTD</th>
-                                <th></th>
+                                <th scope="col">ID</th>
+                                <th scope="col">ITEM</th>
+                                <th scope="col">QTD</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
 
@@ -47,56 +53,46 @@
                                 <td>23-002</td>
                                 <td>Cabo</td>
                                 <td>x2</td>
-                                <td><button class="botao-excluir"><img src="../../assets/icons/icon-excluir.svg"
-                                            alt="ícone lixeira"></button></td>
+                                <td>
+                                    <button type="button" class="botao-excluir" aria-label="Remover item Cabo">
+                                        <img src="../../assets/icons/icon-excluir.svg" alt="">
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>04-001</td>
+                                <td>Fonte</td>
+                                <td>x1</td>
+                                <td>
+                                    <button type="button" class="botao-excluir" aria-label="Remover item Fonte">
+                                        <img src="../../assets/icons/icon-excluir.svg" alt="">
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+                </section>
+
+                <div class="grupo-acoes">
+
+                    <a href="../material-pages/cadastrar-material.html" class="botao">
+                        CADASTRAR MAIS
+                    </a>
+
+                    <button type="button" id="btn-editar" class="botao botao-branco">
+                        EDITAR
+                    </button>
+
                 </div>
-                
-                <div class="grupo-botao">
-                    <a href="../material-pages/cadastrar-material.html" class="botao" style="text-decoration: none; text-align: center; background-color: #666;">VOLTAR</a>
-                    
-                    <button type="button" id="btn-editar-novamente" class="botao">EDITAR NOVAMENTE</button>
-                </div>
-            </div>
+
+            </section>
         </main>
     </div>
+    </div>
 
-    <script>
-        window.onload = function() {
-            // 1. Pega os dados que vieram pela URL (após o salvamento)
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            const nome = params.get('nome');
-            const setor = params.get('setor');
-            const obs = params.get('obs');
 
-            // 2. Preenche a tela de confirmação
-            document.getElementById('exibir-nome').textContent = nome || 'Erro';
-            document.getElementById('exibir-setor').textContent = setor || '-';
-            document.getElementById('exibir-obs').textContent = obs || '-';
-
-            // 3. Configura o botão "Editar Novamente"
-            const btnEditar = document.getElementById('btn-editar-novamente');
-            
-            btnEditar.onclick = function() {
-                if (id) {
-                    // Monta os parâmetros novamente para enviar de volta ao formulário de edição
-                    const editParams = new URLSearchParams({
-                        id: id,
-                        nome: nome,
-                        setor: setor,
-                        obs: obs
-                    });
-                    
-                    // Redireciona para a página de edição (editar-projeto.html)
-                    window.location.href = `editar-projeto.html?${editParams.toString()}`;
-                } else {
-                    alert('Erro: ID do projeto perdido. Não é possível editar.');
-                }
-            };
-        };
-    </script>
+    <script src="../../assets/js/project-js/projeto-editado.js"></script>
 </body>
+
 </html>

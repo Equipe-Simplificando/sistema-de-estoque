@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,50 +8,91 @@
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/project-css/projeto-cadastrado.css">
 </head>
+
 <body>
-    <div class="container-geral">
+    <div class="container">
+
         <header class="cabecalho">
-            <button class="botao-fechar" type="button" onclick="window.location.href='../material-pages/cadastrar-material.html'">
+            <a href="../../index.html" class="botao-fechar" type="button" aria-label="Fechar janela">
                 <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="Botão fechar">
-            </button>
+            </a>
         </header>
-        <main>
-            <div class="conteudo-principal">
-                <h1 class="titulo-pagina">PROJETO <br> CADASTRADO!</h1>
-                <section class="secao-etiqueta">
-                    <p>NOME:</p>
-                    <p id="exibir-nome">...</p>
-                    <p>SETOR:</p>
-                    <p id="exibir-setor">...</p>
-                    <p>OBS:</p>
-                    <p id="exibir-obs">...</p>
+
+        <main class="conteudo">
+            <h1 class="titulo-pagina">PROJETO <br> CADASTRADO!</h1>
+
+            <section class="secao-projeto">
+
+                <section class="dados-projeto">
+                    <span class="rotulo-dado">NOME:</span>
+                    <span class="valor-dado" id="nome"></span>
+
+                    <span class="rotulo-dado">SETOR:</span>
+                    <span class="valor-dado" id="setor"></span>
+
+                    <span class="rotulo-dado">PREÇO:</span>
+                    <span class="valor-dado" id="preco"></span>
+
+                    <span class="rotulo-dado">OBS:</span>
+                    <span class="valor-dado" id="obs"></span>
                 </section>
-                <div class="grupo-botao">
-                    <button type="button" id="btn-editar" class="botao">EDITAR</button>
-                    <a href="cadastrar-projeto.html" class="botao" style="text-decoration: none; text-align: center;">CADASTRAR MAIS</a>
+
+                <section class="secao-tabela">
+                    <table class="tabela-itens">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">ITEM</th>
+                                <th scope="col">QTD</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>23-002</td>
+                                <td>Cabo</td>
+                                <td>x2</td>
+                                <td>
+                                    <button type="button" class="botao-excluir" aria-label="Remover item Cabo">
+                                        <img src="../../assets/icons/icon-excluir.svg" alt="">
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>04-001</td>
+                                <td>Fonte</td>
+                                <td>x1</td>
+                                <td>
+                                    <button type="button" class="botao-excluir" aria-label="Remover item Fonte">
+                                        <img src="../../assets/icons/icon-excluir.svg" alt="">
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <div class="grupo-acoes">
+
+                    <a href="../material-pages/cadastrar-material.html" class="botao">
+                        CADASTRAR MAIS
+                    </a>
+
+                    <button type="button" id="btn-editar" class="botao botao-branco">
+                        EDITAR
+                    </button>
+
                 </div>
-            </div>
+
+            </section>
         </main>
     </div>
-    <script>
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            const nome = params.get('nome');
-            const setor = params.get('setor');
-            const obs = params.get('obs');
+    </div>
 
-            document.getElementById('exibir-nome').textContent = nome;
-            document.getElementById('exibir-setor').textContent = setor;
-            document.getElementById('exibir-obs').textContent = obs;
 
-            document.getElementById('btn-editar').onclick = function() {
-                if(id) {
-                    const editParams = new URLSearchParams({ id, nome, setor, obs });
-                    window.location.href = `editar-projeto.html?${editParams.toString()}`;
-                }
-            };
-        };
-    </script>
+    <script src="../../assets/js/project-js/projeto-cadastrado.js"></script>
 </body>
+
 </html>
