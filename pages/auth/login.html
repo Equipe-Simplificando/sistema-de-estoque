@@ -11,40 +11,36 @@
 
 <body>
     <div class="container">
-        <main class="container-login">
+        <header class="cabecalho">
+            <img src="../../assets/icons/logo-rs.svg" alt="Logo Robótica Sustentável" class="logo-login">
+        </header>
+        <main class="conteudo">
+            <h1 class="titulo-pagina">SEJA BEM-VINDO!</h1>
 
-            <header class="cabecalho">
-                <img src="../../assets/icons/logo-rs.svg" alt="Logo Robótica Sustentável" class="logo-login">
-            </header>
+            <section class="secao-login">
+                <form id="loginForm" class="formulario">
 
-            <section class="conteudo">
-                <h1 class="titulo-pagina">SEJA BEM-VINDO!</h1>
+                    <div class="campo-grupo">
+                        <label class="campo-rotulo" for="usuario">USUÁRIO</label>
+                        <input type="text" id="usuario" name="usuario" class="campo-entrada" required>
+                    </div>
 
-                <section class="secao-login">
-                    <form id="loginForm" class="formulario">
+                    <div class="campo-grupo">
+                        <label class="campo-rotulo" for="senha">SENHA</label>
+                        <input type="password" id="senha" name="senha" class="campo-entrada" required>
+                    </div>
 
-                        <div class="campo-grupo">
-                            <label class="campo-rotulo" for="usuario">USUÁRIO</label>
-                            <input type="text" id="usuario" name="usuario" class="campo-entrada" required>
-                        </div>
+                    <div class="grupo-acoes">
+                        <div id="loading" class="carregamento" hidden></div>
 
-                        <div class="campo-grupo">
-                            <label class="campo-rotulo" for="senha">SENHA</label>
-                            <input type="password" id="senha" name="senha" class="campo-entrada" required>
-                        </div>
+                        <button type="submit" class="botao">
+                            ENTRAR
+                        </button>
 
-                        <div class="grupo-acoes">
-                            <div id="loading" class="carregamento" hidden></div>
+                        <p id="mensagem-erro" class="mensagem-erro"></p>
+                    </div>
 
-                            <button type="submit" class="botao">
-                                ENTRAR
-                            </button>
-
-                            <p id="mensagem-erro" class="mensagem-erro"></p>
-                        </div>
-
-                    </form>
-                </section>
+                </form>
             </section>
         </main>
     </div>

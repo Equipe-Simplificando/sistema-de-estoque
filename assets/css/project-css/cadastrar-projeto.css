@@ -1,5 +1,13 @@
-.cabecalho {
-    margin-bottom: 52px;
+.container {
+    gap: 5rem;
+}
+
+.secao-cadastro {
+    width: 100%;
+}
+
+.grupo-acoes {
+    margin-top: 1.5rem;
 }
 
 .botao {
@@ -21,4 +29,3 @@
     color: var(--cor-texto-escuro);
     box-shadow: inset 2px -2px 0 1.5px var(--shadow-secundaria);
 }
-

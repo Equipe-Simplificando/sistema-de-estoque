@@ -20,12 +20,13 @@
             justify-content: center;
             gap: 10px;
         }
-        
+
         .nome-arquivo {
             font-weight: bold;
             color: #333;
             font-size: 1rem;
-            word-break: break-all; /* Quebra linha se o nome for muito longo */
+            word-break: break-all;
+            /* Quebra linha se o nome for muito longo */
         }
 
         .aviso-preview {
@@ -36,42 +37,53 @@
 </head>
 
 <body>
-    <div class="container-geral">
+    <div class="container">
 
         <header class="cabecalho">
-            <h1 class="titulo-pagina">EDITAR <br> MATERIAL</h1>
-            <button class="botao-fechar" type="button" onclick="window.location.href='listar-materiais.html'">
-                <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
-            </button>
+            <h1 class="titulo-pagina">
+                EDITAR <br> MATERIAL
+            </h1>
+            <a href="../../index.html" class="botao-fechar" aria-label="Botão Fechar">
+                <img src="../../assets/icons/botao-fechar.svg" alt="Botão Fechar">
+            </a>
         </header>
 
-        <main class="conteudo-principal">
-            <section class="secao-formulario">
+        <main class="conteudo">
+            <section class="secao-cadastro">
 
-                <form id="formulario" class="formulario" action="#" method="POST">
-                    
-                    <input type="hidden" id="material-id">
+                <form id="formulario" class="formulario" method="POST">
 
-                    <div class="grupo-campo">
-                        <label for="item" class="rotulo-campo">NOME DO ITEM</label>
+                    <!-- NOME DO ITEM -->
+                    <div class="campo-grupo">
+                        <label for="item" class="campo-rotulo">NOME DO ITEM</label>
                         <input type="text" id="item" name="item" class="campo-entrada" required>
                     </div>
 
-                    <div class="grupo-campo">
-                        <label class="rotulo-campo">DESTINO</label>
+                    <!-- DESTINO -->
+                    <div class="campo-grupo">
+                        <span class="campo-rotulo">DESTINO</span>
+
                         <div class="grupo-radio">
                             <input type="radio" name="destino" id="robotica" value="robotica" required>
-                            <label for="robotica" class="rotulo-radio">Robótica</label>
+                            <label for="robotica" class="rotulo-radio">
+                                Robótica
+                            </label>
 
                             <input type="radio" name="destino" id="manutencao" value="manutencao">
-                            <label for="manutencao" class="rotulo-radio borda-esquerda">Manutenção</label>
+                            <label for="manutencao" class="rotulo-radio borda-esquerda">
+                                Manutenção
+                            </label>
                         </div>
                     </div>
 
-                    <div class="grupo-campo">
-                        <label for="projeto" class="rotulo-campo">Projeto <span class="texto-opcional">(OPCIONAL)</span></label>
+                    <!-- PROJETO -->
+                    <div class="campo-grupo">
+                        <label for="projeto" class="campo-rotulo">
+                            PROJETO <span class="texto-opcional">(OPCIONAL)</span>
+                        </label>
+
                         <div class="container-select">
-                            <select id="projeto" name="projeto" class="campo-entrada select-customizado">
+                            <select id="projeto" name="projeto" class="campo-entrada">
                                 <option value="" selected disabled hidden>Carregando...</option>
                             </select>
                             <div class="icone-seta">
@@ -82,7 +94,7 @@
 
                     <div class="grupo-campo">
                         <label class="rotulo-campo">ARQUIVO ATUAL</label>
-                        
+
                         <div id="preview-container">
                             <span class="aviso-preview">Verificando anexos...</span>
                         </div>
@@ -90,27 +102,37 @@
                         <label for="arquivo" class="rotulo-campo" style="margin-top: 15px;">
                             SUBSTITUIR ARQUIVO <span class="texto-opcional">(OPCIONAL)</span>
                         </label>
-                        <input type="file" id="arquivo" name="arquivo" class="campo-entrada" accept="image/*,video/*" style="padding: 10px; background: white;">
+                        <input type="file" id="arquivo" name="arquivo" class="campo-entrada" accept="image/*,video/*"
+                            style="padding: 10px; background: white;">
                         <small style="color: #666; font-size: 0.8rem; display:block; margin-top:5px;">
                             Se selecionar um arquivo novo, o anterior será substituído.
                         </small>
                     </div>
 
-                    <div class="grupo-campo">
-                        <label for="observacoes" class="rotulo-campo">OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span></label>
+                    <!-- OBSERVAÇÕES -->
+                    <div class="campo-grupo">
+                        <label for="observacoes" class="campo-rotulo">
+                            OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
+                        </label>
+
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
                     </div>
 
-                    <button type="submit" class="botao">SALVAR ALTERAÇÕES</button>
+                    <!-- AÇÕES -->
+                    <div class="grupo-acoes">
+                        <button type="submit" class="botao">
+                            SALVAR
+                        </button>
+                    </div>
 
                 </form>
-                
-                <a href="listar-materiais.html" class="botao" style="background-color: #666; margin-top: 10px; text-align:center; text-decoration:none; display:block;">CANCELAR</a>
 
+                <a href="listar-materiais.html" class="botao"
+                    style="background-color: #666; margin-top: 10px; text-align:center; text-decoration:none; display:block;">CANCELAR</a>
             </section>
         </main>
     </div>
-    
+
     <script>
         const params = new URLSearchParams(window.location.search);
         const idMaterial = params.get('id');
@@ -129,7 +151,7 @@
                 selectProjeto.innerHTML = '<option value="" selected disabled hidden></option>';
                 projetos.forEach(proj => {
                     const option = document.createElement('option');
-                    option.value = proj.nome_projeto; 
+                    option.value = proj.nome_projeto;
                     option.textContent = proj.nome_projeto;
                     selectProjeto.appendChild(option);
                 });
@@ -149,7 +171,7 @@
 
                     // --- MUDANÇA AQUI: EXIBIR APENAS O NOME DO ARQUIVO ---
                     const previewContainer = document.getElementById('preview-container');
-                    
+
                     if (material.arquivo_nome) {
                         // Limpa o conteúdo e adiciona um ícone genérico + nome
                         previewContainer.innerHTML = `
@@ -208,4 +230,5 @@
         });
     </script>
 </body>
+
 </html>

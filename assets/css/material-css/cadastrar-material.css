@@ -1,8 +1,11 @@
-
-.cabecalho {
-    margin-bottom: 82px;
+.container {
+    gap: 5rem;
 }
 
-.botao {
-    margin-top: 50px;
+.secao-cadastro {
+    width: 100%;
+}
+
+.grupo-acoes {
+    margin-top: 1.5rem;
 }

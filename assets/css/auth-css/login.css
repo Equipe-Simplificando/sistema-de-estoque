@@ -1,7 +1,10 @@
+.container {
+  gap: 6rem;
+}
+
 .cabecalho {
   align-items: center;
   justify-content: center;
-  margin-bottom: 6rem;
 }
 
 .logo-login {
@@ -12,15 +15,19 @@
 .titulo-pagina {
   text-align: center;
   font-size: 2rem;
-  margin-bottom: 5rem;
+}
+
+.conteudo {
+  gap: 5rem;
+}
+
+.secao-login {
+  width: 100%;
 }
 
 .grupo-acoes {
   position: relative; /* necessário para o loader absoluto */
   width: 100%;
-}
-
-.botao {
   margin-top: 3rem;
 }
 
