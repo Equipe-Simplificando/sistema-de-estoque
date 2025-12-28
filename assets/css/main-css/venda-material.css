@@ -1,0 +1,68 @@
+.container {
+    padding: 3.5rem 1rem 7rem 1rem;
+}
+
+.cabecalho {
+    margin-bottom: 2.5rem;
+}
+
+.conteudo {
+    gap: 2.5rem;
+}
+
+.grupo-pesquisa-qrcode {
+    display: flex;
+    width: 100%;
+    gap: 24px;
+    align-items: center;
+}
+
+.icone-qrcode {
+    cursor: pointer;
+
+}
+
+.botao-qrcode {
+    border: none;
+    background: none;
+}
+
+/* RADIO BUTTONS */
+.grupo-radio {
+    height: 3.4375rem;
+    border: 2px solid #000;
+    border-radius: 1.5rem;
+    background: #FFF;
+}
+
+.rotulo-radio {
+    color: var(--cor-texto-escuro);
+    font-size: 1.5rem;
+    padding: 0 1rem;
+    white-space: nowrap;
+}
+
+/* Material selecionado */
+#material:checked+.rotulo-radio {
+    background: #05A51D;
+    opacity: 1;
+    border-right: 2px solid var(--cor-texto-escuro);
+    font-size: 2rem;
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
+/* Projeto selecionado */
+#projeto:checked+.rotulo-radio {
+    background: var(--cor-secundaria);
+    opacity: 1;
+    border-left: 2px solid var(--cor-texto-escuro);
+    font-size: 2rem;
+    border-radius: 1.5rem 0 0 1.5rem;
+}
+
+/* TABELA ITENS */
+.tabela-itens thead {
+  background: #05A51D;
+  color: var(--cor-texto-escuro);
+}
+

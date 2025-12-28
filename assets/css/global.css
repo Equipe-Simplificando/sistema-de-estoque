@@ -141,7 +141,7 @@ body {
   width: 100%;
 }
 
-.container-select > .campo-entrada {
+.container-select>.campo-entrada {
   height: 3rem;
 }
 
@@ -224,7 +224,7 @@ body {
 }
 
 /* Robótica selecionado */
-#robotica:checked + .rotulo-radio {
+#robotica:checked+.rotulo-radio {
   background: var(--cor-primaria);
   color: var(--cor-texto-claro);
   opacity: 1;
@@ -235,7 +235,7 @@ body {
 }
 
 /* Manutenção selecionado */
-#manutencao:checked + .rotulo-radio {
+#manutencao:checked+.rotulo-radio {
   background: var(--cor-primaria);
   color: var(--cor-texto-claro);
   opacity: 1;
@@ -268,7 +268,7 @@ body {
   font-weight: 500;
   pointer-events: none;
 
-  
+
 }
 
 /* input do preço */
@@ -276,7 +276,8 @@ body {
   width: 100%;
   height: 100%;
 
-  padding-left: 3rem; /* espaço para o R$ */
+  padding-left: 3rem;
+  /* espaço para o R$ */
   border: none;
   background: transparent;
 }
@@ -321,7 +322,8 @@ body {
 /* TABELA */
 .grupo-tabela {
   width: 100%;
-  overflow-x: auto; /* Permite rolagem horizontal no celular */
+  overflow-x: auto;
+  /* Permite rolagem horizontal no celular */
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -384,4 +386,123 @@ body {
   border: none;
   padding: 0;
   cursor: pointer;
+}
+
+.botao-cadastro,
+.botao-cadastro img {
+  width: 6.25rem;
+  height: 6.25rem;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.icone-setor,
+.icone-setor img {
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* MENU INFERIOR DAS PAGINAS PRINCIPAIS */
+.espaco-inferior {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  gap: 1.5rem;
+}
+
+.botao-cadastro {
+  align-self: end;
+  margin-right: 1rem;
+}
+
+.menu-inferior {
+  width: 100%;
+  height: 6rem;
+
+  background: #05A51D;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  border-radius: 1rem 1rem 0 0;
+  box-shadow: var(--shadow-primaria);
+  z-index: 1000;
+}
+
+/* ITEM DO MENU */
+.item-menu {
+  width: 4.5rem;
+  height: 4.5rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-decoration: none;
+  color: var(--cor-texto-escuro);
+
+  position: relative;
+}
+
+/* ÍCONE (NO TOPO) */
+.icone-menu {
+  width: 3.5rem;
+  height: 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 0.25rem;
+}
+
+/* IMAGEM DO ÍCONE */
+.icone-imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* TEXTO (COLADO EMBAIXO) */
+.texto-menu {
+  margin-top: auto;
+
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--cor-texto-escuro);
+
+  position: relative;
+}
+
+/* ITEM ATIVO */
+.item-menu.ativo {
+  font-weight: 700;
+}
+
+.item-menu.ativo .texto-menu::after {
+  content: "";
+  position: absolute;
+
+  left: 0;
+  bottom: -0.25rem;
+
+  width: 100%;
+  height: 3px;
+
+  background: #000;
+  border-radius: 2px;
+}
+
+/* FEEDBACK DE TOQUE */
+.item-menu:active {
+  transform: scale(0.95);
 }
