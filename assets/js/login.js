@@ -8,20 +8,18 @@ form.addEventListener("submit", function(e) {
     const usuario = document.getElementById("usuario").value.trim();
     const senha = document.getElementById("senha").value.trim();
 
-    // Limpa mensagem e esconde loader
     msg.textContent = "";
     loader.style.display = "none";
 
-    // LÓGICA DE VALIDAÇÃO ALTERADA AQUI
-    // Verifica se é Admin (senha: admin) OU se é Logistico (senha: logistico)
     if ((usuario === "admin" && senha === "admin") || 
         (usuario === "logistico" && senha === "1234")) {
         
-        loader.style.display = "block"; // mostra loader
+        loader.style.display = "block"; 
 
-        // Redireciona para a mesma página temporária
         setTimeout(() => {
-            window.location.href = "pagina-temporaria.html";
+            // CORREÇÃO AQUI:
+            // Sobe um nível (../) para sair de 'auth' e entrar em 'main-pages'
+            window.location.href = "../main-pages/home/home-material.html";
         }, 1000);
     } else {
         msg.textContent = "USUÁRIO OU SENHA INCORRETOS!";
