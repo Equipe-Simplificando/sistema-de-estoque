@@ -1,67 +1,101 @@
-Sistema de Estoque - Simplificando
-Este é um sistema web de Gerenciamento de Estoque desenvolvido para facilitar o controle de materiais e projetos. O projeto utiliza uma arquitetura cliente-servidor com Node.js e Express no backend e MySQL para persistência de dados, permitindo o cadastro de itens com suporte a upload de imagens e vídeos.
+📦 Sistema de Estoque – Simplificando
+
+Este é um sistema web de Gerenciamento de Estoque desenvolvido para facilitar o controle de materiais e projetos.
+O projeto utiliza uma arquitetura cliente-servidor, com Node.js e Express no backend e MySQL para persistência de dados.
+
+O sistema permite o cadastro de materiais, incluindo upload de imagens e vídeos, além da organização por projetos/setores.
 
 🚀 Funcionalidades
-Autenticação Simples: Login diferenciado para Administradores e Logística.
 
-Gestão de Projetos: Cadastro e edição de projetos/setores.
+Autenticação Simples
 
-Gestão de Materiais:
+Login diferenciado para Administrador e Logística
 
-Cadastro completo de materiais vinculados a projetos.
+Gestão de Projetos
 
-Upload de Arquivos: Suporte para anexar imagens ou vídeos aos materiais.
+Cadastro e edição de projetos/setores
 
-Geração de etiquetas (visualização simples).
+Gestão de Materiais
 
-Listagem, edição e exclusão de itens.
+Cadastro completo de materiais vinculados a projetos
 
-Interface Intuitiva: Frontend responsivo utilizando HTML, CSS e JavaScript puro.
+Listagem, edição e exclusão de itens
+
+Geração de etiquetas (visualização simples)
+
+Upload de Arquivos
+
+Suporte para anexar imagens ou vídeos aos materiais
+
+Interface Intuitiva
+
+Frontend responsivo utilizando HTML, CSS e JavaScript puro
 
 🛠️ Tecnologias Utilizadas
-Backend:
+Backend
 
 Node.js
 
-Express (Framework web)
+Express
 
-MySQL2 (Driver de banco de dados)
+MySQL2
 
-Multer (Upload de arquivos/blobs)
+Multer (upload de arquivos/blobs)
 
-Cors (Segurança de requisições)
+CORS
 
-Dotenv (Variáveis de ambiente)
+Dotenv
 
-Frontend: HTML5, CSS3, JavaScript (ES6+).
+Frontend
 
-Banco de Dados: MySQL.
+HTML5
+
+CSS3
+
+JavaScript (ES6+)
+
+Banco de Dados
+
+MySQL
 
 📋 Pré-requisitos
-Antes de começar, você precisa ter instalado em sua máquina:
 
-Node.js (Recomendado v14 ou superior)
+Antes de começar, você precisará ter instalado em sua máquina:
+
+Node.js (recomendado v14 ou superior)
 
 MySQL Server
 
-🔧 Instalação e Configuração1. Clone o RepositórioBashgit clone https://github.com/seu-usuario/sistema-de-estoque.git
+🔧 Instalação e Configuração
+1️⃣ Clone o Repositório
+git clone https://github.com/seu-usuario/sistema-de-estoque.git
 cd sistema-de-estoque
-2. Instale as DependênciasAbra o terminal na pasta raiz do projeto e execute:Bashnpm install
-3. Configuração do Banco de DadosAcesse seu cliente MySQL (Workbench, DBeaver ou Terminal) e execute o script SQL abaixo para criar o banco e as tabelas necessárias:SQLCREATE DATABASE IF NOT EXISTS sistemadeestoque CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+2️⃣ Instale as Dependências
+npm install
+
+3️⃣ Configuração do Banco de Dados
+
+Acesse seu cliente MySQL (Workbench, DBeaver ou Terminal) e execute o script abaixo:
+
+CREATE DATABASE IF NOT EXISTS sistemadeestoque
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
 USE sistemadeestoque;
 
--- Tabela de Materiais (Suporte a arquivos BLOB)
+-- Tabela de Materiais
 CREATE TABLE IF NOT EXISTS materiais (
-    id INT PRIMARY KEY, 
+    id INT PRIMARY KEY,
     nome_item VARCHAR(255) NOT NULL,
     destino VARCHAR(50),
     projeto VARCHAR(255),
     observacoes TEXT,
+    quantidade INT DEFAULT 1,
     arquivo_dados LONGBLOB,
     arquivo_tipo VARCHAR(50),
     arquivo_nome VARCHAR(255),
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
-    ALTER TABLE materiais ADD COLUMN quantidade INT DEFAULT 1;
 );
 
 -- Tabela de Projetos
@@ -73,7 +107,7 @@ CREATE TABLE IF NOT EXISTS projetos (
     observacoes TEXT
 );
 
--- Tabela de Usuários (Estrutura futura)
+-- Tabela de Usuários (estrutura futura)
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_usuario VARCHAR(100) NOT NULL,
@@ -82,25 +116,79 @@ CREATE TABLE IF NOT EXISTS usuarios (
     ativo BOOLEAN DEFAULT TRUE,
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-4. Variáveis de Ambiente (.env)O sistema já possui um arquivo .env configurado por padrão (conforme verificado nos arquivos), mas certifique-se de que ele contém os dados corretos do seu banco local:Snippet de códigoDB_HOST=localhost
+
+4️⃣ Variáveis de Ambiente (.env)
+
+O projeto já possui um arquivo .env. Verifique se os dados estão corretos:
+
+DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=1234  # Altere para a senha do seu MySQL
+DB_PASSWORD=1234   # Altere para a senha do seu MySQL
 DB_NAME=sistemadeestoque
-5. Rodando o ProjetoInicie o servidor backend:Bashnode server.js
-O servidor rodará na porta 3000.Para acessar a aplicação, abra o arquivo index.html ou pages/auth/login.html no seu navegador (ou utilize um servidor local como o Live Server do VSCode).🔐 Acesso ao Sistema (Login)Atualmente, o sistema utiliza uma validação simplificada no frontend (login.js). Utilize as credenciais abaixo para testar:PerfilUsuárioSenhaAdministradoradminadminLogísticologistico1234📂 Estrutura de Pastassistema-de-estoque/
-├── assets/              # Estilos (CSS), Scripts (JS) e Ícones
+
+5️⃣ Rodando o Projeto
+
+Inicie o servidor backend:
+
+node server.js
+
+
+O servidor será iniciado na porta 3000.
+
+Para acessar o frontend, abra:
+
+index.html
+ou
+
+pages/auth/login.html
+
+💡 Dica: você pode utilizar o Live Server do VS Code para facilitar.
+
+🔐 Acesso ao Sistema (Login)
+
+Atualmente, o sistema utiliza uma validação simplificada no frontend (login.js).
+
+Credenciais para teste:
+
+Perfil	Usuário	Senha
+Administrador	admin	admin
+Logística	logistico	1234
+📂 Estrutura de Pastas
+sistema-de-estoque/
+├── assets/              # CSS, JavaScript e ícones
 ├── node_modules/        # Dependências do Node.js
 ├── pages/               # Páginas HTML (Login, Home, Materiais, Projetos)
-├── .env                 # Configurações de ambiente
-├── server.js            # Servidor Principal (API e Lógica Backend)
+├── .env                 # Variáveis de ambiente
+├── server.js            # Servidor principal (API Backend)
 ├── package.json         # Manifesto do projeto
 └── README.md            # Documentação
-📝 Rotas da API (Backend)
-POST /api/cadastrar: Cadastra um novo material (suporta multipart/form-data).
-GET /api/materiais: Lista todos os materiais (metadados).
-GET /api/materiais/arquivo/:id: Retorna a imagem/vídeo do material.
-PUT /api/atualizar: Atualiza dados de um material.
-DELETE /api/deletar/:id: Remove um material.POST /api/cadastrar-projeto: Cria um novo projeto.
-GET /api/projetos: Lista projetos para o dropdown.
 
-Desenvolvido pela Equipe Simplificando
+📝 Rotas da API (Backend)
+Materiais
+
+POST /api/cadastrar
+Cadastra um novo material (multipart/form-data)
+
+GET /api/materiais
+Lista todos os materiais (metadados)
+
+GET /api/materiais/arquivo/:id
+Retorna a imagem ou vídeo do material
+
+PUT /api/atualizar
+Atualiza os dados de um material
+
+DELETE /api/deletar/:id
+Remove um material
+
+Projetos
+
+POST /api/cadastrar-projeto
+Cadastra um novo projeto
+
+GET /api/projetos
+Lista projetos (usado em dropdowns)
+
+👨‍💻 Desenvolvido por
+
+Equipe Simplificando
