@@ -8,6 +8,8 @@
 
 .conteudo {
     gap: 2.5rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .grupo-pesquisa-qrcode {
@@ -19,7 +21,6 @@
 
 .icone-qrcode {
     cursor: pointer;
-
 }
 
 .botao-qrcode {
@@ -60,8 +61,65 @@
     border-radius: 1.5rem 0 0 1.5rem;
 }
 
-/* TABELA ITENS */
-.tabela-itens thead {
-  background: #05A51D;
-  color: var(--cor-texto-escuro);
+/* --- TABELA COM SCROLL --- */
+
+.grupo-tabela {
+    width: 100%;
+    
+    /* Altura Máxima: 500px exibe aprox. 10 itens.
+       Se passar disso, a barra de rolagem aparece. */
+    max-height: 500px; 
+    
+    /* Ativa o scroll vertical */
+    overflow-y: auto; 
+    
+    /* Acabamento visual */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background-color: #fff; /* Garante fundo branco ao rolar */
+}
+
+.tabela-itens {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Cabeçalho Fixo (Sticky Header) */
+.tabela-itens thead th {
+    position: sticky;
+    top: 0;
+    
+    /* Mantém a cor original do seu design */
+    background: #05A51D;
+    color: var(--cor-texto-escuro);
+    
+    /* Garante que fique acima das linhas ao rolar */
+    z-index: 2; 
+    
+    padding: 1rem;
+    text-align: left;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo das Linhas */
+.tabela-itens tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.tabela-itens td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* Ajuste dos ícones dentro da tabela */
+.icone-setor {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: default;
+}
+
+.icone-setor img {
+    width: 24px;
+    height: 24px;
 }

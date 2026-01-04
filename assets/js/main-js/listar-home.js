@@ -3,21 +3,32 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function carregarMateriais() {
+    const tbody = document.querySelector(".tabela-itens tbody");
+    
     try {
         const response = await fetch('http://localhost:3000/api/materiais');
+        
+        // Verifica se o servidor retornou erro (ex: 500 ou 404)
+        if (!response.ok) {
+            const erroServer = await response.json();
+            throw new Error(erroServer.error || "Erro interno do servidor");
+        }
+
         const materiais = await response.json();
         
-        const tbody = document.querySelector(".tabela-itens tbody");
-        tbody.innerHTML = ""; // Limpa as linhas estáticas
+        tbody.innerHTML = ""; // Limpa conteúdo estático
+
+        if (!materiais || materiais.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:1rem;">Nenhum item cadastrado.</td></tr>`;
+            return;
+        }
 
         materiais.forEach(material => {
             const tr = document.createElement("tr");
 
-            // Lógica do Ícone baseada no Destino
-            let iconPath = "../../../assets/icons/icon-manutencao.svg"; // Padrão
+            // Lógica do Ícone
+            let iconPath = "../../../assets/icons/icon-manutencao.svg"; 
             let altText = "Ícone Manutenção";
-
-            // Normaliza o texto para evitar erros com maiúsculas/minúsculas
             const destino = material.destino ? material.destino.toLowerCase() : "";
 
             if (destino.includes("robótica") || destino.includes("robotica")) {
@@ -25,13 +36,11 @@ async function carregarMateriais() {
                 altText = "Ícone Robótica";
             }
 
-            // Formata o ID (ex: 23-001, aqui usarei o ID do banco formatado com zeros)
-            // Se quiser manter o padrão "23-XXX", pode concatenar strings
             const idFormatado = String(material.id).padStart(3, '0');
 
             tr.innerHTML = `
                 <td>
-                    <button type="button" class="icone-setor" aria-label="Item de ${material.destino}">
+                    <button type="button" class="icone-setor" style="cursor: default;">
                         <img src="${iconPath}" alt="${altText}">
                     </button>
                 </td>
@@ -44,8 +53,14 @@ async function carregarMateriais() {
         });
 
     } catch (error) {
-        console.error("Erro ao carregar materiais:", error);
-        const tbody = document.querySelector(".tabela-itens tbody");
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:1rem;">Erro de conexão com o servidor.</td></tr>`;
+        console.error("Erro detalhado:", error);
+        // Agora mostra o erro específico na tela para ajudar a debugar
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align:center; color: red; padding:1rem;">
+                    <strong>Erro:</strong> ${error.message}<br>
+                    <small>Verifique se o servidor está rodando na porta 3000 e se o banco foi atualizado.</small>
+                </td>
+            </tr>`;
     }
 }
