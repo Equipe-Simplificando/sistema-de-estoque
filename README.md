@@ -1,4 +1,4 @@
-📦 Sistema de Estoque – Simplificando
+**📦 Sistema de Estoque – Simplificando**
 
 Este é um sistema web de Gerenciamento de Estoque desenvolvido para facilitar o controle de materiais e projetos.
 O projeto utiliza uma arquitetura cliente-servidor, com Node.js e Express no backend e MySQL para persistência de dados.
