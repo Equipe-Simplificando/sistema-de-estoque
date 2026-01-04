@@ -1,56 +1,113 @@
-# Sistema de Estoque - Simplificando
+**📦 Sistema de Estoque – Simplificando**
 
-Este projeto é um sistema de gerenciamento de estoque desenvolvido com Node.js, Express e MySQL. Atualmente, ele suporta o cadastro simplificado de materiais e possui uma estrutura de banco de dados robusta preparada para expansão (controle de componentes, produtos e vendas).
+Este é um sistema web de Gerenciamento de Estoque desenvolvido para facilitar o controle de materiais e projetos.
+O projeto utiliza uma arquitetura cliente-servidor, com Node.js e Express no backend e MySQL para persistência de dados.
 
-## 📋 Pré-requisitos
+O sistema permite o cadastro de materiais, incluindo upload de imagens e vídeos, além da organização por projetos/setores.
 
-Antes de começar, certifique-se de ter instalado:
-* [Node.js](https://nodejs.org/)
-* [MySQL Server](https://dev.mysql.com/downloads/installer/)
+🚀 Funcionalidades
 
-## 🚀 Como Rodar o Projeto
+Autenticação Simples
 
-### 1. Instalar Dependências
-Abra o terminal na pasta do projeto e instale as bibliotecas necessárias:
-```bash
+Login diferenciado para Administrador e Logística
+
+Gestão de Projetos
+
+Cadastro e edição de projetos/setores
+
+Gestão de Materiais
+
+Cadastro completo de materiais vinculados a projetos
+
+Listagem, edição e exclusão de itens
+
+Geração de etiquetas (visualização simples)
+
+Upload de Arquivos
+
+Suporte para anexar imagens ou vídeos aos materiais
+
+Interface Intuitiva
+
+Frontend responsivo utilizando HTML, CSS e JavaScript puro
+
+🛠️ Tecnologias Utilizadas
+Backend
+
+Node.js
+
+Express
+
+MySQL2
+
+Multer (upload de arquivos/blobs)
+
+CORS
+
+Dotenv
+
+Frontend
+
+HTML5
+
+CSS3
+
+JavaScript (ES6+)
+
+Banco de Dados
+
+MySQL
+
+📋 Pré-requisitos
+
+Antes de começar, você precisará ter instalado em sua máquina:
+
+Node.js (recomendado v14 ou superior)
+
+MySQL Server
+
+🔧 Instalação e Configuração
+1️⃣ Clone o Repositório
+git clone https://github.com/seu-usuario/sistema-de-estoque.git
+cd sistema-de-estoque
+
+2️⃣ Instale as Dependências
 npm install
 
--- ==========================================
--- 1. CONFIGURAÇÃO INICIAL E TABELAS ATIVAS
--- ==========================================
+3️⃣ Configuração do Banco de Dados
 
-CREATE DATABASE IF NOT EXISTS sistemadeestoque CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+Acesse seu cliente MySQL (Workbench, DBeaver ou Terminal) e execute o script abaixo:
+
+CREATE DATABASE IF NOT EXISTS sistemadeestoque
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
 USE sistemadeestoque;
 
--- Tabela de Materiais (Atualizada para suportar arquivos/imagens)
--- O ID não é Auto_Increment aqui pois o server.js gerencia o ID manualmente na rota /api/cadastrar
+-- Tabela de Materiais
 CREATE TABLE IF NOT EXISTS materiais (
-    id INT PRIMARY KEY, 
+    id INT PRIMARY KEY,
     nome_item VARCHAR(255) NOT NULL,
     destino VARCHAR(50),
     projeto VARCHAR(255),
     observacoes TEXT,
-    arquivo_dados LONGBLOB,       -- Armazena o binário da imagem/vídeo
-    arquivo_tipo VARCHAR(50),     -- Ex: image/png, video/mp4
-    arquivo_nome VARCHAR(255),    -- Nome original do arquivo
+    quantidade INT DEFAULT 1,
+    arquivo_dados LONGBLOB,
+    arquivo_tipo VARCHAR(50),
+    arquivo_nome VARCHAR(255),
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Projetos (Necessária para o cadastro de materiais)
+-- Tabela de Projetos
 CREATE TABLE IF NOT EXISTS projetos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_projeto VARCHAR(150) NOT NULL,
     cliente VARCHAR(150),
-    setor VARCHAR(50), -- Utilizado no server.js
+    setor VARCHAR(50),
     observacoes TEXT
 );
 
--- ==========================================
--- 2. ESTRUTURA PARA FUTURA EXPANSÃO
--- (Usuários, Categorias, Estoque Físico e Vendas)
--- ==========================================
-
--- Usuários (A lógica atual do login.js é hardcoded, mas esta tabela servirá para o futuro)
+-- Tabela de Usuários (estrutura futura)
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_usuario VARCHAR(100) NOT NULL,
@@ -60,125 +117,78 @@ CREATE TABLE IF NOT EXISTS usuarios (
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS categorias (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nome_categoria VARCHAR(100) NOT NULL
-);
+4️⃣ Variáveis de Ambiente (.env)
 
--- Locais físicos (Armazéns, Depósitos, Lojas)
-CREATE TABLE IF NOT EXISTS locais_estoque (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nome_local VARCHAR(150) NOT NULL,
-    capacidade_maxima INT NOT NULL DEFAULT 0
-);
+O projeto já possui um arquivo .env. Verifique se os dados estão corretos:
 
--- Componentes e Produtos
-CREATE TABLE IF NOT EXISTS componentes (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(150) NOT NULL,
-    cod_referencia VARCHAR(50) UNIQUE NOT NULL,
-    custo_unitario DECIMAL(10, 2) NOT NULL,
-    data_registro DATE DEFAULT (CURRENT_DATE),
-    categoria_id INT,
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
-);
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=1234   # Altere para a senha do seu MySQL
+DB_NAME=sistemadeestoque
 
-CREATE TABLE IF NOT EXISTS produtos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(150) NOT NULL,
-    cod_produto VARCHAR(50) UNIQUE NOT NULL,
-    preco_base DECIMAL(10, 2) NOT NULL,
-    categoria_id INT,
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
-);
+5️⃣ Rodando o Projeto
 
--- Saldos de Estoque
-CREATE TABLE IF NOT EXISTS saldo_estoque_componentes (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    local_id INT NOT NULL,
-    componente_id INT NOT NULL,
-    quantidade_atual INT NOT NULL DEFAULT 0,
-    FOREIGN KEY (local_id) REFERENCES locais_estoque(id),
-    FOREIGN KEY (componente_id) REFERENCES componentes(id),
-    UNIQUE(local_id, componente_id)
-);
+Inicie o servidor backend:
 
-CREATE TABLE IF NOT EXISTS saldo_estoque_produtos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    local_id INT NOT NULL,
-    produto_id INT NOT NULL,
-    quantidade_atual INT NOT NULL DEFAULT 0,
-    FOREIGN KEY (local_id) REFERENCES locais_estoque(id),
-    FOREIGN KEY (produto_id) REFERENCES produtos(id),
-    UNIQUE(local_id, produto_id)
-);
+node server.js
 
--- Engenharia do Produto
-CREATE TABLE IF NOT EXISTS composicao_produtos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    produto_id INT NOT NULL,
-    componente_id INT NOT NULL,
-    quantidade_necessaria INT NOT NULL DEFAULT 1,
-    FOREIGN KEY (produto_id) REFERENCES produtos(id),
-    FOREIGN KEY (componente_id) REFERENCES componentes(id)
-);
 
--- Vendas e Alocação
-CREATE TABLE IF NOT EXISTS alocacao_projetos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    projeto_id INT NOT NULL,
-    componente_id INT NOT NULL,
-    quantidade_alocada INT NOT NULL,
-    data_alocacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (projeto_id) REFERENCES projetos(id),
-    FOREIGN KEY (componente_id) REFERENCES componentes(id)
-);
+O servidor será iniciado na porta 3000.
 
-CREATE TABLE IF NOT EXISTS vendas (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    data_venda DATETIME DEFAULT CURRENT_TIMESTAMP,
-    valor_total DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    usuario_id INT,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-);
+Para acessar o frontend, abra:
 
-CREATE TABLE IF NOT EXISTS itens_venda (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    venda_id INT NOT NULL,
-    produto_id INT NOT NULL,
-    quantidade INT NOT NULL,
-    preco_negociado DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (venda_id) REFERENCES vendas(id),
-    FOREIGN KEY (produto_id) REFERENCES produtos(id)
-);
+index.html
+ou
 
--- Auditoria
-CREATE TABLE IF NOT EXISTS inventarios (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    data_auditoria DATE NOT NULL,
-    descricao VARCHAR(255),
-    local_id INT NOT NULL,
-    usuario_id INT,
-    FOREIGN KEY (local_id) REFERENCES locais_estoque(id),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-);
+pages/auth/login.html
 
-CREATE TABLE IF NOT EXISTS movimentacoes (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    tipo_movimentacao ENUM('COMPRA', 'VENDA', 'PRODUCAO', 'AJUSTE_INVENTARIO', 'ALOCACAO_PROJETO') NOT NULL,
-    data_movimentacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    local_id INT NOT NULL,
-    produto_id INT NULL,
-    componente_id INT NULL,
-    quantidade INT NOT NULL, 
-    usuario_id INT,
-    descricao TEXT,
-    FOREIGN KEY (local_id) REFERENCES locais_estoque(id),
-    FOREIGN KEY (produto_id) REFERENCES produtos(id),
-    FOREIGN KEY (componente_id) REFERENCES componentes(id),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-    CONSTRAINT check_item_type CHECK (
-        (produto_id IS NOT NULL AND componente_id IS NULL) OR 
-        (produto_id IS NULL AND componente_id IS NOT NULL)
-    )
-);
+💡 Dica: você pode utilizar o Live Server do VS Code para facilitar.
+
+🔐 Acesso ao Sistema (Login)
+
+Atualmente, o sistema utiliza uma validação simplificada no frontend (login.js).
+
+Credenciais para teste:
+
+Perfil	Usuário	Senha
+Administrador	admin	admin
+Logística	logistico	1234
+📂 Estrutura de Pastas
+sistema-de-estoque/
+├── assets/              # CSS, JavaScript e ícones
+├── node_modules/        # Dependências do Node.js
+├── pages/               # Páginas HTML (Login, Home, Materiais, Projetos)
+├── .env                 # Variáveis de ambiente
+├── server.js            # Servidor principal (API Backend)
+├── package.json         # Manifesto do projeto
+└── README.md            # Documentação
+
+📝 Rotas da API (Backend)
+Materiais
+
+POST /api/cadastrar
+Cadastra um novo material (multipart/form-data)
+
+GET /api/materiais
+Lista todos os materiais (metadados)
+
+GET /api/materiais/arquivo/:id
+Retorna a imagem ou vídeo do material
+
+PUT /api/atualizar
+Atualiza os dados de um material
+
+DELETE /api/deletar/:id
+Remove um material
+
+Projetos
+
+POST /api/cadastrar-projeto
+Cadastra um novo projeto
+
+GET /api/projetos
+Lista projetos (usado em dropdowns)
+
+👨‍💻 Desenvolvido por
+
+Equipe Simplificando
