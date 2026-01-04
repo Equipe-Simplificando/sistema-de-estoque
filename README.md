@@ -16,25 +16,41 @@ Abra o terminal na pasta do projeto e instale as bibliotecas necessárias:
 npm install
 
 -- ==========================================
--- 1. CRIAÇÃO DO BANCO E TABELA ATUAL
+-- 1. CONFIGURAÇÃO INICIAL E TABELAS ATIVAS
 -- ==========================================
+
 CREATE DATABASE IF NOT EXISTS sistemadeestoque CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE sistemadeestoque;
 
--- Tabela utilizada pelo server.js atual (Simples)
+-- Tabela de Materiais (Atualizada para suportar arquivos/imagens)
+-- O ID não é Auto_Increment aqui pois o server.js gerencia o ID manualmente na rota /api/cadastrar
 CREATE TABLE IF NOT EXISTS materiais (
     id INT PRIMARY KEY, 
     nome_item VARCHAR(255) NOT NULL,
     destino VARCHAR(50),
     projeto VARCHAR(255),
     observacoes TEXT,
+    arquivo_dados LONGBLOB,       -- Armazena o binário da imagem/vídeo
+    arquivo_tipo VARCHAR(50),     -- Ex: image/png, video/mp4
+    arquivo_nome VARCHAR(255),    -- Nome original do arquivo
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tabela de Projetos (Necessária para o cadastro de materiais)
+CREATE TABLE IF NOT EXISTS projetos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome_projeto VARCHAR(150) NOT NULL,
+    cliente VARCHAR(150),
+    setor VARCHAR(50), -- Utilizado no server.js
+    observacoes TEXT
+);
+
 -- ==========================================
--- 2. ESTRUTURA PARA EXPANSÃO (USUÁRIOS E LOCAIS)
+-- 2. ESTRUTURA PARA FUTURA EXPANSÃO
+-- (Usuários, Categorias, Estoque Físico e Vendas)
 -- ==========================================
 
+-- Usuários (A lógica atual do login.js é hardcoded, mas esta tabela servirá para o futuro)
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_usuario VARCHAR(100) NOT NULL,
@@ -56,10 +72,7 @@ CREATE TABLE IF NOT EXISTS locais_estoque (
     capacidade_maxima INT NOT NULL DEFAULT 0
 );
 
--- ==========================================
--- 3. DEFINIÇÃO DE ITENS (CATÁLOGO)
--- ==========================================
-
+-- Componentes e Produtos
 CREATE TABLE IF NOT EXISTS componentes (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(150) NOT NULL,
@@ -79,10 +92,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
--- ==========================================
--- 4. QUANTIDADES FÍSICAS (O ESTOQUE REAL)
--- ==========================================
-
+-- Saldos de Estoque
 CREATE TABLE IF NOT EXISTS saldo_estoque_componentes (
     id INT PRIMARY KEY AUTO_INCREMENT,
     local_id INT NOT NULL,
@@ -103,33 +113,17 @@ CREATE TABLE IF NOT EXISTS saldo_estoque_produtos (
     UNIQUE(local_id, produto_id)
 );
 
--- ==========================================
--- 5. ENGENHARIA DO PRODUTO (RECEITA)
--- ==========================================
-
+-- Engenharia do Produto
 CREATE TABLE IF NOT EXISTS composicao_produtos (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    produto_id INT NOT NULL,      -- O pai (ex: Bicicleta)
-    componente_id INT NOT NULL,   -- O filho (ex: Roda)
+    produto_id INT NOT NULL,
+    componente_id INT NOT NULL,
     quantidade_necessaria INT NOT NULL DEFAULT 1,
     FOREIGN KEY (produto_id) REFERENCES produtos(id),
     FOREIGN KEY (componente_id) REFERENCES componentes(id)
 );
 
--- ==========================================
--- 6. OPERAÇÕES: PROJETOS E VENDAS
--- ==========================================
-
-DROP TABLE IF EXISTS projetos;
-
-CREATE TABLE projetos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nome_projeto VARCHAR(150) NOT NULL,
-    cliente VARCHAR(150),
-    setor VARCHAR(50),
-    observacoes TEXT
-);
-
+-- Vendas e Alocação
 CREATE TABLE IF NOT EXISTS alocacao_projetos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     projeto_id INT NOT NULL,
@@ -158,10 +152,7 @@ CREATE TABLE IF NOT EXISTS itens_venda (
     FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
--- ==========================================
--- 7. AUDITORIA E LOGS (HISTÓRICO)
--- ==========================================
-
+-- Auditoria
 CREATE TABLE IF NOT EXISTS inventarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     data_auditoria DATE NOT NULL,
@@ -179,7 +170,7 @@ CREATE TABLE IF NOT EXISTS movimentacoes (
     local_id INT NOT NULL,
     produto_id INT NULL,
     componente_id INT NULL,
-    quantidade INT NOT NULL, -- Positivo para entrada, Negativo para saída
+    quantidade INT NOT NULL, 
     usuario_id INT,
     descricao TEXT,
     FOREIGN KEY (local_id) REFERENCES locais_estoque(id),
@@ -190,9 +181,4 @@ CREATE TABLE IF NOT EXISTS movimentacoes (
         (produto_id IS NOT NULL AND componente_id IS NULL) OR 
         (produto_id IS NULL AND componente_id IS NOT NULL)
     )
--- Adiciona colunas para armazenar o arquivo binário, o tipo (imagem/video) e o nome original
-ALTER TABLE materiais 
-ADD COLUMN arquivo_dados LONGBLOB,
-ADD COLUMN arquivo_tipo VARCHAR(50),
-ADD COLUMN arquivo_nome VARCHAR(255);
 );
