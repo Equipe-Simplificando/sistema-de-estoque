@@ -144,7 +144,6 @@ app.get('/api/materiais', (req, res) => {
     });
 });
 
-// Adicionada a rota de DELETE que estava faltando
 app.delete('/api/deletar/:id', (req, res) => {
     const { id } = req.params;
     db.query('DELETE FROM materiais WHERE id = ?', [id], (err) => {
@@ -153,7 +152,14 @@ app.delete('/api/deletar/:id', (req, res) => {
     });
 });
 
-// 4. INICIAR O SERVIDOR (IMPORTANTE: Faltava isso!)
+app.get('/api/projetos', (req, res) => {
+    // ALTERAÇÃO: Adicionado 'setor' na seleção para podermos exibir o ícone correto
+    db.query('SELECT id, nome_projeto, setor FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
+        if (err) return res.status(500).json({ error: 'Erro ao listar' });
+        res.json(results);
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });

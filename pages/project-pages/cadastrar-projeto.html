@@ -74,9 +74,11 @@
 
                             <div class="grupo-pesquisa-filtro">
                                 <div class="container-pesquisa">
-                                    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisaItem">
+                                    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisaItem" list="lista-materiais" autocomplete="off" placeholder="Digite o nome do material...">
+                                    <datalist id="lista-materiais"></datalist>
+                                    
                                     <div class="icone-pesquisa">
-                                        <button type="button" class="botao-pesquisa" aria-label="Pesquisar item">
+                                        <button type="button" class="botao-pesquisa" aria-label="Pesquisar item" id="btn-adicionar-material">
                                             <img src="../../assets/icons/icon-pesquisa.svg" alt="">
                                         </button>
                                     </div>
@@ -98,27 +100,7 @@
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>23-002</td>
-                                    <td>Cabo</td>
-                                    <td>x2</td>
-                                    <td>
-                                        <button type="button" class="botao-excluir" aria-label="Remover item Cabo">
-                                            <img src="../../assets/icons/icon-excluir.svg" alt="">
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>04-001</td>
-                                    <td>Fonte</td>
-                                    <td>x1</td>
-                                    <td>
-                                        <button type="button" class="botao-excluir" aria-label="Remover item Fonte">
-                                            <img src="../../assets/icons/icon-excluir.svg" alt="">
-                                        </button>
-                                    </td>
-                                </tr>
+                            <tbody id="tabela-corpo">
                             </tbody>
                         </table>
                     </div>
