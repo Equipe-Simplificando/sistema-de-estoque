@@ -57,7 +57,6 @@ app.get('/api/materiais/arquivo/:id', (req, res) => {
 // --- ROTAS DE PROJETOS ---
 // ==========================================
 
-// Rota para buscar um único projeto pelo ID
 app.get('/api/projetos/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'SELECT * FROM projetos WHERE id = ?';
@@ -69,22 +68,45 @@ app.get('/api/projetos/:id', (req, res) => {
     });
 });
 
-// --- ROTA DE CADASTRO ATUALIZADA (COM PREÇO) ---
+// --- ROTA DE CADASTRO (CORRIGIDA E REFORÇADA) ---
 app.post('/api/cadastrar-projeto', (req, res) => {
-    const { item, destino, observacoes, preco } = req.body;
+    const { item, destino, observacoes, preco, materiais } = req.body;
     
     if (!item) return res.status(400).json({ error: 'Nome do projeto é obrigatório' });
 
-    // Converte virgula para ponto e garante float
+    // Trata o preço
     const precoFinal = preco ? parseFloat(preco.replace(',', '.')) : 0.00;
 
-    const sql = `INSERT INTO projetos (nome_projeto, setor, observacoes, preco) VALUES (?, ?, ?, ?)`;
-    db.query(sql, [item, destino, observacoes, precoFinal], (err, result) => {
+    // 1. Cria o Projeto
+    const sqlProjeto = `INSERT INTO projetos (nome_projeto, setor, observacoes, preco) VALUES (?, ?, ?, ?)`;
+    
+    db.query(sqlProjeto, [item, destino, observacoes, precoFinal], (err, result) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Erro ao cadastrar' });
+            console.error("Erro ao inserir projeto:", err);
+            return res.status(500).json({ error: 'Erro ao cadastrar projeto' });
         }
-        res.json({ success: true, id: result.insertId });
+
+        const novoProjetoId = result.insertId;
+
+        // 2. Vincula os Materiais (Se houver)
+        if (materiais && Array.isArray(materiais) && materiais.length > 0) {
+            // Log para debug no terminal
+            console.log(`Vinculando materiais [${materiais}] ao projeto ID: ${novoProjetoId}`);
+
+            const sqlUpdateMateriais = `UPDATE materiais SET projeto = ? WHERE id IN (?)`;
+            
+            db.query(sqlUpdateMateriais, [novoProjetoId, materiais], (errMat) => {
+                if (errMat) {
+                    console.error("Erro ao vincular materiais:", errMat);
+                } else {
+                    console.log("Materiais vinculados com sucesso.");
+                }
+                // Responde sucesso mesmo se falhar o vínculo (para não travar o front)
+                res.json({ success: true, id: novoProjetoId });
+            });
+        } else {
+            res.json({ success: true, id: novoProjetoId });
+        }
     });
 });
 
@@ -99,9 +121,8 @@ app.put('/api/atualizar-projeto', (req, res) => {
     });
 });
 
-// --- ROTA DE LISTAGEM ATUALIZADA (COM PREÇO) ---
 app.get('/api/projetos', (req, res) => {
-    // Incluímos a coluna 'preco' na seleção
+    // Garante que buscamos todos os campos necessários
     db.query('SELECT id, nome_projeto, setor, preco FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Erro ao listar' });
         res.json(results);

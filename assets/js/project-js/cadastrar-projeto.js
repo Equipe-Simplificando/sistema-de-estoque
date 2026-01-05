@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (materialEncontrado) {
       const novaLinha = document.createElement('tr');
-      // Adicionamos atributos data- para facilitar a captura depois
+      // Adiciona o ID real do material para envio
       novaLinha.innerHTML = `
         <td class="item-id">${materialEncontrado.id}</td>
         <td class="item-nome">${materialEncontrado.nome_item}</td>
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const nome = document.getElementById("item").value;
     const obs = document.getElementById("observacoes").value;
-    const preco = document.getElementById("preco").value; // Captura o preço
+    const preco = document.getElementById("preco").value;
     const setorInput = document.querySelector('input[name="destino"]:checked');
     const setor = setorInput ? setorInput.value : null;
 
@@ -90,34 +90,36 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // --- CAPTURA DOS MATERIAIS DA TABELA ---
-    const materiaisList = [];
+    // --- CAPTURA DOS IDs DOS MATERIAIS ---
+    const materiaisParaSalvar = [];
+    const materiaisVisualizacao = [];
+
     document.querySelectorAll('#tabela-corpo tr').forEach(row => {
-        materiaisList.push({
-            id: row.querySelector('.item-id').textContent,
-            item: row.querySelector('.item-nome').textContent,
-            qtd: row.querySelector('.item-qtd').textContent
-        });
+        const id = row.querySelector('.item-id').textContent;
+        const nomeItem = row.querySelector('.item-nome').textContent;
+        const qtd = row.querySelector('.item-qtd').textContent;
+
+        materiaisParaSalvar.push(parseInt(id)); // Importante: ID Numérico
+        materiaisVisualizacao.push({ id, item: nomeItem, qtd });
     });
 
     try {
       const response = await fetch("http://localhost:3000/api/cadastrar-projeto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // Envia o preço junto com os outros dados
         body: JSON.stringify({ 
             item: nome, 
             destino: setor, 
             observacoes: obs, 
-            preco: preco 
+            preco: preco,
+            materiais: materiaisParaSalvar // Envia ARRAY DE IDs [1, 2, 5]
         }),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        // Salva os materiais na Sessão para a próxima página ler
-        sessionStorage.setItem('ultimoProjetoMateriais', JSON.stringify(materiaisList));
+        sessionStorage.setItem('ultimoProjetoMateriais', JSON.stringify(materiaisVisualizacao));
 
         const params = new URLSearchParams({
           id: result.id,

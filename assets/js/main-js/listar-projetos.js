@@ -5,7 +5,7 @@ let listaGlobalMateriais = [];
 document.addEventListener("DOMContentLoaded", () => {
     carregarDados();
     configurarPesquisa();
-    atualizarMenuAtivo(); // Gerencia os ícones do menu inferior
+    atualizarMenuAtivo();
 });
 
 // --- Função Principal: Busca Projetos e Materiais do Servidor ---
@@ -34,8 +34,6 @@ async function carregarDados() {
             projetos = projetos.filter(projeto => {
                 const setorProj = projeto.setor ? projeto.setor.toLowerCase() : "";
                 const termo = filtroSetor.toLowerCase();
-                
-                // Normaliza para remover acentos antes de comparar
                 const normalizar = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
                 if (termo === 'robotica' && normalizar(setorProj).includes('robotica')) return true;
@@ -44,16 +42,13 @@ async function carregarDados() {
             });
         }
         
-        // Salva na variável global a lista JÁ FILTRADA para a pesquisa funcionar corretamente dentro do setor
         listaGlobalProjetos = projetos;
         
-        // Debug: Mostra no console o que foi carregado
-        console.log("Projetos carregados (filtrados):", listaGlobalProjetos);
+        // Debug
+        console.log("Projetos Carregados:", listaGlobalProjetos);
+        console.log("Materiais Carregados:", listaGlobalMateriais);
 
-        // Renderiza a lista na tela
         renderizarProjetos(listaGlobalProjetos, listaGlobalMateriais);
-        
-        // Atualiza as sugestões da barra de pesquisa
         atualizarSugestoes(listaGlobalProjetos);
 
     } catch (error) {
@@ -69,57 +64,50 @@ async function carregarDados() {
     }
 }
 
-// --- Renderiza os Cards de Projeto (Estilo Acordeão com Preço) ---
+// --- Renderiza os Cards de Projeto (LÓGICA CORRIGIDA) ---
 function renderizarProjetos(projetos, materiais) {
     const container = document.getElementById("lista-projetos");
     if(!container) return;
     
-    container.innerHTML = ""; // Limpa o conteúdo atual
+    container.innerHTML = "";
 
     if (!projetos || projetos.length === 0) {
         container.innerHTML = `<p style="text-align:center; padding:1rem; color: #666;">Nenhum projeto encontrado.</p>`;
         return;
     }
 
-    // Função auxiliar para normalizar textos (remove acentos, espaços e caixa alta)
     const normalizar = (texto) => {
         if (!texto) return "";
-        return String(texto)
-            .normalize("NFD") // Separa acentos
-            .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-            .trim() // Remove espaços nas pontas
-            .toLowerCase(); // Tudo minúsculo
+        return String(texto).normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
     };
 
     projetos.forEach(projeto => {
-        // Filtra os materiais comparando de forma ROBUSTA
+        
+        // --- FILTRO DE MATERIAIS ROBUSTO ---
+        // Verifica se o material pertence ao projeto (pelo ID ou pelo Nome)
         const materiaisDoProjeto = materiais.filter(m => {
             if (!m.projeto) return false;
 
-            // 1. Tenta comparar por ID
-            if (m.projeto == projeto.id) return true;
+            // 1. Tenta comparar por ID (Converte para String para garantir)
+            if (String(m.projeto) === String(projeto.id)) return true;
 
-            // 2. Tenta comparar por Nome Normalizado
+            // 2. Tenta comparar por Nome (Caso antigo ou salvo como texto)
             const matProj = normalizar(m.projeto);
             const nomeProj = normalizar(projeto.nome_projeto);
-            
             return matProj === nomeProj;
         });
 
-        // Formatação do Preço
+        // Formatação de Preço
         const precoFormatado = projeto.preco 
             ? parseFloat(projeto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
             : 'R$ 0,00';
 
-        // Cria o elemento <details> (O Card)
         const details = document.createElement("details");
         details.classList.add("aba-projeto");
 
-        // Cria o cabeçalho do card (Summary)
         const summary = document.createElement("summary");
         summary.classList.add("cabecalho-projeto");
         
-        // Conteúdo do cabeçalho com Nome e Preço
         summary.innerHTML = `
             <div style="display: flex; justify-content: space-between; width: 90%; align-items: center;">
                 <span class="titulo-projeto">${projeto.nome_projeto}</span>
@@ -128,7 +116,6 @@ function renderizarProjetos(projetos, materiais) {
             <img src="../../../assets/icons/icon-seta.svg" alt="Abrir" class="icone-seta">
         `;
 
-        // Cria o conteúdo interno (Tabela de Materiais + Botão Editar)
         const divConteudo = document.createElement("div");
         divConteudo.classList.add("conteudo-aba");
 
@@ -149,10 +136,9 @@ function renderizarProjetos(projetos, materiais) {
                 `;
             }).join("");
         } else {
-            linhasTabela = `<tr><td colspan="3" style="text-align:center; padding: 15px; color: #777;">Nenhum material cadastrado neste projeto.</td></tr>`;
+            linhasTabela = `<tr><td colspan="3" style="text-align:center; padding: 15px; color: #777;">Nenhum material vinculado.</td></tr>`;
         }
 
-        // Monta o HTML interno do card
         divConteudo.innerHTML = `
             <div class="grupo-tabela">
                 <table class="tabela-itens">
@@ -174,38 +160,27 @@ function renderizarProjetos(projetos, materiais) {
             </button>
         `;
 
-        // Adiciona as partes ao card e o card ao container
         details.appendChild(summary);
         details.appendChild(divConteudo);
         container.appendChild(details);
     });
 }
 
-// --- Atualiza o Menu Ativo e Ícone Home ---
+// --- Menu e Pesquisa ---
 function atualizarMenuAtivo() {
     const urlParams = new URLSearchParams(window.location.search);
     const setor = urlParams.get('setor');
-    
-    // Por padrão, assumimos que é a Home
     let idAtivo = 'menu-home'; 
-    
-    // Se tiver filtro, mudamos o ID ativo
     if (setor === 'robotica') idAtivo = 'menu-robotica';
     if (setor === 'manutencao') idAtivo = 'menu-manutencao';
 
     const elementoAtivo = document.getElementById(idAtivo);
-    
-    // Remove a classe 'ativo' de todos primeiro (segurança)
     document.querySelectorAll('.item-menu').forEach(el => el.classList.remove('ativo'));
-
-    // Reseta o ícone da home para a versão cinza, caso não seja ela a ativa
     const homeIcon = document.querySelector('#menu-home img');
     if(homeIcon) homeIcon.src = "../../../assets/icons/icon-home.svg";
 
     if (elementoAtivo) {
         elementoAtivo.classList.add('ativo');
-        
-        // Se for o botão Home, coloca o ícone laranja
         if (idAtivo === 'menu-home') {
             const img = elementoAtivo.querySelector('img');
             if (img) img.src = "../../../assets/icons/icon-home-ativo.svg";
@@ -213,24 +188,19 @@ function atualizarMenuAtivo() {
     }
 }
 
-// --- Funcionalidade de Pesquisa ---
 function configurarPesquisa() {
     const inputPesquisa = document.getElementById("pesquisa-projeto");
-    
     if(inputPesquisa) {
         inputPesquisa.addEventListener("input", (e) => {
             const termo = e.target.value.toLowerCase();
-
             const listaFiltrada = listaGlobalProjetos.filter(projeto => 
                 String(projeto.nome_projeto).toLowerCase().includes(termo)
             );
-
             renderizarProjetos(listaFiltrada, listaGlobalMateriais);
         });
     }
 }
 
-// --- Sugestões ---
 function atualizarSugestoes(projetos) {
     const datalist = document.getElementById("sugestoes-projetos");
     if(datalist) {
@@ -244,7 +214,6 @@ function atualizarSugestoes(projetos) {
     }
 }
 
-// --- Redirecionamento ---
 function editarProjeto(id) {
     window.location.href = `../../project-pages/editar-projeto.html?id=${id}`;
 }
