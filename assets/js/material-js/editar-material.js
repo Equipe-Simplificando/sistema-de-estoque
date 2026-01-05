@@ -36,15 +36,30 @@ async function carregarDados() {
       else if (material.destino === "manutencao")
         document.getElementById("manutencao").checked = true;
 
-      // --- MUDANÇA AQUI: EXIBIR APENAS O NOME DO ARQUIVO ---
+      // --- LOGICA DE EXIBIÇÃO DA IMAGEM ---
       const previewContainer = document.getElementById("preview-container");
 
       if (material.arquivo_nome) {
-        // Limpa o conteúdo e adiciona um ícone genérico + nome
-        previewContainer.innerHTML = `
-                            <img src="../../assets/icons/icon-pesquisa.svg" alt="Arquivo" style="width: 20px; opacity: 0.6;">
-                            <span class="nome-arquivo">${material.arquivo_nome}</span>
-                        `;
+        // Verifica se é uma imagem pelo MIME Type (ex: image/png, image/jpeg)
+        const isImage = material.arquivo_tipo && material.arquivo_tipo.startsWith("image/");
+
+        if (isImage) {
+            // URL da rota que serve o arquivo (definida no server.js)
+            const imageUrl = `http://localhost:3000/api/materiais/arquivo/${material.id}`;
+            
+            previewContainer.innerHTML = `
+                <img src="${imageUrl}" alt="Imagem do Material" class="imagem-preview-db">
+                <span class="nome-arquivo">${material.arquivo_nome}</span>
+            `;
+        } else {
+            // Se não for imagem (ex: PDF, texto), mostra ícone genérico
+            previewContainer.innerHTML = `
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <img src="../../assets/icons/icon-pesquisa.svg" alt="Arquivo" style="width: 20px; opacity: 0.6;">
+                    <span class="nome-arquivo">${material.arquivo_nome}</span>
+                </div>
+            `;
+        }
       } else {
         previewContainer.innerHTML =
           '<span class="aviso-preview">Nenhum arquivo salvo.</span>';
@@ -86,6 +101,7 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
 
     if (result.success) {
       alert("Material atualizado com sucesso!");
+      // Redireciona para a home ou lista, conforme sua preferência
       window.location.href = "../main-pages/home/home-material.html";
     } else {
       alert("Erro: " + (result.error || "Desconhecido"));
