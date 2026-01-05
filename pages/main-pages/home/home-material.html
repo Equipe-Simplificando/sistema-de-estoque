@@ -7,6 +7,17 @@
     <title>Home Material</title>
     <link rel="stylesheet" href="../../../assets/css/global.css">
     <link rel="stylesheet" href="../../../assets/css/main-css/home-material.css">
+    <style>
+        /* Correção para desbloquear cliques atrás do menu inferior */
+        .espaco-inferior {
+            pointer-events: none;
+        }
+
+        .botao-cadastro,
+        .menu-inferior {
+            pointer-events: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,17 +25,18 @@
         <header class="cabecalho">
             <div class="grupo-pesquisa-qrcode">
                 <div class="container-pesquisa">
-    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisaItem" list="sugestoes-itens">
-    
-    <datalist id="sugestoes-itens">
-        </datalist>
+                    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisaItem"
+                        list="sugestoes-itens">
 
-    <div class="icone-pesquisa">
-        <button type="button" class="botao-pesquisa" aria-label="Pesquisar item">
-            <img src="../../../assets/icons/icon-pesquisa.svg" alt="">
-        </button>
-    </div>
-</div>
+                    <datalist id="sugestoes-itens">
+                    </datalist>
+
+                    <div class="icone-pesquisa">
+                        <button type="button" class="botao-pesquisa" aria-label="Pesquisar item">
+                            <img src="../../../assets/icons/icon-pesquisa.svg" alt="">
+                        </button>
+                    </div>
+                </div>
                 <div class="icone-qrcode">
                     <button type="button" class="botao-qrcode" aria-label="Filtrar itens">
                         <img src="../../../assets/icons/icon-qrcode.svg" alt="">
@@ -36,17 +48,17 @@
         <main class="conteudo">
 
             <div class="grupo-radio">
-    <input type="radio" name="material-projeto" id="material" value="material" checked>
-    <label for="material" class="rotulo-radio">
-        MATERIAL
-    </label>
+                <input type="radio" name="material-projeto" id="material" value="material" checked>
+                <label for="material" class="rotulo-radio">
+                    MATERIAL
+                </label>
 
-    <input type="radio" name="material-projeto" id="projeto" value="projeto" 
-           onclick="window.location.href='home-projeto.html'">
-    <label for="projeto" class="rotulo-radio borda-esquerda">
-        PROJETO
-    </label>
-</div>
+                <input type="radio" name="material-projeto" id="projeto" value="projeto"
+                    onclick="window.location.href='home-projeto.html'">
+                <label for="projeto" class="rotulo-radio borda-esquerda">
+                    PROJETO
+                </label>
+            </div>
 
             <div class="grupo-tabela">
                 <table class="tabela-itens">
@@ -59,7 +71,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
 
@@ -72,38 +84,39 @@
 
             <nav class="menu-inferior">
 
-    <a href="home-material.html" class="item-menu" id="menu-home">
-        <span class="icone-menu">
-            <img src="../../../assets/icons/icon-home.svg" alt="Home" class="icone-imagem">
-        </span>
-        <small class="texto-menu">Home</small>
-    </a>
+                <a href="home-material.html" class="item-menu" id="menu-home">
+                    <span class="icone-menu">
+                        <img src="../../../assets/icons/icon-home.svg" alt="Home" class="icone-imagem">
+                    </span>
+                    <small class="texto-menu">Home</small>
+                </a>
 
-    <a href="home-material.html?setor=robotica" class="item-menu" id="menu-robotica">
-        <span class="icone-menu">
-            <img src="../../../assets/icons/icon-robotica.svg" alt="Robótica" class="icone-imagem">
-        </span>
-        <small class="texto-menu">Robótica</small>
-    </a>
+                <a href="home-material.html?setor=robotica" class="item-menu" id="menu-robotica">
+                    <span class="icone-menu">
+                        <img src="../../../assets/icons/icon-robotica.svg" alt="Robótica" class="icone-imagem">
+                    </span>
+                    <small class="texto-menu">Robótica</small>
+                </a>
 
-    <a href="home-material.html?setor=manutencao" class="item-menu" id="menu-manutencao">
-        <span class="icone-menu">
-            <img src="../../../assets/icons/icon-manutencao.svg" alt="Manutenção" class="icone-imagem">
-        </span>
-        <small class="texto-menu">Manutenção</small>
-    </a>
+                <a href="home-material.html?setor=manutencao" class="item-menu" id="menu-manutencao">
+                    <span class="icone-menu">
+                        <img src="../../../assets/icons/icon-manutencao.svg" alt="Manutenção" class="icone-imagem">
+                    </span>
+                    <small class="texto-menu">Manutenção</small>
+                </a>
 
-    <a href="../../main-pages/venda/venda-material.html" class="item-menu">
-        <span class="icone-menu">
-            <img src="../../../assets/icons/icon-venda.svg" alt="Venda" class="icone-imagem">
-        </span>
-        <small class="texto-menu">Venda</small>
-    </a>
+                <a href="../../main-pages/venda/venda-material.html" class="item-menu">
+                    <span class="icone-menu">
+                        <img src="../../../assets/icons/icon-venda.svg" alt="Venda" class="icone-imagem">
+                    </span>
+                    <small class="texto-menu">Venda</small>
+                </a>
 
-</nav>
+            </nav>
         </div>
     </div>
 
     <script src="../../../assets/js/main-js/listar-home.js"></script>
 </body>
+
 </html>

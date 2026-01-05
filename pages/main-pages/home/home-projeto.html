@@ -7,6 +7,17 @@
     <title>Home Projeto</title>
     <link rel="stylesheet" href="../../../assets/css/global.css">
     <link rel="stylesheet" href="../../../assets/css/main-css/home-projeto.css">
+    <style>
+        /* Correção para desbloquear cliques atrás do menu inferior */
+        .espaco-inferior {
+            pointer-events: none;
+        }
+
+        .botao-cadastro,
+        .menu-inferior {
+            pointer-events: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,7 +25,8 @@
         <header class="cabecalho">
             <div class="grupo-pesquisa-qrcode">
                 <div class="container-pesquisa">
-                    <input type="text" class="campo-entrada" id="pesquisa-projeto" name="pesquisaItem" list="sugestoes-projetos">
+                    <input type="text" class="campo-entrada" id="pesquisa-projeto" name="pesquisaItem"
+                        list="sugestoes-projetos">
                     <datalist id="sugestoes-projetos"></datalist>
 
                     <div class="icone-pesquisa">
@@ -92,4 +104,5 @@
 
     <script src="../../../assets/js/main-js/listar-projetos.js"></script>
 </body>
+
 </html>
