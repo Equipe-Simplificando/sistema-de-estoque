@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Projeto</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/project-css/cadastrar-projeto.css"> 
-    </head>
+    <link rel="stylesheet" href="../../assets/css/project-css/cadastrar-projeto.css">
+</head>
 
 <body>
     <div class="container">
@@ -15,7 +15,7 @@
         <header class="cabecalho">
             <h1 class="titulo-pagina">EDITAR <br> PROJETO</h1>
 
-            <a href="../../index.html" class="botao-fechar" aria-label="Fechar edição de projeto">
+            <a href="projeto-cadastrado.html" id="btn-fechar" class="botao-fechar" aria-label="Cancelar edição">
                 <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="">
             </a>
         </header>
@@ -23,9 +23,9 @@
         <main class="conteudo">
             <section class="secao-cadastro">
 
-                <form id="formulario-editar" class="formulario">
-
-                    <input type="hidden" id="projeto-id">
+                <form id="formulario" class="formulario" method="post">
+                    
+                    <input type="hidden" id="id-projeto">
 
                     <div class="campo-grupo">
                         <label for="item" class="campo-rotulo">NOME</label>
@@ -66,6 +66,45 @@
                         </label>
 
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
+                    </div>
+
+                    <div class="grupo-tabela">
+                        <div class="campo-grupo">
+                            <label for="pesquisa-item" class="campo-rotulo">
+                                ITENS <span class="texto-opcional">(OPCIONAL)</span>
+                            </label>
+
+                            <div class="grupo-pesquisa-filtro">
+                                <div class="container-pesquisa">
+                                    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisaItem" list="lista-materiais" autocomplete="off" placeholder="Adicionar novo material...">
+                                    <datalist id="lista-materiais"></datalist>
+                                    
+                                    <div class="icone-pesquisa">
+                                        <button type="button" class="botao-pesquisa" aria-label="Adicionar item" id="btn-adicionar-material">
+                                            <img src="../../assets/icons/icon-pesquisa.svg" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="icone-filtro">
+                                    <button type="button" class="botao-filtro" aria-label="Filtrar itens">
+                                        <img src="../../assets/icons/icon-filtro.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="tabela-itens">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">ITEM</th>
+                                    <th scope="col">QTD</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-corpo">
+                                </tbody>
+                        </table>
                     </div>
 
                     <div class="grupo-acoes">
