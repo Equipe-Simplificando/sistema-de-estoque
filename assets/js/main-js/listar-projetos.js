@@ -25,6 +25,10 @@ async function carregarDados() {
         listaGlobalProjetos = await resProjetos.json();
         listaGlobalMateriais = await resMateriais.json();
         
+        // Debug: Mostra no console o que foi baixado (Aperte F12 no navegador e vá em Console)
+        console.log("Projetos carregados:", listaGlobalProjetos);
+        console.log("Materiais carregados:", listaGlobalMateriais);
+
         // Renderiza a lista na tela
         renderizarProjetos(listaGlobalProjetos, listaGlobalMateriais);
         
@@ -56,17 +60,32 @@ function renderizarProjetos(projetos, materiais) {
         return;
     }
 
+    // Função auxiliar para normalizar textos (remove acentos, espaços e caixa alta)
+    const normalizar = (texto) => {
+        if (!texto) return "";
+        return String(texto)
+            .normalize("NFD") // Separa acentos
+            .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+            .trim() // Remove espaços nas pontas
+            .toLowerCase(); // Tudo minúsculo
+    };
+
     projetos.forEach(projeto => {
-        // Filtra os materiais comparando o texto de forma SEGURA
+        // Filtra os materiais comparando de forma ROBUSTA
         const materiaisDoProjeto = materiais.filter(m => {
-            // Verifica se as propriedades existem
-            if (!m.projeto || !projeto.nome_projeto) return false;
+            if (!m.projeto) return false;
+
+            // 1. Tenta comparar por ID (caso tenha salvo o número ID no banco)
+            if (m.projeto == projeto.id) return true;
+
+            // 2. Tenta comparar por Nome Normalizado
+            const matProj = normalizar(m.projeto);
+            const nomeProj = normalizar(projeto.nome_projeto);
             
-            // Converte para String forçadamente para evitar erros com números e remove espaços
-            const pMat = String(m.projeto).trim().toLowerCase();
-            const pProj = String(projeto.nome_projeto).trim().toLowerCase();
-            
-            return pMat === pProj;
+            // Se quiser debugar um item específico, descomente a linha abaixo:
+            // console.log(`Comparando mat: [${matProj}] com proj: [${nomeProj}]`);
+
+            return matProj === nomeProj;
         });
 
         // Cria o elemento <details> (O Card)
@@ -92,7 +111,6 @@ function renderizarProjetos(projetos, materiais) {
             linhasTabela = materiaisDoProjeto.map(mat => {
                 const idFormatado = String(mat.id).padStart(3, '0');
                 const qtd = mat.quantidade ? mat.quantidade : 1;
-                // Garante que se nome_item for null, não quebre (usa fallback)
                 const nomeItem = mat.nome_item || "Item sem nome";
                 
                 return `

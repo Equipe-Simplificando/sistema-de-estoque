@@ -56,6 +56,19 @@ app.get('/api/materiais/arquivo/:id', (req, res) => {
 // ==========================================
 // --- ROTAS DE PROJETOS ---
 // ==========================================
+
+// Rota para buscar um único projeto pelo ID (NOVA ROTA)
+app.get('/api/projetos/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'SELECT * FROM projetos WHERE id = ?';
+    
+    db.query(sql, [id], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Erro ao buscar projeto' });
+        if (results.length === 0) return res.status(404).json({ error: 'Projeto não encontrado' });
+        res.json(results[0]);
+    });
+});
+
 app.post('/api/cadastrar-projeto', (req, res) => {
     const { item, destino, observacoes } = req.body;
     if (!item) return res.status(400).json({ error: 'Nome do projeto é obrigatório' });
@@ -79,7 +92,7 @@ app.put('/api/atualizar-projeto', (req, res) => {
 });
 
 app.get('/api/projetos', (req, res) => {
-    db.query('SELECT id, nome_projeto FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
+    db.query('SELECT id, nome_projeto, setor FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Erro ao listar' });
         res.json(results);
     });
@@ -149,14 +162,6 @@ app.delete('/api/deletar/:id', (req, res) => {
     db.query('DELETE FROM materiais WHERE id = ?', [id], (err) => {
         if (err) return res.status(500).json({ error: 'Erro ao deletar' });
         res.json({ success: true });
-    });
-});
-
-app.get('/api/projetos', (req, res) => {
-    // ALTERAÇÃO: Adicionado 'setor' na seleção para podermos exibir o ícone correto
-    db.query('SELECT id, nome_projeto, setor FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
-        if (err) return res.status(500).json({ error: 'Erro ao listar' });
-        res.json(results);
     });
 });
 

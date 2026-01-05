@@ -1,87 +1,130 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Elementos do DOM
+    // --- Elementos do DOM ---
     const form = document.getElementById("formulario");
     const inputPesquisa = document.getElementById("pesquisa-item");
     const btnAdicionar = document.getElementById("btn-adicionar-material");
     const tabelaCorpo = document.getElementById("tabela-corpo");
     const dataListMateriais = document.getElementById("lista-materiais");
-    // const btnFechar = document.getElementById("btn-fechar"); // Removido controle manual do botão fechar
 
-    // Campos do formulário
+    // --- Campos do formulário ---
     const idInput = document.getElementById("id-projeto");
     const nomeInput = document.getElementById("item");
     const obsInput = document.getElementById("observacoes");
     const precoInput = document.getElementById("preco");
 
-    let materiaisDisponiveis = [];
+    let materiaisDisponiveis = []; // Todos os materiais do sistema (para o datalist)
 
     // =========================================================
-    // 1. CARREGAR DADOS INICIAIS (URL + SESSION STORAGE)
+    // 1. INICIALIZAÇÃO: PEGAR ID DA URL E CARREGAR DADOS
     // =========================================================
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    const nome = params.get("nome");
-    const setor = params.get("setor");
-    const obs = params.get("obs");
-    const preco = params.get("preco");
+    const idProjeto = params.get("id");
 
-    // Preenche campos básicos
-    if(idInput) idInput.value = id || "";
-    if(nomeInput) nomeInput.value = nome || "";
-    if(obsInput) obsInput.value = (obs === "Sem observações") ? "" : obs;
-    
-    // Tratamento do preço
-    let precoFormatado = preco ? preco.replace("R$", "").trim() : "";
-    if(precoInput) precoInput.value = precoFormatado;
-
-    // Seleciona o Radio Button correto
-    if (setor) {
-        const radio = document.querySelector(`input[name="destino"][value="${setor}"]`);
-        if (radio) radio.checked = true;
+    if (idProjeto) {
+        carregarDadosDoProjeto(idProjeto);
+    } else {
+        alert("ID do projeto não fornecido.");
+        window.location.href = "../main-pages/home/home-projeto.html";
     }
 
-    // A linha abaixo foi removida para que o botão X leve à Home (conforme definido no HTML)
-    // if(btnFechar) { btnFechar.href = ... } 
+    // Carrega a lista geral de materiais para o autocomplete (datalist)
+    carregarListaGeralMateriais();
 
-    // Preenche a tabela com os itens que estavam na memória (SessionStorage)
-    const itensSalvos = sessionStorage.getItem('ultimoProjetoMateriais');
-    if (itensSalvos && tabelaCorpo) {
-        const itens = JSON.parse(itensSalvos);
-        itens.forEach(item => {
-            adicionarLinhaNaTabela(item.id, item.item, item.qtd);
-        });
+
+    // =========================================================
+    // 2. FUNÇÃO: BUSCAR DADOS DO PROJETO E SEUS MATERIAIS
+    // =========================================================
+    async function carregarDadosDoProjeto(id) {
+        try {
+            // A. Busca dados do Projeto
+            const resProjeto = await fetch(`http://localhost:3000/api/projetos/${id}`);
+            if (!resProjeto.ok) throw new Error("Erro ao buscar projeto");
+            const projeto = await resProjeto.json();
+
+            // Preenche o formulário
+            if (idInput) idInput.value = projeto.id;
+            if (nomeInput) nomeInput.value = projeto.nome_projeto;
+            if (obsInput) obsInput.value = projeto.observacoes || "";
+            // Nota: O campo 'preco' não existe no banco, então virá vazio.
+            if (precoInput && projeto.preco) precoInput.value = projeto.preco;
+
+            // Marca o Radio Button do Setor
+            if (projeto.setor) {
+                const radio = document.querySelector(`input[name="destino"][value="${projeto.setor}"]`);
+                if (radio) radio.checked = true;
+            }
+
+            // B. Busca materiais vinculados a este projeto (pelo Nome do Projeto)
+            carregarMateriaisVinculados(projeto.nome_projeto);
+
+        } catch (error) {
+            console.error("Erro:", error);
+            alert("Erro ao carregar dados do projeto. Verifique o console.");
+        }
+    }
+
+    async function carregarMateriaisVinculados(nomeDoProjeto) {
+        try {
+            const resMateriais = await fetch('http://localhost:3000/api/materiais');
+            const todosMateriais = await resMateriais.json();
+
+            // Filtra materiais onde o campo 'projeto' é igual ao nome deste projeto
+            // Normaliza (minusculo e trim) para evitar erros de digitação
+            const nomeProjNorm = String(nomeDoProjeto).trim().toLowerCase();
+
+            const materiaisDoProjeto = todosMateriais.filter(m => {
+                if (!m.projeto) return false;
+                return String(m.projeto).trim().toLowerCase() === nomeProjNorm;
+            });
+
+            // Limpa e preenche a tabela
+            tabelaCorpo.innerHTML = "";
+            if (materiaisDoProjeto.length > 0) {
+                materiaisDoProjeto.forEach(mat => {
+                    const qtd = mat.quantidade ? mat.quantidade : 1;
+                    adicionarLinhaNaTabela(mat.id, mat.nome_item, `x${qtd}`);
+                });
+            } else {
+               // Opcional: Mostrar mensagem de "Nenhum item" na tabela
+            }
+
+        } catch (error) {
+            console.error("Erro ao carregar materiais do projeto:", error);
+        }
     }
 
     // =========================================================
-    // 2. CARREGAR LISTA DE MATERIAIS (DO BANCO)
+    // 3. CARREGAR DATALIST (AUTOCOMPLETE)
     // =========================================================
-    async function carregarMateriais() {
+    async function carregarListaGeralMateriais() {
         try {
             const response = await fetch('http://localhost:3000/api/materiais');
-            if (!response.ok) throw new Error('Falha ao buscar materiais');
-            
             materiaisDisponiveis = await response.json();
             
             dataListMateriais.innerHTML = '';
-            materiaisDisponiveis.forEach(material => {
+            // Cria lista única de nomes para não repetir no dropdown
+            const nomesUnicos = new Set(materiaisDisponiveis.map(m => m.nome_item));
+            
+            nomesUnicos.forEach(nome => {
                 const option = document.createElement('option');
-                option.value = material.nome_item;
+                option.value = nome;
                 dataListMateriais.appendChild(option);
             });
         } catch (error) {
-            console.error("Erro ao carregar materiais:", error);
+            console.error("Erro ao carregar lista geral:", error);
         }
     }
-    carregarMateriais();
 
     // =========================================================
-    // 3. FUNÇÕES DA TABELA (ADICIONAR / REMOVER)
+    // 4. MANIPULAÇÃO DA TABELA (FRONTEND)
     // =========================================================
-    
     function adicionarLinhaNaTabela(id, nome, qtd) {
         const novaLinha = document.createElement('tr');
+        // Formata ID para ter 3 digitos (ex: 005)
+        const idFormatado = String(id).padStart(3, '0');
+
         novaLinha.innerHTML = `
-            <td class="item-id">${id}</td>
+            <td class="item-id">${idFormatado}</td>
             <td class="item-nome">${nome}</td>
             <td class="item-qtd">${qtd}</td>
             <td>
@@ -94,11 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function adicionarMaterialDoInput() {
-        const termoPesquisado = inputPesquisa.value.trim();
-        if (!termoPesquisado) return;
+        const termo = inputPesquisa.value.trim();
+        if (!termo) return;
 
+        // Procura o material completo na lista carregada
         const materialEncontrado = materiaisDisponiveis.find(m => 
-            m.nome_item.toLowerCase() === termoPesquisado.toLowerCase()
+            m.nome_item.toLowerCase() === termo.toLowerCase()
         );
 
         if (materialEncontrado) {
@@ -106,10 +150,11 @@ document.addEventListener("DOMContentLoaded", () => {
             inputPesquisa.value = '';
             inputPesquisa.focus();
         } else {
-            alert("Material não encontrado no estoque.");
+            alert("Material não encontrado no estoque geral. Verifique o nome.");
         }
     }
 
+    // Eventos de clique e enter
     if (btnAdicionar) btnAdicionar.addEventListener("click", adicionarMaterialDoInput);
     
     if (inputPesquisa) {
@@ -125,13 +170,15 @@ document.addEventListener("DOMContentLoaded", () => {
         tabelaCorpo.addEventListener("click", (e) => {
             const botaoExcluir = e.target.closest(".botao-excluir");
             if (botaoExcluir) {
+                // Apenas remove da visualização. A lógica de banco para desvincular
+                // deve ser implementada no backend se desejado.
                 botaoExcluir.closest("tr").remove();
             }
         });
     }
 
     // =========================================================
-    // 4. SALVAR ALTERAÇÕES
+    // 5. SALVAR ALTERAÇÕES (SUBMIT)
     // =========================================================
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -139,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = idInput.value;
         const nome = nomeInput.value;
         const obs = obsInput.value;
-        const preco = precoInput.value;
+        
         const setorInput = document.querySelector('input[name="destino"]:checked');
         const setor = setorInput ? setorInput.value : null;
 
@@ -148,18 +195,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Captura os itens atuais da tabela
-        const materiaisAtualizados = [];
-        document.querySelectorAll('#tabela-corpo tr').forEach(row => {
-            materiaisAtualizados.push({
-                id: row.querySelector('.item-id').textContent,
-                item: row.querySelector('.item-nome').textContent,
-                qtd: row.querySelector('.item-qtd').textContent
-            });
-        });
-
         try {
-            // Atualiza os dados básicos no servidor
+            // Atualiza dados do Projeto
             const response = await fetch("http://localhost:3000/api/atualizar-projeto", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -169,18 +206,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await response.json();
 
             if (result.success) {
-                // Atualiza a SessionStorage com a nova lista de itens
-                sessionStorage.setItem('ultimoProjetoMateriais', JSON.stringify(materiaisAtualizados));
-
-                // Redireciona de volta para a tela de visualização com os dados novos
+                alert("Projeto atualizado com sucesso!");
+                
+                // Redireciona para a tela de visualização do cadastro
                 const paramsRedir = new URLSearchParams({
                     id: id,
                     nome: nome,
                     setor: setor,
-                    obs: obs,
-                    preco: preco || "0,00",
+                    obs: obs || "Sem observações",
+                    preco: "0,00" // Como não salvamos preço, enviamos padrão
                 });
-
+                
                 window.location.href = `projeto-cadastrado.html?${paramsRedir.toString()}`;
             } else {
                 alert("Erro ao atualizar: " + result.error);
