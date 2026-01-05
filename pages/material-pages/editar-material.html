@@ -43,7 +43,7 @@
             object-fit: contain;
         }
 
-        /* --- ESTILOS NOME + QTD (IGUAL AO CADASTRAR) --- */
+        /* --- ESTILOS NOME + QTD --- */
         .row-input {
             display: flex;
             flex-direction: row;
@@ -105,6 +105,35 @@
             background-color: #05A51D;
         }
 
+        /* --- NOVO ESTILO DO BOTÃO EXCLUIR --- */
+        .botao-excluir {
+            background-color: #d32f2f !important; /* Vermelho */
+            color: white !important;
+            border: 2px solid #161614;
+        }
+        
+        .botao-excluir:hover {
+            background-color: #b71c1c !important;
+            transform: scale(1.02);
+        }
+
+        /* Ajuste para o grupo de botões caberem os 3 */
+        .grupo-acoes {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap; /* Permite quebrar linha no mobile */
+            justify-content: center;
+        }
+
+        .grupo-acoes .botao {
+            flex: 1; /* Todos com o mesmo tamanho */
+            min-width: 120px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         @media (max-width: 480px) {
             .row-input {
                 flex-direction: column;
@@ -115,6 +144,12 @@
             }
             .col-qtd .qtd-wrapper {
                 width: 50%;
+            }
+            .grupo-acoes {
+                flex-direction: column;
+            }
+            .grupo-acoes .botao {
+                width: 100%;
             }
         }
     </style>
@@ -211,7 +246,7 @@
                         <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
                     </div>
 
-                    <div class="grupo-acoes">
+                    <div class="grupo-acoes" id="container-botoes">
                         <button type="submit" class="botao">
                             SALVAR
                         </button>

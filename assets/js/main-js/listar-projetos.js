@@ -1,4 +1,4 @@
-// Variáveis globais para armazenar os dados e permitir filtragem
+// Variáveis globais
 let listaGlobalProjetos = [];
 let listaGlobalMateriais = [];
 
@@ -8,25 +8,21 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarMenuAtivo();
 });
 
-// --- Função Principal: Busca Projetos e Materiais do Servidor ---
 async function carregarDados() {
     const container = document.getElementById("lista-projetos");
     
     try {
-        // Busca as duas listas simultaneamente
         const [resProjetos, resMateriais] = await Promise.all([
             fetch('http://localhost:3000/api/projetos'),
             fetch('http://localhost:3000/api/materiais')
         ]);
         
-        if (!resProjetos.ok || !resMateriais.ok) {
-            throw new Error("Erro na resposta da API");
-        }
+        if (!resProjetos.ok || !resMateriais.ok) throw new Error("Erro na resposta da API");
 
         let projetos = await resProjetos.json();
         listaGlobalMateriais = await resMateriais.json();
 
-        // 1. APLICAR FILTRO DE URL (Setor)
+        // Filtro de Setor via URL
         const urlParams = new URLSearchParams(window.location.search);
         const filtroSetor = urlParams.get('setor');
 
@@ -43,33 +39,26 @@ async function carregarDados() {
         }
         
         listaGlobalProjetos = projetos;
-        
-        // Debug
-        console.log("Projetos Carregados:", listaGlobalProjetos);
-        console.log("Materiais Carregados:", listaGlobalMateriais);
-
         renderizarProjetos(listaGlobalProjetos, listaGlobalMateriais);
         atualizarSugestoes(listaGlobalProjetos);
 
     } catch (error) {
         console.error("Erro:", error);
         if(container) {
-            container.innerHTML = `
-                <div style="text-align:center; padding: 20px; color: red;">
-                    <p>Erro ao carregar dados.</p>
-                    <small>Verifique se o servidor está rodando.</small>
-                </div>
-            `;
+            container.innerHTML = `<p style="text-align:center; color:red;">Erro ao carregar dados.</p>`;
         }
     }
 }
 
-// --- Renderiza os Cards de Projeto (LÓGICA CORRIGIDA) ---
 function renderizarProjetos(projetos, materiais) {
     const container = document.getElementById("lista-projetos");
     if(!container) return;
     
     container.innerHTML = "";
+
+    // VERIFICA PERFIL
+    const perfil = localStorage.getItem("perfilUsuario");
+    const ehAdmin = (perfil === "admin");
 
     if (!projetos || projetos.length === 0) {
         container.innerHTML = `<p style="text-align:center; padding:1rem; color: #666;">Nenhum projeto encontrado.</p>`;
@@ -83,21 +72,14 @@ function renderizarProjetos(projetos, materiais) {
 
     projetos.forEach(projeto => {
         
-        // --- FILTRO DE MATERIAIS ROBUSTO ---
-        // Verifica se o material pertence ao projeto (pelo ID ou pelo Nome)
         const materiaisDoProjeto = materiais.filter(m => {
             if (!m.projeto) return false;
-
-            // 1. Tenta comparar por ID (Converte para String para garantir)
             if (String(m.projeto) === String(projeto.id)) return true;
-
-            // 2. Tenta comparar por Nome (Caso antigo ou salvo como texto)
             const matProj = normalizar(m.projeto);
             const nomeProj = normalizar(projeto.nome_projeto);
             return matProj === nomeProj;
         });
 
-        // Formatação de Preço
         const precoFormatado = projeto.preco 
             ? parseFloat(projeto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
             : 'R$ 0,00';
@@ -119,24 +101,29 @@ function renderizarProjetos(projetos, materiais) {
         const divConteudo = document.createElement("div");
         divConteudo.classList.add("conteudo-aba");
 
-        // Gera as linhas da tabela
         let linhasTabela = "";
         if (materiaisDoProjeto.length > 0) {
             linhasTabela = materiaisDoProjeto.map(mat => {
                 const idFormatado = String(mat.id).padStart(3, '0');
                 const qtd = mat.quantidade ? mat.quantidade : 1;
                 const nomeItem = mat.nome_item || "Item sem nome";
-                
-                return `
-                <tr>
-                    <td>${idFormatado}</td>
-                    <td>${nomeItem}</td>
-                    <td>x${qtd}</td>
-                </tr>
-                `;
+                return `<tr><td>${idFormatado}</td><td>${nomeItem}</td><td>x${qtd}</td></tr>`;
             }).join("");
         } else {
-            linhasTabela = `<tr><td colspan="3" style="text-align:center; padding: 15px; color: #777;">Nenhum material vinculado.</td></tr>`;
+            linhasTabela = `<tr><td colspan="3" style="text-align:center; color: #777;">Nenhum material vinculado.</td></tr>`;
+        }
+
+        // Lógica do Botão Excluir (Só aparece se admin)
+        let botaoExcluirProj = "";
+        if (ehAdmin) {
+            // Estilo inline vermelho para diferenciar
+            botaoExcluirProj = `
+                <button type="button" class="botao" 
+                    style="background-color: #d32f2f; margin-left: 10px;" 
+                    onclick="deletarProjeto(${projeto.id})">
+                    EXCLUIR
+                </button>
+            `;
         }
 
         divConteudo.innerHTML = `
@@ -149,15 +136,16 @@ function renderizarProjetos(projetos, materiais) {
                             <th scope="col" style="width: 20%;">QTD</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        ${linhasTabela}
-                    </tbody>
+                    <tbody>${linhasTabela}</tbody>
                 </table>
             </div>
             
-            <button type="button" class="botao" onclick="editarProjeto(${projeto.id})">
-                EDITAR
-            </button>
+            <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                <button type="button" class="botao" onclick="editarProjeto(${projeto.id})">
+                    EDITAR
+                </button>
+                ${botaoExcluirProj}
+            </div>
         `;
 
         details.appendChild(summary);
@@ -166,7 +154,7 @@ function renderizarProjetos(projetos, materiais) {
     });
 }
 
-// --- Menu e Pesquisa ---
+// Funções Auxiliares
 function atualizarMenuAtivo() {
     const urlParams = new URLSearchParams(window.location.search);
     const setor = urlParams.get('setor');
@@ -176,14 +164,15 @@ function atualizarMenuAtivo() {
 
     const elementoAtivo = document.getElementById(idAtivo);
     document.querySelectorAll('.item-menu').forEach(el => el.classList.remove('ativo'));
+    
+    // Reseta icones se necessário (simplificado)
     const homeIcon = document.querySelector('#menu-home img');
     if(homeIcon) homeIcon.src = "../../../assets/icons/icon-home.svg";
 
     if (elementoAtivo) {
         elementoAtivo.classList.add('ativo');
-        if (idAtivo === 'menu-home') {
-            const img = elementoAtivo.querySelector('img');
-            if (img) img.src = "../../../assets/icons/icon-home-ativo.svg";
+        if (idAtivo === 'menu-home' && homeIcon) {
+            homeIcon.src = "../../../assets/icons/icon-home-ativo.svg";
         }
     }
 }
@@ -215,5 +204,31 @@ function atualizarSugestoes(projetos) {
 }
 
 function editarProjeto(id) {
-    window.location.href = `../../project-pages/editar-projeto.html?id=${id}`;
+    window.location.href = `../../pages/project-pages/editar-projeto.html?id=${id}`;
+}
+
+// Lógica de exclusão de projeto
+async function deletarProjeto(id) {
+    if(!confirm("Tem certeza? Isso excluirá o projeto permanentemente.")) return;
+
+    // ATENÇÃO: Seu backend (server.js) atual só tem rota '/api/deletar/:id' para MATERIAIS.
+    // Você precisará adicionar uma rota para projetos no server.js se ainda não tiver.
+    // Vou assumir que você criará: app.delete('/api/deletar-projeto/:id', ...)
+    
+    try {
+        const response = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert("Projeto excluído!");
+            location.reload();
+        } else {
+            // Se falhar (ex: rota não existe), avisa
+            alert("Erro ao excluir. Verifique se a rota de exclusão de projetos existe no servidor.");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Erro de conexão.");
+    }
 }

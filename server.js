@@ -68,16 +68,13 @@ app.get('/api/projetos/:id', (req, res) => {
     });
 });
 
-// --- ROTA DE CADASTRO (CORRIGIDA E REFORÇADA) ---
 app.post('/api/cadastrar-projeto', (req, res) => {
     const { item, destino, observacoes, preco, materiais } = req.body;
     
     if (!item) return res.status(400).json({ error: 'Nome do projeto é obrigatório' });
 
-    // Trata o preço
     const precoFinal = preco ? parseFloat(preco.replace(',', '.')) : 0.00;
 
-    // 1. Cria o Projeto
     const sqlProjeto = `INSERT INTO projetos (nome_projeto, setor, observacoes, preco) VALUES (?, ?, ?, ?)`;
     
     db.query(sqlProjeto, [item, destino, observacoes, precoFinal], (err, result) => {
@@ -88,20 +85,12 @@ app.post('/api/cadastrar-projeto', (req, res) => {
 
         const novoProjetoId = result.insertId;
 
-        // 2. Vincula os Materiais (Se houver)
         if (materiais && Array.isArray(materiais) && materiais.length > 0) {
-            // Log para debug no terminal
             console.log(`Vinculando materiais [${materiais}] ao projeto ID: ${novoProjetoId}`);
-
             const sqlUpdateMateriais = `UPDATE materiais SET projeto = ? WHERE id IN (?)`;
             
             db.query(sqlUpdateMateriais, [novoProjetoId, materiais], (errMat) => {
-                if (errMat) {
-                    console.error("Erro ao vincular materiais:", errMat);
-                } else {
-                    console.log("Materiais vinculados com sucesso.");
-                }
-                // Responde sucesso mesmo se falhar o vínculo (para não travar o front)
+                if (errMat) console.error("Erro ao vincular materiais:", errMat);
                 res.json({ success: true, id: novoProjetoId });
             });
         } else {
@@ -122,10 +111,28 @@ app.put('/api/atualizar-projeto', (req, res) => {
 });
 
 app.get('/api/projetos', (req, res) => {
-    // Garante que buscamos todos os campos necessários
     db.query('SELECT id, nome_projeto, setor, preco FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Erro ao listar' });
         res.json(results);
+    });
+});
+
+// --- NOVA ROTA: DELETAR PROJETO ---
+app.delete('/api/deletar-projeto/:id', (req, res) => {
+    const { id } = req.params;
+
+    // 1. Primeiro desvincula os materiais (opcional, mas recomendado para não dar erro ou perder dados)
+    const sqlDesvincular = "UPDATE materiais SET projeto = NULL, projeto_id = NULL WHERE projeto = ? OR projeto_id = ?";
+    
+    // Tentamos limpar tanto se estiver salvo como ID ou Nome (por segurança)
+    db.query(sqlDesvincular, [id, id], (err) => {
+        if (err) console.log("Aviso: Erro ao desvincular materiais antes de excluir projeto", err);
+
+        // 2. Deleta o projeto
+        db.query('DELETE FROM projetos WHERE id = ?', [id], (errDelete) => {
+            if (errDelete) return res.status(500).json({ error: 'Erro ao deletar projeto' });
+            res.json({ success: true });
+        });
     });
 });
 
