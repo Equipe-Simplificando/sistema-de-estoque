@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnAdicionar = document.getElementById("btn-adicionar-material");
     const tabelaCorpo = document.getElementById("tabela-corpo");
     const dataListMateriais = document.getElementById("lista-materiais");
-    const btnFechar = document.getElementById("btn-fechar");
+    // const btnFechar = document.getElementById("btn-fechar"); // Removido controle manual do botão fechar
 
     // Campos do formulário
     const idInput = document.getElementById("id-projeto");
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(nomeInput) nomeInput.value = nome || "";
     if(obsInput) obsInput.value = (obs === "Sem observações") ? "" : obs;
     
-    // Tratamento do preço (remove R$ e espaços se vier formatado)
+    // Tratamento do preço
     let precoFormatado = preco ? preco.replace("R$", "").trim() : "";
     if(precoInput) precoInput.value = precoFormatado;
 
@@ -40,10 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (radio) radio.checked = true;
     }
 
-    // Configura o botão fechar para voltar para a tela de visualização com os dados originais
-    if(btnFechar) {
-        btnFechar.href = `projeto-cadastrado.html?${params.toString()}`;
-    }
+    // A linha abaixo foi removida para que o botão X leve à Home (conforme definido no HTML)
+    // if(btnFechar) { btnFechar.href = ... } 
 
     // Preenche a tabela com os itens que estavam na memória (SessionStorage)
     const itensSalvos = sessionStorage.getItem('ultimoProjetoMateriais');
