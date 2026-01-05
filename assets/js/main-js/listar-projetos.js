@@ -4,7 +4,8 @@ let listaGlobalMateriais = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     carregarDados();
-    configurarPesquisa(); 
+    configurarPesquisa();
+    atualizarMenuAtivo(); // Atualiza o visual do menu inferior
 });
 
 // --- Função Principal: Busca Projetos e Materiais do Servidor ---
@@ -22,12 +23,32 @@ async function carregarDados() {
             throw new Error("Erro na resposta da API");
         }
 
-        listaGlobalProjetos = await resProjetos.json();
+        let projetos = await resProjetos.json();
         listaGlobalMateriais = await resMateriais.json();
+
+        // 1. APLICAR FILTRO DE URL (Setor)
+        const urlParams = new URLSearchParams(window.location.search);
+        const filtroSetor = urlParams.get('setor');
+
+        if (filtroSetor) {
+            projetos = projetos.filter(projeto => {
+                const setorProj = projeto.setor ? projeto.setor.toLowerCase() : "";
+                const termo = filtroSetor.toLowerCase();
+                
+                // Normaliza para remover acentos antes de comparar
+                const normalizar = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+                if (termo === 'robotica' && normalizar(setorProj).includes('robotica')) return true;
+                if (termo === 'manutencao' && normalizar(setorProj).includes('manutencao')) return true;
+                return false;
+            });
+        }
         
-        // Debug: Mostra no console o que foi baixado (Aperte F12 no navegador e vá em Console)
-        console.log("Projetos carregados:", listaGlobalProjetos);
-        console.log("Materiais carregados:", listaGlobalMateriais);
+        // Salva na variável global a lista JÁ FILTRADA para a pesquisa funcionar corretamente dentro do setor
+        listaGlobalProjetos = projetos;
+        
+        // Debug: Mostra no console o que foi carregado
+        console.log("Projetos carregados (filtrados):", listaGlobalProjetos);
 
         // Renderiza a lista na tela
         renderizarProjetos(listaGlobalProjetos, listaGlobalMateriais);
@@ -75,16 +96,13 @@ function renderizarProjetos(projetos, materiais) {
         const materiaisDoProjeto = materiais.filter(m => {
             if (!m.projeto) return false;
 
-            // 1. Tenta comparar por ID (caso tenha salvo o número ID no banco)
+            // 1. Tenta comparar por ID
             if (m.projeto == projeto.id) return true;
 
             // 2. Tenta comparar por Nome Normalizado
             const matProj = normalizar(m.projeto);
             const nomeProj = normalizar(projeto.nome_projeto);
             
-            // Se quiser debugar um item específico, descomente a linha abaixo:
-            // console.log(`Comparando mat: [${matProj}] com proj: [${nomeProj}]`);
-
             return matProj === nomeProj;
         });
 
@@ -152,6 +170,38 @@ function renderizarProjetos(projetos, materiais) {
         details.appendChild(divConteudo);
         container.appendChild(details);
     });
+}
+
+// --- Atualiza o Menu Ativo e Ícone Home ---
+function atualizarMenuAtivo() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const setor = urlParams.get('setor');
+    
+    // Por padrão, assumimos que é a Home
+    let idAtivo = 'menu-home'; 
+    
+    // Se tiver filtro, mudamos o ID ativo
+    if (setor === 'robotica') idAtivo = 'menu-robotica';
+    if (setor === 'manutencao') idAtivo = 'menu-manutencao';
+
+    const elementoAtivo = document.getElementById(idAtivo);
+    
+    // Remove a classe 'ativo' de todos primeiro (segurança)
+    document.querySelectorAll('.item-menu').forEach(el => el.classList.remove('ativo'));
+
+    // Reseta o ícone da home para a versão cinza, caso não seja ela a ativa
+    const homeIcon = document.querySelector('#menu-home img');
+    if(homeIcon) homeIcon.src = "../../../assets/icons/icon-home.svg";
+
+    if (elementoAtivo) {
+        elementoAtivo.classList.add('ativo');
+        
+        // Se for o botão Home, coloca o ícone laranja
+        if (idAtivo === 'menu-home') {
+            const img = elementoAtivo.querySelector('img');
+            if (img) img.src = "../../../assets/icons/icon-home-ativo.svg";
+        }
+    }
 }
 
 // --- Funcionalidade de Pesquisa ---
