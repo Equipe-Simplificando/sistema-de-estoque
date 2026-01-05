@@ -9,6 +9,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     materiais.forEach((mat) => {
       const tr = document.createElement("tr");
+
+      // --- OTIMIZAÇÃO: Evento de clique na linha inteira ---
+      // Redireciona para a edição passando o ID do material
+      tr.addEventListener("click", () => {
+        window.location.href = `editar-material.html?id=${mat.id}`;
+      });
+      // -----------------------------------------------------
+
       tr.innerHTML = `
                         <td>${mat.id}</td>
                         <td>${mat.nome_item}</td>
