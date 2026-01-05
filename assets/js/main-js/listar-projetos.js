@@ -5,7 +5,7 @@ let listaGlobalMateriais = [];
 document.addEventListener("DOMContentLoaded", () => {
     carregarDados();
     configurarPesquisa();
-    atualizarMenuAtivo(); // Atualiza o visual do menu inferior
+    atualizarMenuAtivo(); // Gerencia os ícones do menu inferior
 });
 
 // --- Função Principal: Busca Projetos e Materiais do Servidor ---
@@ -69,7 +69,7 @@ async function carregarDados() {
     }
 }
 
-// --- Renderiza os Cards de Projeto (Estilo Acordeão) ---
+// --- Renderiza os Cards de Projeto (Estilo Acordeão com Preço) ---
 function renderizarProjetos(projetos, materiais) {
     const container = document.getElementById("lista-projetos");
     if(!container) return;
@@ -106,6 +106,11 @@ function renderizarProjetos(projetos, materiais) {
             return matProj === nomeProj;
         });
 
+        // Formatação do Preço
+        const precoFormatado = projeto.preco 
+            ? parseFloat(projeto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
+            : 'R$ 0,00';
+
         // Cria o elemento <details> (O Card)
         const details = document.createElement("details");
         details.classList.add("aba-projeto");
@@ -114,8 +119,12 @@ function renderizarProjetos(projetos, materiais) {
         const summary = document.createElement("summary");
         summary.classList.add("cabecalho-projeto");
         
+        // Conteúdo do cabeçalho com Nome e Preço
         summary.innerHTML = `
-            <span class="titulo-projeto">${projeto.nome_projeto}</span>
+            <div style="display: flex; justify-content: space-between; width: 90%; align-items: center;">
+                <span class="titulo-projeto">${projeto.nome_projeto}</span>
+                <span style="font-weight: bold; color: #2E7D32; font-size: 0.9em;">${precoFormatado}</span>
+            </div>
             <img src="../../../assets/icons/icon-seta.svg" alt="Abrir" class="icone-seta">
         `;
 

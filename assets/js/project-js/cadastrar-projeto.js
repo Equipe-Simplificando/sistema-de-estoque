@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const nome = document.getElementById("item").value;
     const obs = document.getElementById("observacoes").value;
-    const preco = document.getElementById("preco").value;
+    const preco = document.getElementById("preco").value; // Captura o preço
     const setorInput = document.querySelector('input[name="destino"]:checked');
     const setor = setorInput ? setorInput.value : null;
 
@@ -104,7 +104,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("http://localhost:3000/api/cadastrar-projeto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ item: nome, destino: setor, observacoes: obs }),
+        // Envia o preço junto com os outros dados
+        body: JSON.stringify({ 
+            item: nome, 
+            destino: setor, 
+            observacoes: obs, 
+            preco: preco 
+        }),
       });
 
       const result = await response.json();

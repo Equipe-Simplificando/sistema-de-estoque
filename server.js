@@ -57,7 +57,7 @@ app.get('/api/materiais/arquivo/:id', (req, res) => {
 // --- ROTAS DE PROJETOS ---
 // ==========================================
 
-// Rota para buscar um único projeto pelo ID (NOVA ROTA)
+// Rota para buscar um único projeto pelo ID
 app.get('/api/projetos/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'SELECT * FROM projetos WHERE id = ?';
@@ -69,13 +69,21 @@ app.get('/api/projetos/:id', (req, res) => {
     });
 });
 
+// --- ROTA DE CADASTRO ATUALIZADA (COM PREÇO) ---
 app.post('/api/cadastrar-projeto', (req, res) => {
-    const { item, destino, observacoes } = req.body;
+    const { item, destino, observacoes, preco } = req.body;
+    
     if (!item) return res.status(400).json({ error: 'Nome do projeto é obrigatório' });
 
-    const sql = `INSERT INTO projetos (nome_projeto, setor, observacoes) VALUES (?, ?, ?)`;
-    db.query(sql, [item, destino, observacoes], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Erro ao cadastrar' });
+    // Converte virgula para ponto e garante float
+    const precoFinal = preco ? parseFloat(preco.replace(',', '.')) : 0.00;
+
+    const sql = `INSERT INTO projetos (nome_projeto, setor, observacoes, preco) VALUES (?, ?, ?, ?)`;
+    db.query(sql, [item, destino, observacoes, precoFinal], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Erro ao cadastrar' });
+        }
         res.json({ success: true, id: result.insertId });
     });
 });
@@ -91,8 +99,10 @@ app.put('/api/atualizar-projeto', (req, res) => {
     });
 });
 
+// --- ROTA DE LISTAGEM ATUALIZADA (COM PREÇO) ---
 app.get('/api/projetos', (req, res) => {
-    db.query('SELECT id, nome_projeto, setor FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
+    // Incluímos a coluna 'preco' na seleção
+    db.query('SELECT id, nome_projeto, setor, preco FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Erro ao listar' });
         res.json(results);
     });
