@@ -86,7 +86,7 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
 
     if (result.success) {
       alert("Material atualizado com sucesso!");
-      window.location.href = "listar-materiais.html";
+      window.location.href = "../main-pages/home/home-material.html";
     } else {
       alert("Erro: " + (result.error || "Desconhecido"));
     }

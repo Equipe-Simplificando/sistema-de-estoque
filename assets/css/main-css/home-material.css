@@ -123,3 +123,21 @@
     width: 24px;
     height: 24px;
 }
+
+/* Torna a linha interativa */
+.tabela-itens tbody tr.linha-clicavel {
+    cursor: pointer; /* Mostra a mãozinha no desktop */
+    transition: background-color 0.2s ease; /* Suaviza a mudança de cor */
+    -webkit-tap-highlight-color: transparent; /* Remove o flash azul padrão do Android/iOS */
+}
+
+/* Estado de Hover (Mouse) */
+.tabela-itens tbody tr.linha-clicavel:hover {
+    background-color: #f0f0f0; /* Cor de fundo leve ao passar o mouse */
+}
+
+/* Estado Ativo (Toque no Mobile) */
+.tabela-itens tbody tr.linha-clicavel:active {
+    background-color: #e0e0e0; /* Cor um pouco mais escura ao tocar */
+    transform: scale(0.99); /* Leve efeito de "pressionar" */
+}

@@ -76,7 +76,7 @@ async function carregarMateriais() {
     }
 }
 
-// --- Renderização da Tabela (Separada para ser reutilizada) ---
+// --- Renderização da Tabela (Atualizada com Clique) ---
 function renderizarTabela(listaMateriais) {
     const tbody = document.querySelector(".tabela-itens tbody");
     tbody.innerHTML = ""; 
@@ -89,6 +89,14 @@ function renderizarTabela(listaMateriais) {
     listaMateriais.forEach(material => {
         const tr = document.createElement("tr");
 
+        // ADIÇÃO: Classe para feedback visual e evento de clique na linha inteira
+        tr.classList.add("linha-clicavel");
+        
+        tr.addEventListener("click", () => {
+            // Redireciona para a tela de edição passando o ID do material
+            window.location.href = `../../material-pages/editar-material.html?id=${material.id}`;
+        });
+
         let iconPath = "../../../assets/icons/icon-manutencao.svg"; 
         let altText = "Ícone Manutenção";
         const destino = material.destino ? material.destino.toLowerCase() : "";
@@ -100,11 +108,12 @@ function renderizarTabela(listaMateriais) {
 
         const idFormatado = String(material.id).padStart(3, '0');
 
+        // ALTERAÇÃO: Trocado <button> por <div> para evitar conflito de cliques no mobile
         tr.innerHTML = `
             <td>
-                <button type="button" class="icone-setor" style="cursor: default;">
+                <div class="icone-setor">
                     <img src="${iconPath}" alt="${altText}">
-                </button>
+                </div>
             </td>
             <td>${idFormatado}</td>
             <td>${material.nome_item}</td>
@@ -115,7 +124,7 @@ function renderizarTabela(listaMateriais) {
     });
 }
 
-// --- Menu Ativo (Código mantido da versão anterior) ---
+// --- Menu Ativo (Código mantido) ---
 function atualizarMenuAtivo() {
     const urlParams = new URLSearchParams(window.location.search);
     const setor = urlParams.get('setor');
