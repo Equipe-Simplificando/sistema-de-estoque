@@ -29,6 +29,11 @@ async function carregarDados() {
     if (material) {
       document.getElementById("material-id").value = material.id;
       document.getElementById("item").value = material.nome_item;
+      
+      // --- Carregar a quantidade ---
+      document.getElementById("quantidade").value = material.quantidade || 1;
+      // ----------------------------
+
       document.getElementById("observacoes").value = material.observacoes || "";
       if (material.projeto) selectProjeto.value = material.projeto;
       if (material.destino === "robotica")
@@ -82,6 +87,11 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
   const formData = new FormData();
   formData.append("id", document.getElementById("material-id").value);
   formData.append("item", document.getElementById("item").value);
+  
+  // --- Enviar a quantidade ---
+  formData.append("quantidade", document.getElementById("quantidade").value);
+  // -------------------------
+
   const destino = document.querySelector('input[name="destino"]:checked');
   formData.append("destino", destino ? destino.value : "");
   formData.append("projeto", document.getElementById("projeto").value);
