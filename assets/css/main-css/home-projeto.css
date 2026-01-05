@@ -19,7 +19,6 @@
 
 .icone-qrcode {
     cursor: pointer;
-
 }
 
 .botao-qrcode {
@@ -64,17 +63,47 @@
     background: #F2D16D;
 }
 
+/* --- LISTA DE PROJETOS COM SCROLL E CORREÇÃO DE CLIQUE --- */
 .secao-projetos {
     display: flex;
     flex-direction: column;
     width: 100%;
     gap: 1.75rem;
+
+    /* ALTERAÇÃO: Aumentado para 500px para caber 7 itens */
+    max-height: 500px;
+    
+    /* Ativa rolagem se passar da altura */
+    overflow-y: auto;
+
+    /* Espaço extra no final para o botão flutuante não cobrir o último item */
+    padding-bottom: 100px;
+    
+    /* Previne corte lateral de sombras */
+    padding-right: 5px; 
+    padding-left: 5px;
+    margin-left: -5px; 
+}
+
+/* Estilização da Barra de Rolagem */
+.secao-projetos::-webkit-scrollbar {
+    width: 6px;
+}
+
+.secao-projetos::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.secao-projetos::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
 }
 
 /* --- ESTILO GERAL DO ACORDEÃO --- */
 details.aba-projeto {
     width: 100%;
     height: auto;
+    flex-shrink: 0; 
 
     background: var(--cor-input);
     border-radius: var(--radius);
@@ -147,7 +176,6 @@ details[open].aba-projeto {
     cursor: pointer;
     background: none;
     border: none;
-
 }
 
 .botao {
