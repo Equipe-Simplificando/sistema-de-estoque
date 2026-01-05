@@ -14,7 +14,7 @@
         <header class="cabecalho">
             <div class="grupo-pesquisa-qrcode">
                 <div class="container-pesquisa">
-                    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisaItem">
+                    <input type="text" class="campo-entrada" id="pesquisa-item" name="pesquisaItem" placeholder="Pesquisar...">
                     <div class="icone-pesquisa">
                         <button type="button" class="botao-pesquisa" aria-label="Pesquisar item">
                             <img src="../../../assets/icons/icon-pesquisa.svg" alt="">
@@ -32,103 +32,37 @@
         <main class="conteudo">
 
             <div class="grupo-radio">
-                <input type="radio" name="material-projeto" id="material" value="material">
+                <input type="radio" name="material-projeto" id="material" value="material" 
+                    onclick="window.location.href='venda-material.html'">
                 <label for="material" class="rotulo-radio">
                     MATERIAL
                 </label>
 
                 <input type="radio" name="material-projeto" id="projeto" value="projeto" checked>
-                <label for="projeto" class="rotulo-radio">
+                <label for="projeto" class="rotulo-radio borda-esquerda">
                     PROJETO
                 </label>
             </div>
 
-            <div class="grupo-tabela">
+            <div class="grupo-tabela" id="container-tabela">
                 <table class="tabela-itens">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">ITEM</th>
-                            <th scope="col">QTD</th>
-                            <th scope="col">R$</th>
+                            <th scope="col" style="width: 20%;">ID</th>
+                            <th scope="col" style="width: 45%;">ITEM</th>
+                            <th scope="col" style="width: 15%;">QTD</th>
+                            <th scope="col" style="width: 20%;">R$</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
-                        <tr>
-                            <td>23-002</td>
-                            <td>PROJETO ABC</td>
-                            <td>x2</td>
-                            <td>R$0.000,00</td>
-                        </tr>
+                    <tbody id="corpo-tabela">
+                        <tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>
                     </tbody>
                 </table>
             </div>
         </main>
 
         <div class="espaco-inferior">
-
             <nav class="menu-inferior">
-
                 <a href="../../main-pages/home/home-projeto.html" class="item-menu">
                     <span class="icone-menu">
                         <img src="../../../assets/icons/icon-home.svg" alt="Home" class="icone-imagem">
@@ -136,14 +70,14 @@
                     <small class="texto-menu">Home</small>
                 </a>
 
-                <a href="#" class="item-menu">
+                <a href="../../main-pages/home/home-projeto.html?setor=robotica" class="item-menu">
                     <span class="icone-menu">
                         <img src="../../../assets/icons/icon-robotica.svg" alt="Robótica" class="icone-imagem">
                     </span>
                     <small class="texto-menu">Robótica</small>
                 </a>
 
-                <a href="#" class="item-menu">
+                <a href="../../main-pages/home/home-projeto.html?setor=manutencao" class="item-menu">
                     <span class="icone-menu">
                         <img src="../../../assets/icons/icon-manutencao.svg" alt="Manutenção" class="icone-imagem">
                     </span>
@@ -156,16 +90,10 @@
                     </span>
                     <small class="texto-menu">Venda</small>
                 </a>
-
             </nav>
         </div>
-
-
-
-
-
     </div>
 
+    <script src="../../../assets/js/main-js/listar-vendas.js"></script>
 </body>
-
 </html>
