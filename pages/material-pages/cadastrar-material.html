@@ -7,6 +7,88 @@
     <title>Cadastrar Material</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/material-css/cadastrar-material.css">
+    <style>
+        /* Container flex para alinhar NOME e QTD na mesma linha */
+        .row-input {
+            display: flex;
+            flex-direction: row;
+            gap: 1.5rem; /* Espaço entre os campos */
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        /* Coluna do Nome ocupa o espaço restante */
+        .col-nome {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Coluna da Quantidade com largura fixa */
+        .col-qtd {
+            width: 8rem; /* Largura suficiente para input + botão */
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Wrapper para juntar o input e o botão */
+        .qtd-wrapper {
+            display: flex;
+            height: 3.5rem; /* Mesma altura definida em global.css (.campo-entrada) */
+            width: 100%;
+        }
+
+        /* Input de quantidade ajustado */
+        .qtd-wrapper .campo-entrada {
+            width: 100%;
+            height: 100%;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-right: none; /* Remove a borda entre input e botão */
+            text-align: center;
+            padding: 0;
+        }
+
+        /* Botão de mais (+) */
+        .btn-plus {
+            background-color: #1f731d;
+            border: 2px solid #161614; /* Mesma cor/espessura da borda global */
+            border-left: none;
+            color: #fff;
+            width: 3.5rem; /* Quadrado (altura = largura) */
+            height: 3.5rem;
+            font-size: 2rem;
+            font-weight: 500;
+            border-top-right-radius: 1rem; /* var(--radius) */
+            border-bottom-right-radius: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 4px; /* Ajuste visual para centralizar o + */
+            transition: background 0.2s;
+        }
+
+        .btn-plus:hover {
+            background-color: #05A51D;
+        }
+
+        /* Em telas muito pequenas (celulares), empilha um embaixo do outro */
+        @media (max-width: 480px) {
+            .row-input {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .col-qtd {
+                width: 100%;
+            }
+            .col-qtd .qtd-wrapper {
+                width: 50%; /* No mobile, não precisa ser tão largo */
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -26,9 +108,19 @@
 
                 <form id="formulario" class="formulario" method="POST">
 
-                    <div class="campo-grupo">
-                        <label for="item" class="campo-rotulo">NOME DO ITEM</label>
-                        <input type="text" id="item" name="item" class="campo-entrada" required>
+                    <div class="row-input">
+                        <div class="col-nome">
+                            <label for="item" class="campo-rotulo">NOME DO ITEM</label>
+                            <input type="text" id="item" name="item" class="campo-entrada" required>
+                        </div>
+
+                        <div class="col-qtd">
+                            <label for="quantidade" class="campo-rotulo">QTD*</label>
+                            <div class="qtd-wrapper">
+                                <input type="number" id="quantidade" name="quantidade" class="campo-entrada" value="1" min="1" required>
+                                <button type="button" class="btn-plus" onclick="incrementarQtd()">+</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="campo-grupo">
@@ -82,7 +174,6 @@
                         <button type="submit" class="botao">
                             GERAR ETIQUETA
                         </button>
-                        </a>
                     </div>
                 </form>
             </section>
@@ -90,6 +181,13 @@
     </div>
 
     <script src="../../assets/js/material-js/cadastrar-material.js"></script>
+    <script>
+        function incrementarQtd() {
+            const input = document.getElementById('quantidade');
+            let val = parseInt(input.value) || 0;
+            input.value = val + 1;
+        }
+    </script>
 </body>
 
 </html>
