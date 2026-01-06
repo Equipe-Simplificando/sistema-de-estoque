@@ -203,6 +203,9 @@ app.delete('/api/deletar/:id', (req, res) => {
     });
 });
 
+// Diz ao servidor para permitir acesso aos arquivos das pastas (CSS, JS, HTML) no Linux
+app.use(express.static(__dirname));
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });

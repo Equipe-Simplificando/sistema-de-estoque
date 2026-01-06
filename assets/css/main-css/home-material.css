@@ -1,5 +1,8 @@
 .container {
-    padding: 3.5rem 1rem 7rem 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* ocupa toda a altura da tela */
+    padding: 3.5rem 1rem 6.2rem 1rem; /* mantém espaço para menu inferior */
 }
 
 .cabecalho {
@@ -7,9 +10,12 @@
 }
 
 .conteudo {
-    gap: 2.5rem;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    gap: 2.5rem;
+    min-height: 0; /* ESSENCIAL para scroll interno funcionar */
+    overflow: hidden; /* evita scroll da página inteira */
 }
 
 .grupo-pesquisa-qrcode {
@@ -21,6 +27,7 @@
 
 .icone-qrcode {
     cursor: pointer;
+
 }
 
 .botao-qrcode {
@@ -61,83 +68,14 @@
     border-radius: 1.5rem 0 0 1.5rem;
 }
 
-/* --- TABELA COM SCROLL --- */
-
+/* TABELA */
 .grupo-tabela {
-    width: 100%;
-    
-    /* Altura Máxima: 500px exibe aprox. 10 itens.
-       Se passar disso, a barra de rolagem aparece. */
-    max-height: 500px; 
-    
-    /* Ativa o scroll vertical */
-    overflow-y: auto; 
-    
-    /* Acabamento visual */
-    border-radius: 8px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    background-color: #fff; /* Garante fundo branco ao rolar */
+    flex: 1;           /* ocupa espaço restante */
+    overflow-y: auto;  /* apenas a tabela rola */
+    min-height: 0;     /* ESSENCIAL para scroll funcionar no flex */
 }
 
-.tabela-itens {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-/* Cabeçalho Fixo (Sticky Header) */
-.tabela-itens thead th {
-    position: sticky;
-    top: 0;
-    
-    /* Mantém a cor original do seu design */
-    background: #05A51D;
-    color: var(--cor-texto-escuro);
-    
-    /* Garante que fique acima das linhas ao rolar */
-    z-index: 2; 
-    
-    padding: 1rem;
-    text-align: left;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilo das Linhas */
-.tabela-itens tbody tr {
-    border-bottom: 1px solid #eee;
-}
-
-.tabela-itens td {
-    padding: 1rem;
-    vertical-align: middle;
-}
-
-/* Ajuste dos ícones dentro da tabela */
-.icone-setor {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: default;
-}
-
-.icone-setor img {
-    width: 24px;
-    height: 24px;
-}
-
-/* Torna a linha interativa */
-.tabela-itens tbody tr.linha-clicavel {
-    cursor: pointer; /* Mostra a mãozinha no desktop */
-    transition: background-color 0.2s ease; /* Suaviza a mudança de cor */
-    -webkit-tap-highlight-color: transparent; /* Remove o flash azul padrão do Android/iOS */
-}
-
-/* Estado de Hover (Mouse) */
-.tabela-itens tbody tr.linha-clicavel:hover {
-    background-color: #f0f0f0; /* Cor de fundo leve ao passar o mouse */
-}
-
-/* Estado Ativo (Toque no Mobile) */
-.tabela-itens tbody tr.linha-clicavel:active {
-    background-color: #e0e0e0; /* Cor um pouco mais escura ao tocar */
-    transform: scale(0.99); /* Leve efeito de "pressionar" */
+.tabela-itens thead {
+  background: #05A51D;
+  color: var(--cor-texto-escuro);
 }
