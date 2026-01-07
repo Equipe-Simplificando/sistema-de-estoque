@@ -213,6 +213,23 @@ body {
   cursor: pointer;
 }
 
+/* Estados Selecionados (Material/Projeto) */
+#material:checked + .rotulo-radio {
+    background: var(--cor-fundo-lembrete);
+    opacity: 1;
+    border-right: 2px solid var(--cor-texto-escuro);
+    font-size: 2rem;
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
+#projeto:checked + .rotulo-radio {
+    background: var(--cor-secundaria);
+    opacity: 1;
+    border-left: 2px solid var(--cor-texto-escuro);
+    font-size: 2rem;
+    border-radius: 1.5rem 0 0 1.5rem;
+}
+
 /* Estados Selecionados (Robótica/Manutenção) */
 #robotica:checked+.rotulo-radio {
   background: var(--cor-primaria);
@@ -224,8 +241,8 @@ body {
 }
 
 #manutencao:checked+.rotulo-radio {
-  background: var(--cor-primaria);
-  color: var(--cor-texto-claro);
+  background: var(--cor-secundaria);
+  color: var(--cor-texto-escuro);
   opacity: 1;
   border-radius: 0 var(--radius) var(--radius) 0;
   /* Arredonda direita */

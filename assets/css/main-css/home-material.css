@@ -1,21 +1,31 @@
+/* CAMINHO: assets/css/main-css/home-material.css */
+
+/* ==========================================================================
+   1. LAYOUT E ESTRUTURA
+   ========================================================================== */
+
 .container {
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    height: 100vh; 
     padding: 3.5rem 1rem 6.2rem 1rem;
 }
 
-.cabecalho {
-    margin-bottom: 2.5rem;
-}
-
 .conteudo {
-    flex: 1;                
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
-    min-height: 0;          
-    overflow: hidden;  
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   2. CABEÇALHO E PESQUISA
+   ========================================================================== */
+
+.cabecalho {
+    margin-bottom: 2.5rem;
 }
 
 .grupo-pesquisa-qrcode {
@@ -32,11 +42,13 @@
 .botao-qrcode {
     border: none;
     background: none;
+    padding: 0;
 }
 
-/* ================================
-   RADIO BUTTONS
-================================ */
+/* ==========================================================================
+   3. RADIO BUTTONS HOME-MATERIAL
+   ========================================================================== */
+
 .grupo-radio {
     height: 3.4375rem;
     border: 2px solid #000;
@@ -51,28 +63,10 @@
     white-space: nowrap;
 }
 
-/* Material selecionado */
-#material:checked + .rotulo-radio {
-    background: #05A51D;
-    opacity: 1;
-    border-right: 2px solid var(--cor-texto-escuro);
-    font-size: 2rem;
-    border-radius: 0 1.5rem 1.5rem 0;
-}
-
-/* Projeto selecionado */
-#projeto:checked + .rotulo-radio {
-    background: var(--cor-secundaria);
-    opacity: 1;
-    border-left: 2px solid var(--cor-texto-escuro);
-    font-size: 2rem;
-    border-radius: 1.5rem 0 0 1.5rem;
-}
-
-/* ================================
-   TABELA
-================================ */
+/* ==========================================================================
+   4. TABELA
+   ========================================================================== */
 
 .grupo-tabela {
-    flex: 1; 
+    flex: 1;
 }
