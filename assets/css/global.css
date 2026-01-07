@@ -1,26 +1,44 @@
-/* FONTES */
+/* ==========================================================================
+   1. IMPORTAÇÕES E VARIÁVEIS
+   ========================================================================== */
+
+/* Fontes */
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
 
-/* VARIÁVEIS GLOBAIS */
 :root {
+  /* Cores Institucionais e Interface */
   --cor-fundo: #fefefe;
   --cor-fundo-lembrete: #05a51d;
+  /* Verde Header Tabela/Menu */
+  --cor-primaria: #1f731d;
+  /* Verde Botões/Radio Ativo */
+  --cor-secundaria: #f2d16d;
+  /* Amarelo Detalhes */
+
+  /* Texto */
   --cor-texto-escuro: #161614;
   --cor-texto-claro: #fefefe;
-  --cor-primaria: #1f731d;
-  --shadow-primaria: rgba(0, 52, 16, 0.5);
-  --cor-secundaria: #f2d16d;
-  --shadow-secundaria: rgba(69, 11, 0, 0.5);
+
+  /* Feedback */
   --cor-sucesso: #00ff26;
   --cor-erro: #ff0000;
+
+  /* Estrutura */
   --cor-input: #e9e8e3;
   --cor-borda: var(--cor-texto-escuro);
+  --shadow-primaria: rgba(0, 52, 16, 0.5);
+  --shadow-secundaria: rgba(69, 11, 0, 0.5);
+
+  /* Dimensões */
   --font-principal: "Ubuntu", sans-serif;
   --radius: 1rem;
   --borda: 2px solid var(--cor-borda);
 }
 
-/* RESET */
+/* ==========================================================================
+   2. RESET E ESTRUTURA BASE
+   ========================================================================== */
+
 * {
   margin: 0;
   padding: 0;
@@ -34,45 +52,14 @@ body {
   color: var(--cor-texto-escuro);
 }
 
-/* LAYOUT */
+/* Layout Principal */
 .container {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 3rem 1.5rem;
-}
-
-/* CABEÇALHO COM BOTÃO FECHAR */
-.cabecalho {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-
-.titulo-pagina {
-  color: var(--cor-texto-escuro);
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-/* BOTÃO FECHAR */
-.botao-fechar {
-  width: 75px;
-  height: 75px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  background: none;
-  text-decoration: none;
-
-  cursor: pointer;
-}
-
-.botao-fechar:hover {
-  opacity: 0.85;
+  /* Espaço para não colar nas bordas */
 }
 
 .conteudo {
@@ -80,20 +67,24 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* gap pode ser adicionado aqui se quiser espaçamento padrão entre elementos */
 }
 
-/* FORMULÁRIOS*/
-
-.formulario {
+/* Cabeçalho da Página (Título + Botão Fechar) */
+.cabecalho {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  justify-content: space-between;
 }
 
-.campo-grupo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+/* ==========================================================================
+   3. TIPOGRAFIA
+   ========================================================================== */
+
+.titulo-pagina {
+  color: var(--cor-texto-escuro);
+  font-size: 2rem;
+  font-weight: 700;
 }
 
 .campo-rotulo {
@@ -108,34 +99,50 @@ body {
   color: var(--cor-texto-escuro);
 }
 
-/* CAMPOS DE ENTRADA */
-.campo-entrada {
+/* ==========================================================================
+   4. FORMULÁRIOS E INPUTS
+   ========================================================================== */
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Estilo Base para Inputs */
+.campo-entrada,
+.campo-texto {
   width: 100%;
-  height: 3.5rem;
-  padding: 0 1rem;
   border: var(--borda);
   border-radius: var(--radius);
   background: var(--cor-input);
   font-size: 1.25rem;
-  cursor: text;
 
+  /* Remove estilos nativos do navegador */
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
 
+.campo-entrada {
+  height: 3.5rem;
+  padding: 0 1rem;
+  cursor: text;
+}
+
 .campo-texto {
-  width: 100%;
   height: 10rem;
   padding: 1rem;
-  border: var(--borda);
-  border-radius: var(--radius);
-  background: var(--cor-input);
-  font-size: 1.25rem;
   resize: vertical;
 }
 
-/* SELECT CUSTOMIZADO */
+/* --- Select Customizado --- */
 .container-select {
   position: relative;
   width: 100%;
@@ -151,13 +158,21 @@ body {
   right: 1rem;
   transform: translateY(-50%);
   pointer-events: none;
+  /* Permite clicar através do ícone */
 }
 
-/* BARRA PESQUISA CUSTOMIZADO */
+/* --- Barra de Pesquisa --- */
 .container-pesquisa {
   display: flex;
   position: relative;
   width: 100%;
+}
+
+.grupo-pesquisa-filtro {
+  display: flex;
+  width: 100%;
+  gap: 24px;
+  align-items: center;
 }
 
 .icone-pesquisa {
@@ -171,33 +186,7 @@ body {
   height: 29px;
 }
 
-.botao-pesquisa img {
-  width: 25px;
-  height: 29px;
-  display: block;
-}
-
-.grupo-pesquisa-filtro {
-  display: flex;
-  width: 100%;
-  gap: 24px;
-  align-items: center;
-}
-
-.icone-filtro {
-  top: 50%;
-  width: 35px;
-  height: 39px;
-  cursor: pointer;
-}
-
-.botao-filtro img {
-  width: 35px;
-  height: 39px;
-  display: block;
-}
-
-/* RADIO BUTTONS */
+/* --- Radio Buttons (Abas) --- */
 .grupo-radio {
   display: flex;
   width: 100%;
@@ -210,6 +199,7 @@ body {
 
 .grupo-radio input[type="radio"] {
   display: none;
+  /* Esconde a bolinha padrão */
 }
 
 .rotulo-radio {
@@ -223,64 +213,57 @@ body {
   cursor: pointer;
 }
 
-/* Robótica selecionado */
+/* Estados Selecionados (Robótica/Manutenção) */
 #robotica:checked+.rotulo-radio {
   background: var(--cor-primaria);
   color: var(--cor-texto-claro);
   opacity: 1;
-  border-radius: var(--radius);
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  border-radius: var(--radius) 0 0 var(--radius);
+  /* Arredonda esquerda */
   box-shadow: inset -2px -2px 4px 0 var(--shadow-primaria);
 }
 
-/* Manutenção selecionado */
 #manutencao:checked+.rotulo-radio {
   background: var(--cor-primaria);
   color: var(--cor-texto-claro);
   opacity: 1;
-  border-radius: var(--radius);
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  /* Arredonda direita */
   box-shadow: inset 2px -2px 0 1.5px var(--shadow-primaria);
 }
 
-/* PREÇO */
+/* --- Campo de Preço (R$) --- */
 .campo-preco {
   position: relative;
-
   width: 100%;
   height: 3.5rem;
-
   background: var(--cor-input);
   border: var(--borda);
   border-radius: var(--radius);
 }
 
-/* R$ fixo dentro do campo */
 .prefixo-moeda {
   position: absolute;
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-
   font-size: 1.25rem;
   font-weight: 500;
   pointer-events: none;
-
-
 }
 
-/* input do preço */
 .campo-preco .campo-entrada {
   width: 100%;
   height: 100%;
-
   padding-left: 3rem;
-  /* espaço para o R$ */
+  /* Espaço para o prefixo R$ */
   border: none;
   background: transparent;
 }
+
+/* ==========================================================================
+   5. BOTÕES E ÍCONES INTERATIVOS
+   ========================================================================== */
 
 .grupo-acoes {
   width: 100%;
@@ -289,7 +272,7 @@ body {
   align-items: center;
 }
 
-/* BOTÃO PRINCIPAL */
+/* Botões Principais (Com Borda/Fundo) */
 .botao {
   width: 20rem;
   height: 3.5rem;
@@ -319,25 +302,91 @@ body {
   box-shadow: none;
 }
 
-/* TABELA */
+/* Botões de Ícone (Reset Geral) 
+   Remove fundo e borda de todos os botões que são apenas imagens */
+.botao-fechar,
+.botao-excluir,
+.botao-pesquisa,
+.botao-filtro,
+.botao-cadastro,
+.icone-setor {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ajustes Específicos */
+.botao-fechar {
+  width: 75px;
+  height: 75px;
+}
+
+.botao-fechar:hover {
+  opacity: 0.85;
+}
+
+.botao-pesquisa img {
+  width: 25px;
+  height: 29px;
+  display: block;
+}
+
+.botao-filtro {
+  width: 35px;
+  height: 39px;
+}
+
+.botao-filtro img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.botao-cadastro,
+.botao-cadastro img {
+  width: 6.25rem;
+  height: 6.25rem;
+}
+
+/* Ícone não clicável dentro da tabela */
+.icone-setor {
+  cursor: default;
+}
+
+.icone-setor img {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* ==========================================================================
+   6. TABELA COM SCROLL FIXO
+   ========================================================================== */
+
 .grupo-tabela {
   width: 100%;
-  overflow-x: auto;
-  /* Permite rolagem horizontal no celular */
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
+
+  /* Controle de Scroll */
+  min-height: 0;
+  /* Defina max-height no HTML ou classe específica se precisar limitar a altura */
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Estética do container */
+  border: var(--borda);
+  border-radius: var(--radius);
 }
 
 .tabela-itens {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  border: var(--borda);
-  border-radius: var(--radius);
-  overflow: hidden;
 }
 
+/* Células Gerais */
 .tabela-itens th,
 .tabela-itens td {
   padding: 12px 10px;
@@ -347,25 +396,37 @@ body {
   border-right: var(--borda);
 }
 
-.tabela-itens tbody tr:last-child td {
-  border-bottom: none;
-}
-
+/* Remove bordas duplicadas nas extremidades */
 .tabela-itens th:last-child,
 .tabela-itens td:last-child {
   border-right: none;
 }
 
-.tabela-itens thead {
-  background: var(--cor-secundaria);
-  color: var(--cor-texto-escuro);
+.tabela-itens tbody tr:last-child td {
+  border-bottom: none;
 }
 
-.tabela-itens th {
+/* Cabeçalho Fixo (Sticky) */
+.tabela-itens thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabela-itens thead th {
+  background: var(--cor-fundo-lembrete);
+  z-index: 100;
+  color: var(--cor-texto-claro);
+
   font-size: 24px;
   font-weight: 700;
+
+  border-top: var(--borda);
+  border: none;
+  border-bottom: var(--borda);
 }
 
+/* Zebra Striping (Linhas alternadas) */
 .tabela-itens tbody tr:nth-child(odd) {
   background: var(--cor-fundo);
 }
@@ -374,39 +435,11 @@ body {
   background: var(--cor-input);
 }
 
-.tabela-itens td:nth-child(2) {
-  text-align: left;
-}
+/* ==========================================================================
+   7. MENU INFERIOR E NAVEGAÇÃO
+   ========================================================================== */
 
-.botao-excluir,
-.botao-fechar,
-.botao-pesquisa,
-.botao-filtro {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-
-.botao-cadastro,
-.botao-cadastro img {
-  width: 6.25rem;
-  height: 6.25rem;
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-.icone-setor,
-.icone-setor img {
-  width: 2rem;
-  height: 2rem;
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-/* MENU INFERIOR DAS PAGINAS PRINCIPAIS */
+/* Container fixo na base da tela */
 .espaco-inferior {
   display: flex;
   flex-direction: column;
@@ -415,17 +448,25 @@ body {
   left: 0;
   width: 100%;
   gap: 1.5rem;
+  pointer-events: none;
+  /* Permite clicar "através" da área vazia */
+}
+
+/* Reabilita cliques nos elementos interativos */
+.botao-cadastro,
+.menu-inferior {
+  pointer-events: auto;
 }
 
 .botao-cadastro {
   align-self: end;
+  /* Joga o botão FAB para a direita */
   margin-right: 1rem;
 }
 
 .menu-inferior {
   width: 100%;
   height: 6rem;
-
   background: #05A51D;
 
   display: flex;
@@ -437,10 +478,11 @@ body {
   z-index: 1000;
 }
 
-/* ITEM DO MENU */
+/* Itens Individuais do Menu */
 .item-menu {
   width: 4.5rem;
   height: 4.5rem;
+  position: relative;
 
   display: flex;
   flex-direction: column;
@@ -448,42 +490,38 @@ body {
 
   text-decoration: none;
   color: var(--cor-texto-escuro);
-
-  position: relative;
 }
 
-/* ÍCONE (NO TOPO) */
+/* Feedback de toque */
+.item-menu:active {
+  transform: scale(0.95);
+}
+
 .icone-menu {
   width: 3.5rem;
   height: 3rem;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin-top: 0.25rem;
 }
 
-/* IMAGEM DO ÍCONE */
 .icone-imagem {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* TEXTO (COLADO EMBAIXO) */
 .texto-menu {
   margin-top: auto;
-
   font-size: 1rem;
   font-weight: 400;
   line-height: 1;
   color: var(--cor-texto-escuro);
-
   position: relative;
 }
 
-/* ITEM ATIVO */
+/* Estado Ativo do Menu (Sublinhado) */
 .item-menu.ativo {
   font-weight: 700;
 }
@@ -491,19 +529,10 @@ body {
 .item-menu.ativo .texto-menu::after {
   content: "";
   position: absolute;
-
   left: 0;
   bottom: -0.25rem;
-
   width: 100%;
   height: 3px;
-
   background: #000;
   border-radius: 2px;
 }
-
-/* FEEDBACK DE TOQUE */
-.item-menu:active {
-  transform: scale(0.95);
-}
-

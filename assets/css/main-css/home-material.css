@@ -1,8 +1,8 @@
 .container {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* ocupa toda a altura da tela */
-    padding: 3.5rem 1rem 6.2rem 1rem; /* mantém espaço para menu inferior */
+    height: 100vh; 
+    padding: 3.5rem 1rem 6.2rem 1rem;
 }
 
 .cabecalho {
@@ -10,12 +10,12 @@
 }
 
 .conteudo {
-    flex: 1;
+    flex: 1;                
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
-    min-height: 0; /* ESSENCIAL para scroll interno funcionar */
-    overflow: hidden; /* evita scroll da página inteira */
+    min-height: 0;          
+    overflow: hidden;  
 }
 
 .grupo-pesquisa-qrcode {
@@ -27,7 +27,6 @@
 
 .icone-qrcode {
     cursor: pointer;
-
 }
 
 .botao-qrcode {
@@ -35,7 +34,9 @@
     background: none;
 }
 
-/* RADIO BUTTONS */
+/* ================================
+   RADIO BUTTONS
+================================ */
 .grupo-radio {
     height: 3.4375rem;
     border: 2px solid #000;
@@ -51,7 +52,7 @@
 }
 
 /* Material selecionado */
-#material:checked+.rotulo-radio {
+#material:checked + .rotulo-radio {
     background: #05A51D;
     opacity: 1;
     border-right: 2px solid var(--cor-texto-escuro);
@@ -60,7 +61,7 @@
 }
 
 /* Projeto selecionado */
-#projeto:checked+.rotulo-radio {
+#projeto:checked + .rotulo-radio {
     background: var(--cor-secundaria);
     opacity: 1;
     border-left: 2px solid var(--cor-texto-escuro);
@@ -68,14 +69,10 @@
     border-radius: 1.5rem 0 0 1.5rem;
 }
 
-/* TABELA */
-.grupo-tabela {
-    flex: 1;           /* ocupa espaço restante */
-    overflow-y: auto;  /* apenas a tabela rola */
-    min-height: 0;     /* ESSENCIAL para scroll funcionar no flex */
-}
+/* ================================
+   TABELA
+================================ */
 
-.tabela-itens thead {
-  background: #05A51D;
-  color: var(--cor-texto-escuro);
+.grupo-tabela {
+    flex: 1; 
 }
