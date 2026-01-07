@@ -1,0 +1,63 @@
+/* assets/css/main-css/home-css/home-base.css */
+
+/* 1. LAYOUT */
+.container {
+    height: 100vh;
+    padding: 3rem 1.5rem 6.2rem;
+}
+
+.conteudo {
+    flex: 1;
+    gap: 2.5rem;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* 2. CABEÇALHO, PESQUISA E QRCODE */
+.cabecalho {
+    margin-bottom: 2.5rem;
+}
+
+.grupo-pesquisa-qrcode {
+    display: flex;
+    width: 100%;
+    gap: 24px;
+    align-items: center;
+}
+
+.icone-qrcode {
+    cursor: pointer;
+}
+
+.botao-qrcode {
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+/*  3. RADIO BUTTONS (ABAS DE NAVEGAÇÃO MATERIAL/PROJETO) */
+.grupo-radio {
+    height: 3.4375rem;
+    border: 2px solid #000;
+    border-radius: 1.5rem;
+    background: #FFF;
+}
+
+.rotulo-radio {
+    color: var(--cor-texto-escuro);
+    font-size: 1.5rem;
+    padding: 0 1rem;
+    white-space: nowrap;
+}
+
+/* 4. MENU INFERIOR (BASE) */
+.menu-inferior {
+    /* Cor base do menu inferior */
+    background: #05A51D;
+}
+
+/* 5. TABELA */
+
+.grupo-tabela {
+    flex: 1;
+}
