@@ -56,8 +56,17 @@
     background: #05A51D;
 }
 
-/* 5. TABELA */
+/* Correção para desbloquear cliques atrás do menu inferior */
+.espaco-inferior {
+    pointer-events: none;
+}
 
+.botao-cadastro,
+.menu-inferior {
+    pointer-events: auto;
+}
+
+/* 5. TABELA */
 .grupo-tabela {
     flex: 1;
 }
