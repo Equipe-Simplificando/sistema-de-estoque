@@ -85,6 +85,7 @@ COLLATE utf8mb4_unicode_ci;
 USE sistemadeestoque;
 
 -- Tabela de Materiais
+
 CREATE TABLE IF NOT EXISTS materiais (
     id INT PRIMARY KEY,
     nome_item VARCHAR(255) NOT NULL,
@@ -99,6 +100,7 @@ CREATE TABLE IF NOT EXISTS materiais (
 );
 
 -- Tabela de Projetos
+
 CREATE TABLE IF NOT EXISTS projetos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_projeto VARCHAR(150) NOT NULL,
@@ -108,6 +110,7 @@ CREATE TABLE IF NOT EXISTS projetos (
 );
 
 -- Tabela de Usuários (estrutura futura)
+
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_usuario VARCHAR(100) NOT NULL,
