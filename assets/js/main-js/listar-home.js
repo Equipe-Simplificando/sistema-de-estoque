@@ -89,7 +89,7 @@ function renderizarTabela(listaMateriais) {
     listaMateriais.forEach(material => {
         const tr = document.createElement("tr");
 
-        // ADIÇÃO: Classe para feedback visual e evento de clique na linha inteira
+        // Classe para feedback visual e evento de clique na linha inteira
         tr.classList.add("linha-clicavel");
         
         tr.addEventListener("click", () => {
@@ -108,7 +108,13 @@ function renderizarTabela(listaMateriais) {
 
         const idFormatado = String(material.id).padStart(3, '0');
 
-        // ALTERAÇÃO: Trocado <button> por <div> para evitar conflito de cliques no mobile
+        // LÓGICA DE QUANTIDADE CORRIGIDA:
+        // Verifica se quantidade existe e não é nula. Se for 0, mostra 0. Se for nulo, mostra 0.
+        // O "|| 1" anterior fazia com que 0 virasse 1.
+        const qtdExibida = (material.quantidade !== undefined && material.quantidade !== null) 
+                           ? material.quantidade 
+                           : 0;
+
         tr.innerHTML = `
             <td>
                 <div class="icone-setor">
@@ -117,14 +123,14 @@ function renderizarTabela(listaMateriais) {
             </td>
             <td>${idFormatado}</td>
             <td>${material.nome_item}</td>
-            <td>x${material.quantidade || 1}</td>
+            <td>x${qtdExibida}</td>
         `;
 
         tbody.appendChild(tr);
     });
 }
 
-// --- Menu Ativo (Código mantido) ---
+// --- Menu Ativo ---
 function atualizarMenuAtivo() {
     const urlParams = new URLSearchParams(window.location.search);
     const setor = urlParams.get('setor');
