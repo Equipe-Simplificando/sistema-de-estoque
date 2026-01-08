@@ -62,7 +62,10 @@
   box-shadow: none;
 }
 
-
-
+.tabela-itens thead th {
+    background-color: var(--cor-secundaria) !important; /* !important garante a sobreposição ao global */
+    color: var(--cor-texto-escuro) !important;
+    box-shadow: inset 0 -4px 0 0 var(--shadow-secundaria);
+}
 
 
