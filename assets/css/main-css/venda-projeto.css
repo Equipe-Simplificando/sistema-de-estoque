@@ -19,7 +19,6 @@
 
 .icone-qrcode {
     cursor: pointer;
-
 }
 
 .botao-qrcode {
@@ -64,3 +63,32 @@
     background: #F2D16D;
 }
 
+/* --- CORREÇÃO DA TABELA (Amarelo) --- */
+
+/* Aplica a cor amarela diretamente nas células do cabeçalho para cobrir o verde do global.css */
+.tabela-itens thead th {
+    background-color: var(--cor-secundaria) !important; /* Amarelo */
+    color: var(--cor-texto-escuro) !important; /* Texto escuro para contraste */
+    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
+}
+
+/* Garante a borda preta ao redor do cabeçalho */
+.tabela-itens thead tr {
+    border: 2px solid #000;
+}
+
+/* Remove a borda direita do último item */
+.tabela-itens th:last-child {
+    border-right: none;
+}
+
+/* Ajusta as bordas do corpo da tabela para preto */
+.tabela-itens tbody td {
+    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
+}
+
+.tabela-itens tbody td:last-child {
+    border-right: none;
+}
