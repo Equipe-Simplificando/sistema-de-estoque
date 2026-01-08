@@ -85,12 +85,12 @@ COLLATE utf8mb4_unicode_ci;
 USE sistemadeestoque;
 
 -- Tabela de Materiais
-
 CREATE TABLE IF NOT EXISTS materiais (
     id INT PRIMARY KEY,
     nome_item VARCHAR(255) NOT NULL,
     destino VARCHAR(50),
     projeto VARCHAR(255),
+    projeto_id INT, -- Adicionado para compatibilidade com o backend
     observacoes TEXT,
     quantidade INT DEFAULT 1,
     arquivo_dados LONGBLOB,
@@ -100,17 +100,16 @@ CREATE TABLE IF NOT EXISTS materiais (
 );
 
 -- Tabela de Projetos
-
 CREATE TABLE IF NOT EXISTS projetos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_projeto VARCHAR(150) NOT NULL,
     cliente VARCHAR(150),
     setor VARCHAR(50),
-    observacoes TEXT
+    observacoes TEXT,
+    preco DECIMAL(10, 2) DEFAULT 0.00 -- Coluna obrigatória para o cadastro funcionar
 );
 
 -- Tabela de Usuários (estrutura futura)
-
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_usuario VARCHAR(100) NOT NULL,
