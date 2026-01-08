@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS materiais (
     nome_item VARCHAR(255) NOT NULL,
     destino VARCHAR(50),
     projeto VARCHAR(255),
-    projeto_id INT, -- Adicionado para compatibilidade com o backend
+    projeto_id INT,
     observacoes TEXT,
     quantidade INT DEFAULT 1,
     arquivo_dados LONGBLOB,
