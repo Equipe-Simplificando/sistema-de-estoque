@@ -67,6 +67,16 @@
 }
 
 /* 5. TABELA */
-.grupo-tabela {
-    flex: 1;
+.tabela-itens td, 
+.tabela-itens td img {
+    cursor: pointer;
+}
+
+.tabela-itens th div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 0.3rem;
+    cursor: pointer;
 }

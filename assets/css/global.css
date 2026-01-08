@@ -1,6 +1,4 @@
-/* ==========================================================================
-   1. IMPORTAÇÕES E VARIÁVEIS
-   ========================================================================== */
+/* 1. IMPORTAÇÕES E VARIÁVEIS */
 
 /* Fontes */
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
@@ -8,12 +6,12 @@
 :root {
   /* Cores Institucionais e Interface */
   --cor-fundo: #fefefe;
-  --cor-fundo-lembrete: #05a51d;
-  /* Verde Header Tabela/Menu */
-  --cor-primaria: #1f731d;
-  /* Verde Botões/Radio Ativo */
-  --cor-secundaria: #f2d16d;
-  /* Amarelo Detalhes */
+
+  --cor-primaria: #05a51d; /* Verde Padrão */
+  --cor-primaria-escura: #1f731d;  /* Verde Botões etcs*/
+ 
+  --cor-secundaria: #f2d16d; /* Amarelo Padrão */
+  
 
   /* Texto */
   --cor-texto-escuro: #161614;
@@ -35,9 +33,7 @@
   --borda: 2px solid var(--cor-borda);
 }
 
-/* ==========================================================================
-   2. RESET E ESTRUTURA BASE
-   ========================================================================== */
+/* 2. RESET E ESTRUTURA BASE */
 
 * {
   margin: 0;
@@ -77,9 +73,7 @@ body {
   justify-content: space-between;
 }
 
-/* ==========================================================================
-   3. TIPOGRAFIA
-   ========================================================================== */
+/* 3. TIPOGRAFIA */
 
 .titulo-pagina {
   color: var(--cor-texto-escuro);
@@ -99,9 +93,9 @@ body {
   color: var(--cor-texto-escuro);
 }
 
-/* ==========================================================================
+/* 
    4. FORMULÁRIOS E INPUTS
-   ========================================================================== */
+    */
 
 .formulario {
   display: flex;
@@ -195,6 +189,7 @@ body {
   border-radius: var(--radius);
   background: var(--cor-input);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .grupo-radio input[type="radio"] {
@@ -215,7 +210,7 @@ body {
 
 /* Estados Selecionados (Material/Projeto) */
 #material:checked + .rotulo-radio {
-    background: var(--cor-fundo-lembrete);
+    background: var(--cor-primaria);
     opacity: 1;
     border-right: 2px solid var(--cor-texto-escuro);
     font-size: 2rem;
@@ -278,9 +273,7 @@ body {
   background: transparent;
 }
 
-/* ==========================================================================
-   5. BOTÕES E ÍCONES INTERATIVOS
-   ========================================================================== */
+/* 5. BOTÕES E ÍCONES INTERATIVOS */
 
 .grupo-acoes {
   width: 100%;
@@ -379,9 +372,7 @@ body {
   height: 2rem;
 }
 
-/* ==========================================================================
-   6. TABELA COM SCROLL FIXO
-   ========================================================================== */
+/* 6. TABELA */
 
 .grupo-tabela {
   width: 100%;
@@ -431,11 +422,11 @@ body {
 }
 
 .tabela-itens thead th {
-  background: var(--cor-fundo-lembrete);
+  background: var(--cor-primaria);
   z-index: 100;
-  color: var(--cor-texto-claro);
+  color: var(--cor-texto-escuro);
 
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
 
   border-top: var(--borda);
@@ -452,9 +443,7 @@ body {
   background: var(--cor-input);
 }
 
-/* ==========================================================================
-   7. MENU INFERIOR E NAVEGAÇÃO
-   ========================================================================== */
+/* 7. MENU INFERIOR E NAVEGAÇÃO */
 
 /* Container fixo na base da tela */
 .espaco-inferior {
