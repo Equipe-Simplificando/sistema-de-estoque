@@ -103,7 +103,6 @@ app.put('/api/atualizar-projeto', (req, res) => {
     const { id, item, destino, observacoes, preco } = req.body;
     if (!id || !item) return res.status(400).json({ error: 'ID e Nome são obrigatórios' });
 
-    // CORREÇÃO: Tratamento do preço e inclusão na query SQL
     const precoFinal = preco ? parseFloat(String(preco).replace(',', '.')) : 0.00;
 
     const sql = `UPDATE projetos SET nome_projeto = ?, setor = ?, observacoes = ?, preco = ? WHERE id = ?`;
@@ -120,6 +119,20 @@ app.put('/api/atualizar-projeto', (req, res) => {
 app.get('/api/projetos', (req, res) => {
     db.query('SELECT id, nome_projeto, setor, preco FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Erro ao listar' });
+        res.json(results);
+    });
+});
+
+// --- NOVA ROTA: BUSCAR MATERIAIS DE UM PROJETO ESPECÍFICO ---
+app.get('/api/materiais/projeto/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'SELECT * FROM materiais WHERE projeto = ?';
+    
+    db.query(sql, [id], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar materiais do projeto:', err);
+            return res.status(500).json({ error: 'Erro ao buscar materiais' });
+        }
         res.json(results);
     });
 });
