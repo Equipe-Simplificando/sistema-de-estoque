@@ -15,6 +15,14 @@
     align-self: end;
 }
 
+/* --- CORREÇÃO: Tabela interna do projeto em Amarelo --- */
+/* Sobrescreve o verde global apenas para a tabela dentro dos detalhes do projeto */
+details.aba-projeto .tabela-itens thead th {
+    background: var(--cor-secundaria); /* Amarelo */
+    color: var(--cor-texto-escuro);    /* Texto escuro para melhor contraste */
+    border-top: none;                  /* Opcional: remove borda superior se desejar */
+}
+
 /* 2. LISTA DE PROJETOS */
 .secao-projetos {
     flex: 1;

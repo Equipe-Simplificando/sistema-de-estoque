@@ -204,17 +204,15 @@ function atualizarSugestoes(projetos) {
 }
 
 function editarProjeto(id) {
-    window.location.href = `../../pages/project-pages/editar-projeto.html?id=${id}`;
+    // CORREÇÃO AQUI: Caminho relativo correto para a pasta pages/project-pages
+    window.location.href = `../../project-pages/editar-projeto.html?id=${id}`;
 }
 
 // Lógica de exclusão de projeto
 async function deletarProjeto(id) {
     if(!confirm("Tem certeza? Isso excluirá o projeto permanentemente.")) return;
 
-    // ATENÇÃO: Seu backend (server.js) atual só tem rota '/api/deletar/:id' para MATERIAIS.
-    // Você precisará adicionar uma rota para projetos no server.js se ainda não tiver.
-    // Vou assumir que você criará: app.delete('/api/deletar-projeto/:id', ...)
-    
+    // ATENÇÃO: Verifique se a rota '/api/deletar-projeto/:id' existe no seu server.js
     try {
         const response = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, {
             method: 'DELETE'
@@ -224,7 +222,6 @@ async function deletarProjeto(id) {
             alert("Projeto excluído!");
             location.reload();
         } else {
-            // Se falhar (ex: rota não existe), avisa
             alert("Erro ao excluir. Verifique se a rota de exclusão de projetos existe no servidor.");
         }
     } catch (e) {

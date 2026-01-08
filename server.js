@@ -100,12 +100,19 @@ app.post('/api/cadastrar-projeto', (req, res) => {
 });
 
 app.put('/api/atualizar-projeto', (req, res) => {
-    const { id, item, destino, observacoes } = req.body;
+    const { id, item, destino, observacoes, preco } = req.body;
     if (!id || !item) return res.status(400).json({ error: 'ID e Nome são obrigatórios' });
 
-    const sql = `UPDATE projetos SET nome_projeto = ?, setor = ?, observacoes = ? WHERE id = ?`;
-    db.query(sql, [item, destino, observacoes, id], (err) => {
-        if (err) return res.status(500).json({ error: 'Erro ao atualizar' });
+    // CORREÇÃO: Tratamento do preço e inclusão na query SQL
+    const precoFinal = preco ? parseFloat(String(preco).replace(',', '.')) : 0.00;
+
+    const sql = `UPDATE projetos SET nome_projeto = ?, setor = ?, observacoes = ?, preco = ? WHERE id = ?`;
+    
+    db.query(sql, [item, destino, observacoes, precoFinal, id], (err) => {
+        if (err) {
+            console.error("Erro ao atualizar projeto:", err);
+            return res.status(500).json({ error: 'Erro ao atualizar' });
+        }
         res.json({ success: true });
     });
 });
@@ -117,14 +124,13 @@ app.get('/api/projetos', (req, res) => {
     });
 });
 
-// --- NOVA ROTA: DELETAR PROJETO ---
+// --- ROTA: DELETAR PROJETO ---
 app.delete('/api/deletar-projeto/:id', (req, res) => {
     const { id } = req.params;
 
-    // 1. Primeiro desvincula os materiais (opcional, mas recomendado para não dar erro ou perder dados)
+    // 1. Primeiro desvincula os materiais
     const sqlDesvincular = "UPDATE materiais SET projeto = NULL, projeto_id = NULL WHERE projeto = ? OR projeto_id = ?";
     
-    // Tentamos limpar tanto se estiver salvo como ID ou Nome (por segurança)
     db.query(sqlDesvincular, [id, id], (err) => {
         if (err) console.log("Aviso: Erro ao desvincular materiais antes de excluir projeto", err);
 
@@ -203,7 +209,6 @@ app.delete('/api/deletar/:id', (req, res) => {
     });
 });
 
-// Diz ao servidor para permitir acesso aos arquivos das pastas (CSS, JS, HTML) no Linux
 app.use(express.static(__dirname));
 
 app.listen(PORT, () => {
