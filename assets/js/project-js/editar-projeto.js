@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!id) {
         alert("ID do projeto não encontrado.");
-        // Caminho corrigido para redirecionamento
         window.location.href = "../main-pages/home/home-projeto.html";
         return;
     }
@@ -72,7 +71,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         const res = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, { method: 'DELETE' });
                         if (res.ok) {
                             alert("Projeto excluído com sucesso!");
-                            // Caminho corrigido
                             window.location.href = "../main-pages/home/home-projeto.html";
                         } else {
                             alert("Erro ao excluir projeto.");
@@ -116,7 +114,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (response.ok) {
                     alert("Projeto atualizado com sucesso!");
-                    // Caminho corrigido
                     window.location.href = "../main-pages/home/home-projeto.html";
                 } else {
                     alert("Erro ao atualizar projeto.");
@@ -142,11 +139,16 @@ function renderizarTabela(listaMateriais) {
     }
 
     listaMateriais.forEach(material => {
+        // CORREÇÃO: Tratamento para mostrar a quantidade real (incluindo 0)
+        const qtdReal = (material.quantidade !== undefined && material.quantidade !== null) 
+                        ? material.quantidade 
+                        : 0;
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${material.id}</td>
             <td>${material.nome_item}</td>
-            <td>${material.quantidade}</td>
+            <td>x${qtdReal}</td>
             <td></td>
         `;
         tbody.appendChild(tr);

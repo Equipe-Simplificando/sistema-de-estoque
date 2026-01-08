@@ -105,7 +105,12 @@ function renderizarProjetos(projetos, materiais) {
         if (materiaisDoProjeto.length > 0) {
             linhasTabela = materiaisDoProjeto.map(mat => {
                 const idFormatado = String(mat.id).padStart(3, '0');
-                const qtd = mat.quantidade ? mat.quantidade : 1;
+                
+                // CORREÇÃO: Verifica se quantidade existe, permitindo o valor 0
+                const qtd = (mat.quantidade !== undefined && mat.quantidade !== null) 
+                            ? mat.quantidade 
+                            : 0;
+
                 const nomeItem = mat.nome_item || "Item sem nome";
                 return `<tr><td>${idFormatado}</td><td>${nomeItem}</td><td>x${qtd}</td></tr>`;
             }).join("");
@@ -116,7 +121,6 @@ function renderizarProjetos(projetos, materiais) {
         // Lógica do Botão Excluir (Só aparece se admin)
         let botaoExcluirProj = "";
         if (ehAdmin) {
-            // Estilo inline vermelho para diferenciar
             botaoExcluirProj = `
                 <button type="button" class="botao" 
                     style="background-color: #d32f2f; margin-left: 10px;" 
@@ -204,15 +208,12 @@ function atualizarSugestoes(projetos) {
 }
 
 function editarProjeto(id) {
-    // CORREÇÃO AQUI: Caminho relativo correto para a pasta pages/project-pages
     window.location.href = `../../project-pages/editar-projeto.html?id=${id}`;
 }
 
-// Lógica de exclusão de projeto
 async function deletarProjeto(id) {
     if(!confirm("Tem certeza? Isso excluirá o projeto permanentemente.")) return;
 
-    // ATENÇÃO: Verifique se a rota '/api/deletar-projeto/:id' existe no seu server.js
     try {
         const response = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, {
             method: 'DELETE'
