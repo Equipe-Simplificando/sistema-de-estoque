@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   carregarMateriais();
 
-  // 2. ADICIONAR NA TABELA
+  // 2. ADICIONAR NA TABELA (COM QUANTIDADE CORRETA)
   function adicionarMaterialNaTabela() {
     const termoPesquisado = inputPesquisa.value.trim();
     if (!termoPesquisado) return;
@@ -38,11 +38,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (materialEncontrado) {
       const novaLinha = document.createElement('tr');
-      // Adiciona o ID real do material para envio
+      
+      // CORREÇÃO: Pega a quantidade real do material, tratando 0 e null
+      const qtdReal = (materialEncontrado.quantidade !== undefined && materialEncontrado.quantidade !== null) 
+                      ? materialEncontrado.quantidade 
+                      : 0;
+
+      // Adiciona o ID real do material para envio e exibe a quantidade correta
       novaLinha.innerHTML = `
         <td class="item-id">${materialEncontrado.id}</td>
         <td class="item-nome">${materialEncontrado.nome_item}</td>
-        <td class="item-qtd">x1</td>
+        <td class="item-qtd">x${qtdReal}</td>
         <td>
             <button type="button" class="botao-excluir" aria-label="Remover item">
                 <img src="../../assets/icons/icon-excluir.svg" alt="">

@@ -4,14 +4,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!id) {
         alert("ID do projeto não encontrado.");
-        window.location.href = "../../main-pages/home/home-projeto.html";
+        window.location.href = "../main-pages/home/home-projeto.html";
         return;
     }
 
-    // Input hidden para armazenar o ID se necessário, mas já temos na variável 'id'
     const inputId = document.getElementById("id-projeto");
     if(inputId) inputId.value = id;
 
+    // 1. CARREGAR DADOS DO PROJETO
     try {
         const response = await fetch(`http://localhost:3000/api/projetos/${id}`);
         if (!response.ok) throw new Error("Erro ao buscar projeto");
@@ -22,14 +22,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("item").value = projeto.nome_projeto || "";
         document.getElementById("observacoes").value = projeto.observacoes || "";
         
-        // Preenche Preço (se existir)
+        // Preenche Preço
         const campoPreco = document.getElementById("preco");
         if(campoPreco) {
             campoPreco.value = projeto.preco ? projeto.preco : "";
         }
 
-        // CORREÇÃO: Preenche Radio Button (Setor)
-        // O HTML usa name="destino" com values "robotica" e "manutencao"
+        // Preenche Radio Button (Setor)
         if (projeto.setor) {
             const radio = document.querySelector(`input[name="destino"][value="${projeto.setor.toLowerCase()}"]`);
             if (radio) radio.checked = true;
@@ -40,21 +39,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Erro ao carregar dados do projeto. Verifique o console.");
     }
 
+    // 2. CARREGAR ITENS (MATERIAIS) DO PROJETO
+    try {
+        const resMateriais = await fetch(`http://localhost:3000/api/materiais/projeto/${id}`);
+        if(resMateriais.ok) {
+            const materiais = await resMateriais.json();
+            renderizarTabela(materiais);
+        }
+    } catch (error) {
+        console.error("Erro ao carregar itens do projeto:", error);
+    }
+
     // --- LÓGICA DO BOTÃO EXCLUIR (ADMIN) ---
     const perfil = localStorage.getItem("perfilUsuario");
     if (perfil === "admin") {
-        const form = document.querySelector(".formulario");
         const grupoAcoes = document.querySelector(".grupo-acoes");
         
-        // Cria o botão de excluir se ainda não existir
         if (!document.getElementById("btn-excluir-dinamico")) {
             const btnExcluir = document.createElement("button");
             btnExcluir.id = "btn-excluir-dinamico";
             btnExcluir.type = "button";
             btnExcluir.textContent = "EXCLUIR PROJETO";
-            btnExcluir.className = "botao"; // Mesma classe do botão salvar
+            btnExcluir.className = "botao";
             btnExcluir.style.backgroundColor = "#d32f2f"; // Vermelho
-            btnExcluir.style.boxShadow = "inset 0 -4px 0 1px #b71c1c"; // Sombra vermelha escura
+            btnExcluir.style.boxShadow = "inset 0 -4px 0 1px #b71c1c";
             btnExcluir.style.marginTop = "1rem";
             
             btnExcluir.onclick = async function() {
@@ -63,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         const res = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, { method: 'DELETE' });
                         if (res.ok) {
                             alert("Projeto excluído com sucesso!");
-                            window.location.href = "../../main-pages/home/home-projeto.html";
+                            window.location.href = "../main-pages/home/home-projeto.html";
                         } else {
                             alert("Erro ao excluir projeto.");
                         }
@@ -74,29 +82,27 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             };
 
-            // Adiciona abaixo do botão salvar
             if(grupoAcoes) {
                 grupoAcoes.appendChild(btnExcluir);
             }
         }
     }
-    // ---------------------------------------
 
-    const form = document.getElementById("formulario"); // ID corrigido conforme HTML fornecido
+    // --- EVENTO DE SALVAR (UPDATE) ---
+    const form = document.getElementById("formulario");
     if(form){
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            // CORREÇÃO: Captura valor do radio selecionado
             const radioSelecionado = document.querySelector('input[name="destino"]:checked');
             const setorValor = radioSelecionado ? radioSelecionado.value : "";
 
             const dados = {
                 id: id,
                 item: document.getElementById("item").value,
-                destino: setorValor, // Passa o valor do radio button
+                destino: setorValor,
                 observacoes: document.getElementById("observacoes").value,
-                preco: document.getElementById("preco").value // Adiciona preço
+                preco: document.getElementById("preco").value
             };
 
             try {
@@ -107,9 +113,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
 
                 if (response.ok) {
-                    // Redireciona ou avisa sucesso
                     alert("Projeto atualizado com sucesso!");
-                    window.location.href = "../../main-pages/home/home-projeto.html";
+                    window.location.href = "../main-pages/home/home-projeto.html";
                 } else {
                     alert("Erro ao atualizar projeto.");
                 }
@@ -120,3 +125,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
+// Função auxiliar para preencher a tabela HTML
+function renderizarTabela(listaMateriais) {
+    const tbody = document.getElementById("tabela-corpo");
+    if(!tbody) return;
+    
+    tbody.innerHTML = ""; 
+
+    if(listaMateriais.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding: 1rem;'>Nenhum item vinculado a este projeto.</td></tr>";
+        return;
+    }
+
+    listaMateriais.forEach(material => {
+        // CORREÇÃO: Tratamento para mostrar a quantidade real (incluindo 0)
+        const qtdReal = (material.quantidade !== undefined && material.quantidade !== null) 
+                        ? material.quantidade 
+                        : 0;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${material.id}</td>
+            <td>${material.nome_item}</td>
+            <td>x${qtdReal}</td>
+            <td></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
