@@ -136,7 +136,7 @@ body {
   resize: vertical;
 }
 
-/* --- Select Customizado --- */
+/* Select Customizado */
 .container-select {
   position: relative;
   width: 100%;
@@ -155,7 +155,7 @@ body {
   /* Permite clicar através do ícone */
 }
 
-/* --- Barra de Pesquisa --- */
+/* Barra de Pesquisa */
 .container-pesquisa {
   display: flex;
   position: relative;
@@ -180,7 +180,7 @@ body {
   height: 29px;
 }
 
-/* --- Radio Buttons (Abas) --- */
+/* Radio Buttons (Abas) */
 .grupo-radio {
   display: flex;
   width: 100%;
@@ -244,7 +244,7 @@ body {
   box-shadow: inset 2px -2px 0 1.5px var(--shadow-primaria);
 }
 
-/* --- Campo de Preço (R$) --- */
+/* Campo de Preço */
 .campo-preco {
   position: relative;
   width: 100%;
@@ -372,25 +372,23 @@ body {
   height: 2rem;
 }
 
-/* 6. TABELA */
+/* TABELA */
 
 .grupo-tabela {
   width: 100%;
 
   /* Controle de Scroll */
   min-height: 0;
-  /* Defina max-height no HTML ou classe específica se precisar limitar a altura */
   overflow-y: auto;
   overflow-x: hidden;
 
-  /* Estética do container */
   border: var(--borda);
   border-radius: var(--radius);
 }
 
 .tabela-itens {
   width: 100%;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
 }
 
@@ -414,7 +412,7 @@ body {
   border-bottom: none;
 }
 
-/* Cabeçalho Fixo (Sticky) */
+/* Cabeçalho Fixo */
 .tabela-itens thead {
   position: sticky;
   top: 0;
@@ -429,12 +427,11 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
 
-  border-top: var(--borda);
-  border: none;
+  border: none; 
   border-bottom: var(--borda);
 }
 
-/* Zebra Striping (Linhas alternadas) */
+/* Linhas alternadas */
 .tabela-itens tbody tr:nth-child(odd) {
   background: var(--cor-fundo);
 }
@@ -443,7 +440,7 @@ body {
   background: var(--cor-input);
 }
 
-/* 7. MENU INFERIOR E NAVEGAÇÃO */
+/* MENU INFERIOR E NAVEGAÇÃO */
 
 /* Container fixo na base da tela */
 .espaco-inferior {

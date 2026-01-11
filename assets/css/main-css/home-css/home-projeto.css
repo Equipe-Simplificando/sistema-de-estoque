@@ -92,6 +92,13 @@ details.aba-projeto > summary::-webkit-details-marker {
     font-size: 1.5rem;
     color: var(--cor-texto-escuro);
     font-weight: 700;
+
+    white-space: nowrap;     
+    overflow: hidden;       
+    text-overflow: ellipsis; 
+    
+    display: block;           
+    max-width: 70%;           
 }
 
 /* Ícone da Seta (Animação) */

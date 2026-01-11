@@ -22,18 +22,27 @@ async function carregarDados() {
         let projetos = await resProjetos.json();
         listaGlobalMateriais = await resMateriais.json();
 
-        // Filtro de Setor via URL
+        // --- LÓGICA DE FILTRO VIA URL (?setor=...) ---
         const urlParams = new URLSearchParams(window.location.search);
         const filtroSetor = urlParams.get('setor');
 
         if (filtroSetor) {
             projetos = projetos.filter(projeto => {
-                const setorProj = projeto.setor ? projeto.setor.toLowerCase() : "";
                 const termo = filtroSetor.toLowerCase();
-                const normalizar = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                
+                // 1. REGRA PARA VENDA: Ignora o setor e mostra tudo que tem preço
+                if (termo === 'venda') {
+                    const valor = projeto.preco ? parseFloat(projeto.preco) : 0;
+                    return valor > 0;
+                }
 
-                if (termo === 'robotica' && normalizar(setorProj).includes('robotica')) return true;
-                if (termo === 'manutencao' && normalizar(setorProj).includes('manutencao')) return true;
+                // 2. REGRA PARA SETORES (Robótica/Manutenção)
+                const normalizar = (str) => str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
+                const setorProj = normalizar(projeto.setor);
+
+                if (termo === 'robotica' && setorProj.includes('robotica')) return true;
+                if (termo === 'manutencao' && setorProj.includes('manutencao')) return true;
+                
                 return false;
             });
         }
@@ -50,13 +59,57 @@ async function carregarDados() {
     }
 }
 
+// --- FUNÇÃO DE MENU ATIVO (COM CAMINHOS MANUAIS) ---
+function atualizarMenuAtivo() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const setor = urlParams.get('setor');
+    
+    let idAtivo = 'menu-home'; 
+    if (setor === 'robotica') idAtivo = 'menu-robotica';
+    else if (setor === 'manutencao') idAtivo = 'menu-manutencao';
+    else if (setor === 'venda') idAtivo = 'menu-venda';
+
+    // Mapeamento manual dos caminhos das imagens
+    const iconesAtivos = {
+        'menu-home': '../../../assets/icons/icon-home-ativo.svg',
+        'menu-robotica': '../../../assets/icons/icon-robotica-ativo.svg',
+        'menu-manutencao': '../../../assets/icons/icon-manutencao-ativo.svg',
+        'menu-venda': '../../../assets/icons/icon-venda-ativo.svg'
+    };
+
+    const iconesPadrao = {
+        'menu-home': '../../../assets/icons/icon-home.svg',
+        'menu-robotica': '../../../assets/icons/icon-robotica.svg',
+        'menu-manutencao': '../../../assets/icons/icon-manutencao.svg',
+        'menu-venda': '../../../assets/icons/icon-venda.svg'
+    };
+
+    // Reseta todos os menus
+    document.querySelectorAll('.item-menu').forEach(el => {
+        el.classList.remove('ativo');
+        const img = el.querySelector('img');
+        if (img && iconesPadrao[el.id]) {
+            img.src = iconesPadrao[el.id];
+        }
+    });
+
+    // Ativa o selecionado
+    const elementoAtivo = document.getElementById(idAtivo);
+    if (elementoAtivo) {
+        elementoAtivo.classList.add('ativo');
+        const img = elementoAtivo.querySelector('img');
+        if (img) {
+            img.src = iconesAtivos[idAtivo];
+        }
+    }
+}
+
+// --- RENDERIZAÇÃO E OUTRAS FUNÇÕES (MANTIDAS) ---
 function renderizarProjetos(projetos, materiais) {
     const container = document.getElementById("lista-projetos");
     if(!container) return;
-    
     container.innerHTML = "";
 
-    // VERIFICA PERFIL
     const perfil = localStorage.getItem("perfilUsuario");
     const ehAdmin = (perfil === "admin");
 
@@ -71,13 +124,10 @@ function renderizarProjetos(projetos, materiais) {
     };
 
     projetos.forEach(projeto => {
-        
         const materiaisDoProjeto = materiais.filter(m => {
             if (!m.projeto) return false;
             if (String(m.projeto) === String(projeto.id)) return true;
-            const matProj = normalizar(m.projeto);
-            const nomeProj = normalizar(projeto.nome_projeto);
-            return matProj === nomeProj;
+            return normalizar(m.projeto) === normalizar(projeto.nome_projeto);
         });
 
         const precoFormatado = projeto.preco 
@@ -89,7 +139,6 @@ function renderizarProjetos(projetos, materiais) {
 
         const summary = document.createElement("summary");
         summary.classList.add("cabecalho-projeto");
-        
         summary.innerHTML = `
             <div style="display: flex; justify-content: space-between; width: 90%; align-items: center;">
                 <span class="titulo-projeto">${projeto.nome_projeto}</span>
@@ -101,53 +150,26 @@ function renderizarProjetos(projetos, materiais) {
         const divConteudo = document.createElement("div");
         divConteudo.classList.add("conteudo-aba");
 
-        let linhasTabela = "";
-        if (materiaisDoProjeto.length > 0) {
-            linhasTabela = materiaisDoProjeto.map(mat => {
-                const idFormatado = String(mat.id).padStart(3, '0');
-                
-                // CORREÇÃO: Verifica se quantidade existe, permitindo o valor 0
-                const qtd = (mat.quantidade !== undefined && mat.quantidade !== null) 
-                            ? mat.quantidade 
-                            : 0;
+        const linhasTabela = materiaisDoProjeto.length > 0 
+            ? materiaisDoProjeto.map(mat => `
+                <tr>
+                    <td>${String(mat.id).padStart(3, '0')}</td>
+                    <td>${mat.nome_item || "Sem nome"}</td>
+                    <td>x${mat.quantidade ?? 0}</td>
+                </tr>`).join("")
+            : `<tr><td colspan="3" style="text-align:center; color: #777;">Nenhum material vinculado.</td></tr>`;
 
-                const nomeItem = mat.nome_item || "Item sem nome";
-                return `<tr><td>${idFormatado}</td><td>${nomeItem}</td><td>x${qtd}</td></tr>`;
-            }).join("");
-        } else {
-            linhasTabela = `<tr><td colspan="3" style="text-align:center; color: #777;">Nenhum material vinculado.</td></tr>`;
-        }
-
-        // Lógica do Botão Excluir (Só aparece se admin)
-        let botaoExcluirProj = "";
-        if (ehAdmin) {
-            botaoExcluirProj = `
-                <button type="button" class="botao" 
-                    style="background-color: #d32f2f; margin-left: 10px;" 
-                    onclick="deletarProjeto(${projeto.id})">
-                    EXCLUIR
-                </button>
-            `;
-        }
+        let botaoExcluirProj = ehAdmin ? `<button type="button" class="botao" style="background-color: #d32f2f; margin-left: 10px;" onclick="deletarProjeto(${projeto.id})">EXCLUIR</button>` : "";
 
         divConteudo.innerHTML = `
             <div class="grupo-tabela">
                 <table class="tabela-itens">
-                    <thead>
-                        <tr>
-                            <th scope="col" style="width: 20%;">ID</th>
-                            <th scope="col" style="width: 60%;">ITEM</th>
-                            <th scope="col" style="width: 20%;">QTD</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th style="width: 20%;">ID</th><th style="width: 60%;">ITEM</th><th style="width: 20%;">QTD</th></tr></thead>
                     <tbody>${linhasTabela}</tbody>
                 </table>
             </div>
-            
             <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-                <button type="button" class="botao" onclick="editarProjeto(${projeto.id})">
-                    EDITAR
-                </button>
+                <button type="button" class="botao" onclick="editarProjeto(${projeto.id})">EDITAR</button>
                 ${botaoExcluirProj}
             </div>
         `;
@@ -158,29 +180,7 @@ function renderizarProjetos(projetos, materiais) {
     });
 }
 
-// Funções Auxiliares
-function atualizarMenuAtivo() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const setor = urlParams.get('setor');
-    let idAtivo = 'menu-home'; 
-    if (setor === 'robotica') idAtivo = 'menu-robotica';
-    if (setor === 'manutencao') idAtivo = 'menu-manutencao';
-
-    const elementoAtivo = document.getElementById(idAtivo);
-    document.querySelectorAll('.item-menu').forEach(el => el.classList.remove('ativo'));
-    
-    // Reseta icones se necessário (simplificado)
-    const homeIcon = document.querySelector('#menu-home img');
-    if(homeIcon) homeIcon.src = "../../../assets/icons/icon-home.svg";
-
-    if (elementoAtivo) {
-        elementoAtivo.classList.add('ativo');
-        if (idAtivo === 'menu-home' && homeIcon) {
-            homeIcon.src = "../../../assets/icons/icon-home-ativo.svg";
-        }
-    }
-}
-
+// Funções de pesquisa, sugestões e deletar permanecem iguais...
 function configurarPesquisa() {
     const inputPesquisa = document.getElementById("pesquisa-projeto");
     if(inputPesquisa) {
@@ -212,21 +212,9 @@ function editarProjeto(id) {
 }
 
 async function deletarProjeto(id) {
-    if(!confirm("Tem certeza? Isso excluirá o projeto permanentemente.")) return;
-
+    if(!confirm("Tem certeza?")) return;
     try {
-        const response = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, {
-            method: 'DELETE'
-        });
-
-        if (response.ok) {
-            alert("Projeto excluído!");
-            location.reload();
-        } else {
-            alert("Erro ao excluir. Verifique se a rota de exclusão de projetos existe no servidor.");
-        }
-    } catch (e) {
-        console.error(e);
-        alert("Erro de conexão.");
-    }
+        const response = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, { method: 'DELETE' });
+        if (response.ok) { location.reload(); }
+    } catch (e) { console.error(e); }
 }

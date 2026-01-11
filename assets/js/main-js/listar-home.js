@@ -134,16 +134,39 @@ function renderizarTabela(listaMateriais) {
 function atualizarMenuAtivo() {
     const urlParams = new URLSearchParams(window.location.search);
     const setor = urlParams.get('setor');
-    let idAtivo = 'menu-home'; 
-    if (setor === 'robotica') idAtivo = 'menu-robotica';
-    if (setor === 'manutencao') idAtivo = 'menu-manutencao';
+    
+    let idAtivo = 'menu-home'; // Valor padrão
 
+    // 1. Lógica para definir qual ID deve ser destacado
+    if (setor === 'robotica') {
+        idAtivo = 'menu-robotica';
+    } else if (setor === 'manutencao') {
+        idAtivo = 'menu-manutencao';
+    } else if (setor === 'venda') {
+        idAtivo = 'menu-venda';
+    } else {
+        idAtivo = 'menu-home';
+    }
+
+    // 2. Mapeamento direto dos caminhos das imagens ativas
+    const caminhosIcones = {
+        'menu-home': '../../../assets/icons/icon-home-ativo.svg',
+        'menu-robotica': '../../../assets/icons/icon-robotica-ativo.svg',
+        'menu-manutencao': '../../../assets/icons/icon-manutencao-ativo.svg',
+        'menu-venda': '../../../assets/icons/icon-venda-ativo.svg'
+    };
+
+    // 3. Aplica as mudanças no HTML
     const elementoAtivo = document.getElementById(idAtivo);
+    
     if (elementoAtivo) {
+        // Adiciona a classe CSS de destaque
         elementoAtivo.classList.add('ativo');
-        if (idAtivo === 'menu-home') {
-            const img = elementoAtivo.querySelector('img');
-            if (img) img.src = "../../../assets/icons/icon-home-ativo.svg";
+        
+        // Busca a imagem dentro do link e troca o src pelo caminho manual
+        const img = elementoAtivo.querySelector('img');
+        if (img) {
+            img.src = caminhosIcones[idAtivo];
         }
     }
 }
