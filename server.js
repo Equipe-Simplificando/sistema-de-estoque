@@ -86,7 +86,6 @@ app.post('/api/cadastrar-projeto', (req, res) => {
         const novoProjetoId = result.insertId;
 
         if (materiais && Array.isArray(materiais) && materiais.length > 0) {
-            console.log(`Vinculando materiais [${materiais}] ao projeto ID: ${novoProjetoId}`);
             const sqlUpdateMateriais = `UPDATE materiais SET projeto = ? WHERE id IN (?)`;
             
             db.query(sqlUpdateMateriais, [novoProjetoId, materiais], (errMat) => {
@@ -99,20 +98,47 @@ app.post('/api/cadastrar-projeto', (req, res) => {
     });
 });
 
+// --- ROTA ATUALIZADA: AGORA GERENCIA MATERIAIS ---
 app.put('/api/atualizar-projeto', (req, res) => {
-    const { id, item, destino, observacoes, preco } = req.body;
+    const { id, item, destino, observacoes, preco, materiais } = req.body;
+    
     if (!id || !item) return res.status(400).json({ error: 'ID e Nome são obrigatórios' });
 
     const precoFinal = preco ? parseFloat(String(preco).replace(',', '.')) : 0.00;
 
+    // 1. Atualiza dados do projeto
     const sql = `UPDATE projetos SET nome_projeto = ?, setor = ?, observacoes = ?, preco = ? WHERE id = ?`;
     
     db.query(sql, [item, destino, observacoes, precoFinal, id], (err) => {
         if (err) {
             console.error("Erro ao atualizar projeto:", err);
-            return res.status(500).json({ error: 'Erro ao atualizar' });
+            return res.status(500).json({ error: 'Erro ao atualizar projeto' });
         }
-        res.json({ success: true });
+
+        // 2. Atualiza vínculos dos materiais
+        // Passo A: Remove todos os vínculos atuais deste projeto
+        const sqlUnlink = `UPDATE materiais SET projeto = NULL WHERE projeto = ?`;
+        db.query(sqlUnlink, [id], (errUnlink) => {
+            if (errUnlink) {
+                console.error("Erro ao desvincular materiais antigos:", errUnlink);
+                return res.status(500).json({ error: 'Erro ao atualizar materiais do projeto' });
+            }
+
+            // Passo B: Se houver novos materiais, vincula-os
+            if (materiais && Array.isArray(materiais) && materiais.length > 0) {
+                const sqlLink = `UPDATE materiais SET projeto = ? WHERE id IN (?)`;
+                db.query(sqlLink, [id, materiais], (errLink) => {
+                    if (errLink) {
+                        console.error("Erro ao vincular novos materiais:", errLink);
+                        return res.status(500).json({ error: 'Erro ao vincular materiais' });
+                    }
+                    res.json({ success: true });
+                });
+            } else {
+                // Se a lista estiver vazia, apenas termina (já desvinculou tudo no Passo A)
+                res.json({ success: true });
+            }
+        });
     });
 });
 
@@ -123,7 +149,6 @@ app.get('/api/projetos', (req, res) => {
     });
 });
 
-// --- NOVA ROTA: BUSCAR MATERIAIS DE UM PROJETO ESPECÍFICO ---
 app.get('/api/materiais/projeto/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'SELECT * FROM materiais WHERE projeto = ?';
@@ -137,7 +162,6 @@ app.get('/api/materiais/projeto/:id', (req, res) => {
     });
 });
 
-// --- ROTA: DELETAR PROJETO ---
 app.delete('/api/deletar-projeto/:id', (req, res) => {
     const { id } = req.params;
 
@@ -177,9 +201,12 @@ app.post('/api/cadastrar', upload.single('arquivo'), (req, res) => {
         const idsExistentes = results.map(r => r.id);
         while (idsExistentes.includes(novoId)) novoId++;
 
+        // Importante: Tratamento para 'projeto' vir vazio
+        const projetoId = projeto && projeto !== "" ? projeto : null;
+
         const sqlInsert = `INSERT INTO materiais (id, nome_item, destino, projeto, observacoes, quantidade, arquivo_dados, arquivo_tipo, arquivo_nome) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         
-        db.query(sqlInsert, [novoId, item, destino, projeto, observacoes, qtdFinal, arquivoDados, arquivoTipo, arquivoNome], (err, result) => {
+        db.query(sqlInsert, [novoId, item, destino, projetoId, observacoes, qtdFinal, arquivoDados, arquivoTipo, arquivoNome], (err, result) => {
             if (err) return res.status(500).json({ error: 'Erro ao salvar' });
             res.json({ success: true, id: novoId });
         });
@@ -190,18 +217,24 @@ app.put('/api/atualizar', upload.single('arquivo'), (req, res) => {
     const { id, item, destino, projeto, observacoes, quantidade } = req.body;
     if (!id || !item) return res.status(400).json({ error: 'ID e Nome são obrigatórios' });
 
+    // Tratamento para 'projeto' vir vazio ou "null" string
+    const projetoId = (projeto && projeto !== "" && projeto !== "null") ? projeto : null;
+
     let sql, params;
 
     if (req.file) {
         sql = `UPDATE materiais SET nome_item = ?, destino = ?, projeto = ?, observacoes = ?, quantidade = ?, arquivo_dados = ?, arquivo_tipo = ?, arquivo_nome = ? WHERE id = ?`;
-        params = [item, destino, projeto, observacoes, quantidade, req.file.buffer, req.file.mimetype, req.file.originalname, id];
+        params = [item, destino, projetoId, observacoes, quantidade, req.file.buffer, req.file.mimetype, req.file.originalname, id];
     } else {
         sql = `UPDATE materiais SET nome_item = ?, destino = ?, projeto = ?, observacoes = ?, quantidade = ? WHERE id = ?`;
-        params = [item, destino, projeto, observacoes, quantidade, id];
+        params = [item, destino, projetoId, observacoes, quantidade, id];
     }
     
     db.query(sql, params, (err) => {
-        if (err) return res.status(500).json({ error: 'Erro ao atualizar' });
+        if (err) {
+            console.error("Erro ao atualizar material:", err);
+            return res.status(500).json({ error: 'Erro ao atualizar' });
+        }
         res.json({ success: true });
     });
 });

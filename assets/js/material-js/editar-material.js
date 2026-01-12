@@ -8,96 +8,109 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // 1. Carregar dados do Material
-    try {
-        const response = await fetch("http://localhost:3000/api/materiais");
-        const materiais = await response.json();
-        const material = materiais.find((m) => m.id == id);
+    // A. ORDEM DE CARREGAMENTO CORRIGIDA: 
+    // Primeiro carrega a lista de projetos para preencher o <select>
+    await carregarListaDeProjetos();
 
-        if (material) {
-            document.getElementById("item").value = material.nome_item;
-            document.getElementById("quantidade").value = material.quantidade || 1;
+    // B. Depois carrega os dados do material para preencher os campos (e selecionar o projeto correto)
+    await carregarDadosDoMaterial(id);
+
+
+    // --- FUNÇÕES AUXILIARES ---
+
+    async function carregarListaDeProjetos() {
+        try {
+            const resProj = await fetch("http://localhost:3000/api/projetos");
+            const projetos = await resProj.json();
+            const select = document.getElementById("projeto");
             
-            // Marca o radio button correto
-            if (material.destino) {
-                const radio = document.querySelector(`input[name="destino"][value="${material.destino.toLowerCase()}"]`);
-                if (radio) radio.checked = true;
-            }
-
-            // Preenche projeto e observações
-            document.getElementById("projeto").value = material.projeto || "";
-            document.getElementById("observacoes").value = material.observacoes;
-            
-            // Preview do arquivo
-            const previewContainer = document.getElementById('preview-container');
-            if (material.arquivo_nome) {
-                previewContainer.innerHTML = '';
-                
-                const nomeArquivo = document.createElement('div');
-                nomeArquivo.className = 'nome-arquivo';
-                nomeArquivo.textContent = `Arquivo atual: ${material.arquivo_nome}`;
-                previewContainer.appendChild(nomeArquivo);
-
-                if (material.arquivo_tipo && material.arquivo_tipo.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = `http://localhost:3000/api/materiais/arquivo/${id}`;
-                    img.className = 'imagem-preview-db';
-                    previewContainer.appendChild(img);
-                }
-            } else {
-                previewContainer.innerHTML = '<span class="aviso-preview">Nenhum arquivo anexado.</span>';
-            }
-
-        } else {
-            alert("Material não encontrado.");
-            window.location.href = "../main-pages/home/home-material.html";
-        }
-    } catch (error) {
-        console.error("Erro ao buscar material:", error);
-    }
-
-    // 2. Carregar Projetos para o Select
-    try {
-        const resProj = await fetch("http://localhost:3000/api/projetos");
-        const projetos = await resProj.json();
-        const select = document.getElementById("projeto");
-        
-        select.innerHTML = '<option value="" selected>Sem projeto vinculado</option>';
-
-        projetos.forEach(proj => {
-            const option = document.createElement("option");
-            option.value = proj.id; 
-            option.textContent = proj.nome_projeto;
-            select.appendChild(option);
-        });
-
-    } catch (error) {
-        console.error("Erro ao carregar projetos:", error);
-    }
-
-    // --- 3. LÓGICA DO BOTÃO EXCLUIR (ADMIN) ---
-    const perfil = localStorage.getItem("perfilUsuario");
+            // Limpa e adiciona opção padrão
+            select.innerHTML = '<option value="" selected>Sem projeto vinculado</option>';
     
+            projetos.forEach(proj => {
+                const option = document.createElement("option");
+                option.value = proj.id; 
+                option.textContent = proj.nome_projeto;
+                select.appendChild(option);
+            });
+    
+        } catch (error) {
+            console.error("Erro ao carregar projetos:", error);
+        }
+    }
+
+    async function carregarDadosDoMaterial(id) {
+        try {
+            const response = await fetch("http://localhost:3000/api/materiais");
+            const materiais = await response.json();
+            const material = materiais.find((m) => m.id == id);
+    
+            if (material) {
+                document.getElementById("item").value = material.nome_item;
+                document.getElementById("quantidade").value = material.quantidade || 1;
+                
+                // Marca o radio button correto
+                if (material.destino) {
+                    const radio = document.querySelector(`input[name="destino"][value="${material.destino.toLowerCase()}"]`);
+                    if (radio) radio.checked = true;
+                }
+    
+                // Preenche projeto e observações
+                // NOTA: Como a lista de projetos já foi carregada no passo A, definir o value aqui funcionará.
+                const selectProjeto = document.getElementById("projeto");
+                if (material.projeto) {
+                    selectProjeto.value = material.projeto;
+                } else {
+                    selectProjeto.value = "";
+                }
+
+                document.getElementById("observacoes").value = material.observacoes || "";
+                
+                // Preview do arquivo
+                const previewContainer = document.getElementById('preview-container');
+                if (material.arquivo_nome) {
+                    previewContainer.innerHTML = '';
+                    
+                    const nomeArquivo = document.createElement('div');
+                    nomeArquivo.className = 'nome-arquivo';
+                    nomeArquivo.textContent = `Arquivo atual: ${material.arquivo_nome}`;
+                    previewContainer.appendChild(nomeArquivo);
+    
+                    if (material.arquivo_tipo && material.arquivo_tipo.startsWith('image/')) {
+                        const img = document.createElement('img');
+                        img.src = `http://localhost:3000/api/materiais/arquivo/${id}`;
+                        img.className = 'imagem-preview-db';
+                        previewContainer.appendChild(img);
+                    }
+                } else {
+                    previewContainer.innerHTML = '<span class="aviso-preview">Nenhum arquivo anexado.</span>';
+                }
+    
+            } else {
+                alert("Material não encontrado.");
+                window.location.href = "../main-pages/home/home-material.html";
+            }
+        } catch (error) {
+            console.error("Erro ao buscar material:", error);
+        }
+    }
+
+    // --- LÓGICA DO BOTÃO EXCLUIR (ADMIN) ---
+    const perfil = localStorage.getItem("perfilUsuario");
     if (perfil === "admin") {
         const containerBotoes = document.getElementById("container-botoes");
-        
         if (containerBotoes) {
-            // Cria o botão
             const btnExcluir = document.createElement("button");
             btnExcluir.type = "button";
-            btnExcluir.textContent = "EXCLUIR"; // Texto simples para caber
+            btnExcluir.textContent = "EXCLUIR";
             btnExcluir.className = "botao botao-excluir"; 
             
-            // Ação de Excluir
             btnExcluir.onclick = async function() {
-                // Confirmação de segurança
                 if (confirm("Tem certeza que deseja excluir este material?")) {
                     try {
                         const res = await fetch(`http://localhost:3000/api/deletar/${id}`, { method: 'DELETE' });
-                        
                         if (res.ok) {
                             alert("Material excluído com sucesso!");
-                            // REDIRECIONA IMEDIATAMENTE PARA A LISTA
                             window.location.href = "../main-pages/home/home-material.html";
                         } else {
                             alert("Erro ao excluir o material.");
@@ -108,14 +121,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                 }
             };
-
-            // Adiciona o botão no container
             containerBotoes.appendChild(btnExcluir);
         }
     }
-    // ---------------------------------------
 
-    // 4. Evento de Salvar (Submit)
+    // --- EVENTO DE SALVAR (SUBMIT) ---
     const form = document.getElementById("formulario");
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -144,7 +154,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (response.ok) {
                 alert("Material atualizado com sucesso!");
-                // Volta para a lista ao salvar também
                 window.location.href = "../main-pages/home/home-material.html";
             } else {
                 alert("Erro ao atualizar.");

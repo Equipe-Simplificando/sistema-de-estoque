@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
+    
+    // Variável para armazenar todos os materiais do sistema (para pesquisa correta)
+    let materiaisDisponiveis = [];
 
     if (!id) {
         alert("ID do projeto não encontrado.");
@@ -11,7 +14,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const inputId = document.getElementById("id-projeto");
     if(inputId) inputId.value = id;
 
-    // 1. CARREGAR DADOS DO PROJETO
+    // 1. CARREGAR SUGESTÕES E POPULAR LISTA GLOBAL DE MATERIAIS
+    await carregarMateriaisGlobais();
+
+    // 2. CARREGAR DADOS DO PROJETO (Inputs básicos)
     try {
         const response = await fetch(`http://localhost:3000/api/projetos/${id}`);
         if (!response.ok) throw new Error("Erro ao buscar projeto");
@@ -39,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Erro ao carregar dados do projeto. Verifique o console.");
     }
 
-    // 2. CARREGAR ITENS (MATERIAIS) DO PROJETO
+    // 3. CARREGAR ITENS JÁ VINCULADOS AO PROJETO
     try {
         const resMateriais = await fetch(`http://localhost:3000/api/materiais/projeto/${id}`);
         if(resMateriais.ok) {
@@ -50,7 +56,69 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Erro ao carregar itens do projeto:", error);
     }
 
-    // --- LÓGICA DO BOTÃO EXCLUIR (ADMIN) ---
+    // 4. CONFIGURAR O BOTÃO DE ADICIONAR ITEM PELA PESQUISA
+    const btnAdicionar = document.getElementById("btn-adicionar-material");
+    const inputPesquisa = document.getElementById("pesquisa-item");
+
+    if(btnAdicionar && inputPesquisa) {
+        // Função para adicionar
+        const adicionarItem = () => {
+            const termoPesquisado = inputPesquisa.value.trim();
+            if(!termoPesquisado) return;
+
+            // Busca o material na lista global para pegar ID e QTD reais
+            const materialEncontrado = materiaisDisponiveis.find(m => 
+                m.nome_item.toLowerCase() === termoPesquisado.toLowerCase()
+            );
+
+            if (materialEncontrado) {
+                // Verifica se já não está na tabela visualmente (opcional, mas bom pra UX)
+                // Se quiser permitir duplicados, remova essa verificação
+                const idsNaTabela = Array.from(document.querySelectorAll('.item-id'))
+                                         .map(td => td.textContent);
+                if(idsNaTabela.includes(String(materialEncontrado.id))){
+                    alert("Este item já está na lista.");
+                    inputPesquisa.value = "";
+                    return;
+                }
+
+                // Adiciona usando os dados REAIS do banco
+                adicionarLinhaNaTabela(
+                    materialEncontrado.nome_item, 
+                    materialEncontrado.quantidade, 
+                    materialEncontrado.id
+                );
+                
+                inputPesquisa.value = ""; 
+                inputPesquisa.focus();
+            } else {
+                alert("Material não encontrado no estoque.");
+            }
+        };
+
+        btnAdicionar.addEventListener("click", adicionarItem);
+        inputPesquisa.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                adicionarItem();
+            }
+        });
+    }
+
+    // 5. CONFIGURAR DELEÇÃO DE ITENS DA TABELA (EVENT DELEGATION)
+    const tabelaCorpo = document.getElementById("tabela-corpo");
+    if (tabelaCorpo) {
+        tabelaCorpo.addEventListener("click", (e) => {
+            // Verifica se clicou no botão excluir ou na imagem dentro dele
+            const botaoExcluir = e.target.closest(".botao-excluir");
+            if (botaoExcluir) {
+                // Remove a linha (TR) correspondente
+                botaoExcluir.closest("tr").remove();
+            }
+        });
+    }
+
+    // --- LÓGICA DO BOTÃO EXCLUIR PROJETO (ADMIN) ---
     const perfil = localStorage.getItem("perfilUsuario");
     if (perfil === "admin") {
         const grupoAcoes = document.querySelector(".grupo-acoes");
@@ -61,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             btnExcluir.type = "button";
             btnExcluir.textContent = "EXCLUIR PROJETO";
             btnExcluir.className = "botao";
-            btnExcluir.style.backgroundColor = "#d32f2f"; // Vermelho
+            btnExcluir.style.backgroundColor = "#d32f2f"; 
             btnExcluir.style.boxShadow = "inset 0 -4px 0 1px #b71c1c";
             btnExcluir.style.marginTop = "1rem";
             
@@ -97,12 +165,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             const radioSelecionado = document.querySelector('input[name="destino"]:checked');
             const setorValor = radioSelecionado ? radioSelecionado.value : "";
 
+            // CAPTURA DOS IDs DOS MATERIAIS DA TABELA
+            const materiaisParaSalvar = [];
+            document.querySelectorAll('#tabela-corpo tr').forEach(row => {
+                const idMat = row.querySelector('.item-id').textContent;
+                if(idMat) materiaisParaSalvar.push(parseInt(idMat));
+            });
+
             const dados = {
                 id: id,
                 item: document.getElementById("item").value,
                 destino: setorValor,
                 observacoes: document.getElementById("observacoes").value,
-                preco: document.getElementById("preco").value
+                preco: document.getElementById("preco").value,
+                materiais: materiaisParaSalvar // Envia a lista atualizada de IDs
             };
 
             try {
@@ -124,33 +200,64 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     }
-});
 
-// Função auxiliar para preencher a tabela HTML
-function renderizarTabela(listaMateriais) {
-    const tbody = document.getElementById("tabela-corpo");
-    if(!tbody) return;
+    // --- FUNÇÕES AUXILIARES ---
+
+    async function carregarMateriaisGlobais() {
+        try {
+            const response = await fetch('http://localhost:3000/api/materiais');
+            if (!response.ok) throw new Error("Erro ao buscar lista de materiais");
     
-    tbody.innerHTML = ""; 
-
-    if(listaMateriais.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding: 1rem;'>Nenhum item vinculado a este projeto.</td></tr>";
-        return;
+            materiaisDisponiveis = await response.json();
+            const datalist = document.getElementById("lista-materiais");
+    
+            if (datalist) {
+                datalist.innerHTML = ""; 
+                const nomesUnicos = new Set(materiaisDisponiveis.map(m => m.nome_item));
+                nomesUnicos.forEach(nome => {
+                    const option = document.createElement("option");
+                    option.value = nome;
+                    datalist.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error("Erro ao carregar sugestões:", error);
+        }
     }
 
-    listaMateriais.forEach(material => {
-        // CORREÇÃO: Tratamento para mostrar a quantidade real (incluindo 0)
-        const qtdReal = (material.quantidade !== undefined && material.quantidade !== null) 
-                        ? material.quantidade 
-                        : 0;
+    function renderizarTabela(listaMateriais) {
+        const tbody = document.getElementById("tabela-corpo");
+        if(!tbody) return;
+        
+        tbody.innerHTML = ""; 
+    
+        if(listaMateriais.length === 0) return;
+    
+        listaMateriais.forEach(material => {
+            // Garante que pega a quantidade certa, tratando 0 ou null
+            const qtdReal = (material.quantidade !== undefined && material.quantidade !== null) 
+                            ? material.quantidade 
+                            : 0;
+            
+            adicionarLinhaNaTabela(material.nome_item, qtdReal, material.id);
+        });
+    }
 
+    // Função que cria a linha com o botão de excluir
+    function adicionarLinhaNaTabela(nome, qtd, id) {
+        const tbody = document.getElementById("tabela-corpo");
         const tr = document.createElement("tr");
+        
         tr.innerHTML = `
-            <td>${material.id}</td>
-            <td>${material.nome_item}</td>
-            <td>x${qtdReal}</td>
-            <td></td>
+            <td class="item-id">${id}</td>
+            <td class="item-nome">${nome}</td>
+            <td class="item-qtd">x${qtd}</td>
+            <td>
+                <button type="button" class="botao-excluir" aria-label="Remover item">
+                    <img src="../../assets/icons/icon-excluir.svg" alt="Excluir">
+                </button>
+            </td>
         `;
         tbody.appendChild(tr);
-    });
-}
+    }
+});
