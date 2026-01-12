@@ -1,4 +1,6 @@
 .container {
+  height: 100vh;
+  justify-content: center;
   padding: 4rem 1rem;
 }
 
