@@ -50,13 +50,7 @@
     white-space: nowrap;
 }
 
-/* 4. MENU INFERIOR (BASE) */
-.menu-inferior {
-    /* Cor base do menu inferior */
-    background: #05A51D;
-}
-
-/* Correção para desbloquear cliques atrás do menu inferior */
+/* 4. MENU INFERIOR */
 .espaco-inferior {
     pointer-events: none;
 }
