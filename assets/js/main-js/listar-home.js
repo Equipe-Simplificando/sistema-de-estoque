@@ -1,11 +1,63 @@
 // Variável global para armazenar os dados originais
 let listaGlobalMateriais = [];
 
+// Variável para controlar o estado da ordenação
+let estadoOrdenacao = {
+    coluna: null,
+    direcao: 'asc' // 'asc' para crescente, 'desc' para decrescente
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     carregarMateriais();
     atualizarMenuAtivo();
     configurarPesquisa(); // Inicia o escutador do campo de pesquisa
 });
+
+// --- Função de Ordenação ---
+function ordenarPor(coluna) {
+    // Se clicar na mesma coluna, inverte a direção. Se for outra, começa como ascendente.
+    if (estadoOrdenacao.coluna === coluna) {
+        estadoOrdenacao.direcao = estadoOrdenacao.direcao === 'asc' ? 'desc' : 'asc';
+    } else {
+        estadoOrdenacao.coluna = coluna;
+        estadoOrdenacao.direcao = 'asc';
+    }
+
+    // Ordena a lista global
+    listaGlobalMateriais.sort((a, b) => {
+        let valorA = a[coluna];
+        let valorB = b[coluna];
+
+        // Tratamento específico para números e textos
+        if (coluna === 'id' || coluna === 'quantidade') {
+            valorA = Number(valorA) || 0;
+            valorB = Number(valorB) || 0;
+        } else {
+            // Para texto (case insensitive)
+            valorA = (valorA || '').toString().toLowerCase();
+            valorB = (valorB || '').toString().toLowerCase();
+        }
+
+        if (valorA < valorB) {
+            return estadoOrdenacao.direcao === 'asc' ? -1 : 1;
+        }
+        if (valorA > valorB) {
+            return estadoOrdenacao.direcao === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
+
+    // Reaplica o filtro de pesquisa atual para manter a consistência visual
+    const inputPesquisa = document.getElementById("pesquisa-item");
+    const termo = inputPesquisa.value.toLowerCase();
+    
+    // Se houver termo pesquisado, filtra a lista já ordenada
+    const listaParaExibir = listaGlobalMateriais.filter(material => 
+        material.nome_item.toLowerCase().includes(termo)
+    );
+
+    renderizarTabela(listaParaExibir);
+}
 
 // --- Configura a Pesquisa Dinâmica ---
 function configurarPesquisa() {
@@ -14,7 +66,7 @@ function configurarPesquisa() {
     inputPesquisa.addEventListener("input", (e) => {
         const termo = e.target.value.toLowerCase();
 
-        // Filtra a lista global baseada no que foi digitado
+        // Filtra a lista global (que pode estar ordenada) baseada no que foi digitado
         const listaFiltrada = listaGlobalMateriais.filter(material => 
             material.nome_item.toLowerCase().includes(termo)
         );
@@ -110,7 +162,6 @@ function renderizarTabela(listaMateriais) {
 
         // LÓGICA DE QUANTIDADE CORRIGIDA:
         // Verifica se quantidade existe e não é nula. Se for 0, mostra 0. Se for nulo, mostra 0.
-        // O "|| 1" anterior fazia com que 0 virasse 1.
         const qtdExibida = (material.quantidade !== undefined && material.quantidade !== null) 
                            ? material.quantidade 
                            : 0;
