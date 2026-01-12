@@ -2,35 +2,25 @@ const form = document.getElementById("loginForm");
 const loader = document.getElementById("loading");
 const msg = document.getElementById("mensagem-erro");
 
-form.addEventListener("submit", function(e) {
+form.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const usuario = document.getElementById("usuario").value.trim();
     const senha = document.getElementById("senha").value.trim();
 
     msg.textContent = "";
-    loader.style.display = "none";
+    loader.style.display = "block";
 
-    // LÓGICA DE PERFIL
-    if (usuario === "admin" && senha === "admin") {
-        loader.style.display = "block"; 
-        // Salva que é admin
-        localStorage.setItem("perfilUsuario", "admin");
-
-        setTimeout(() => {
+    setTimeout(() => {
+        if (usuario === "admin" && senha === "admin") {
+            localStorage.setItem("perfilUsuario", "admin");
             window.location.href = "../main-pages/home/home-material.html";
-        }, 1000);
-
-    } else if (usuario === "logistico" && senha === "1234") {
-        loader.style.display = "block";
-        // Salva que é logistico
-        localStorage.setItem("perfilUsuario", "logistico");
-
-        setTimeout(() => {
+        } else if (usuario === "logistico" && senha === "1234") {
+            localStorage.setItem("perfilUsuario", "logistico");
             window.location.href = "../main-pages/home/home-material.html";
-        }, 1000);
-
-    } else {
-        msg.textContent = "USUÁRIO OU SENHA INCORRETOS!";
-    }
+        } else {
+            loader.style.display = "none";
+            msg.textContent = "USUÁRIO OU SENHA INCORRETOS!";
+        }
+    }, 1000);
 });

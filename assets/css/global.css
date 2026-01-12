@@ -5,30 +5,29 @@
 
 :root {
   /* Cores Institucionais e Interface */
-  --cor-fundo: #fefefe;
+  --cor-fundo: #FFF;
 
-  --cor-primaria: #05a51d; /* Verde Padrão */
-  --cor-primaria-escura: #1f731d;  /* Verde Botões etcs*/
- 
-  --cor-secundaria: #f2d16d; /* Amarelo Padrão */
-  
+  --cor-primaria: #04A51D;
+  /* Verde Padrão */
+  --cor-secundaria: #f2d16d;
+  /* Amarelo Padrão */
 
   /* Texto */
   --cor-texto-escuro: #161614;
   --cor-texto-claro: #fefefe;
 
   /* Feedback */
-  --cor-sucesso: #00ff26;
+  --cor-sucesso: var(--cor-primaria);
   --cor-erro: #ff0000;
 
   /* Estrutura */
-  --cor-input: #e9e8e3;
+  --cor-input: #E9E8E3;
   --cor-borda: var(--cor-texto-escuro);
-  --shadow-primaria: rgba(0, 52, 16, 0.5);
-  --shadow-secundaria: rgba(69, 11, 0, 0.5);
+  --sombra-primaria: rgba(0, 52, 16, 0.50);
+  --sombra-secundaria: rgba(69, 11, 0, 0.5);
 
   /* Dimensões */
-  --font-principal: "Ubuntu", sans-serif;
+  --font-principal: "Ubuntu";
   --radius: 1rem;
   --borda: 2px solid var(--cor-borda);
 }
@@ -100,7 +99,7 @@ body {
 .formulario {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .campo-grupo {
@@ -209,20 +208,20 @@ body {
 }
 
 /* Estados Selecionados (Material/Projeto) */
-#material:checked + .rotulo-radio {
-    background: var(--cor-primaria);
-    opacity: 1;
-    border-right: 2px solid var(--cor-texto-escuro);
-    font-size: 2rem;
-    border-radius: 0 1.5rem 1.5rem 0;
+#material:checked+.rotulo-radio {
+  background: var(--cor-primaria);
+  opacity: 1;
+  border-right: 2px solid var(--cor-texto-escuro);
+  font-size: 2rem;
+  border-radius: 0 1.5rem 1.5rem 0;
 }
 
-#projeto:checked + .rotulo-radio {
-    background: var(--cor-secundaria);
-    opacity: 1;
-    border-left: 2px solid var(--cor-texto-escuro);
-    font-size: 2rem;
-    border-radius: 1.5rem 0 0 1.5rem;
+#projeto:checked+.rotulo-radio {
+  background: var(--cor-secundaria);
+  opacity: 1;
+  border-left: 2px solid var(--cor-texto-escuro);
+  font-size: 2rem;
+  border-radius: 1.5rem 0 0 1.5rem;
 }
 
 /* Estados Selecionados (Robótica/Manutenção) */
@@ -232,7 +231,7 @@ body {
   opacity: 1;
   border-radius: var(--radius) 0 0 var(--radius);
   /* Arredonda esquerda */
-  box-shadow: inset -2px -2px 4px 0 var(--shadow-primaria);
+  box-shadow: inset -2px -2px 4px 0 var(--sombra-primaria);
 }
 
 #manutencao:checked+.rotulo-radio {
@@ -241,7 +240,7 @@ body {
   opacity: 1;
   border-radius: 0 var(--radius) var(--radius) 0;
   /* Arredonda direita */
-  box-shadow: inset 2px -2px 0 1.5px var(--shadow-primaria);
+  box-shadow: inset 2px -2px 0 1.5px var(--sombra-primaria);
 }
 
 /* Campo de Preço */
@@ -292,10 +291,10 @@ body {
   justify-content: center;
   align-items: center;
 
-  border: var(--borda);
   border-radius: var(--radius);
+  border: var(--borda);
   background: var(--cor-primaria);
-  box-shadow: inset 0 -4px 0 1.5px var(--shadow-primaria);
+  box-shadow: inset 0 -4px 0 1.5px var(--sombra-primaria);
 
   font-family: var(--font-principal);
   font-size: 1.25rem;
@@ -427,7 +426,7 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
 
-  border: none; 
+  border: none;
   border-bottom: var(--borda);
 }
 
@@ -477,7 +476,7 @@ body {
   align-items: center;
 
   border-radius: 1rem 1rem 0 0;
-  box-shadow: var(--shadow-primaria);
+  box-shadow: var(--sombra-primaria);
   z-index: 1000;
 }
 
