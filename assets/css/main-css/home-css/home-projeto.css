@@ -3,13 +3,13 @@
 /* 1. CORES E SOBRESCRITAS */
 
 .menu-inferior {
-    background: #F2D16D;
+    background: var(--cor-secundaria);
 }
 
-/* Botão principal Amarelo */
+/* Botão Amarelo */
 .botao {
     background: var(--cor-secundaria);
-    box-shadow: inset 0 -4px 0 1px var(--shadow-secundaria);
+    box-shadow: inset 0 -4px 0 1px var(--sombra-secundaria);
     color: var(--cor-texto-escuro);
     align-self: end;
 }
@@ -29,14 +29,11 @@ details.aba-projeto .tabela-itens thead th {
     gap: 1.75rem;
 
     overflow-y: auto;
-
-    padding: 0 5px 8rem 5px;
-    margin-left: -5px;
 }
 
 /* Scrollbar Customizada */
 .secao-projetos::-webkit-scrollbar {
-    width: 6px;
+    display: none;
 }
 
 .secao-projetos::-webkit-scrollbar-track {

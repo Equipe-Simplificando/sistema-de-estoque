@@ -179,15 +179,18 @@ body {
   height: 29px;
 }
 
-#pesquisa-item {
+#pesquisa-item,
+#pesquisa-projeto {
     padding-right: 3rem; /* Abre espaço para o ícone da lupa não cobrir o texto */
 }
 
-#pesquisa-item::-webkit-calendar-picker-indicator {
+#pesquisa-item::-webkit-calendar-picker-indicator,
+#pesquisa-projeto::-webkit-calendar-picker-indicator {
     display: none !important;
 }
 
-#pesquisa-item::-webkit-search-cancel-button {
+#pesquisa-item::-webkit-search-cancel-button,
+#pesquisa-projeto::-webkit-search-cancel-button {
     display: none;
 }
 
@@ -397,8 +400,10 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
 
-  border: var(--borda);
+  padding-bottom: 8rem;
+
   border-radius: var(--radius);
+  border: var(--borda);
 }
 
 .tabela-itens {
