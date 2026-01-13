@@ -400,8 +400,6 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
 
-  padding-bottom: 8rem;
-
   border-radius: var(--radius);
   border: var(--borda);
 }

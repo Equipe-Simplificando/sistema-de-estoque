@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Material</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/material-css/perfil-base.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+
+        <header class="cabecalho">
+            <button class="botao-fechar" type="button" onclick="window.location.href='../main-pages/home/home-material.html'"
+                aria-label="Voltar para a home">
+                <img src="../../assets/icons/botao-fechar.svg" alt="" aria-hidden="true">
+            </button>
+        </header>
+
+        <main class="conteudo">            
+            <article class="secao-etiqueta">
+                <h1 class="id-material">#0000-00</h1>
+
+                <dl class="dados-etiqueta">
+                    <div>
+                        <dt class="rotulo-dado">ITEM:</dt>
+                        <dd class="valor-dado" id="view_item">123456</dd>
+                    </div>
+
+                    <div>
+                        <dt class="rotulo-dado">DESTINO:</dt>
+                        <dd class="valor-dado" id="view_destino">Lorem ipsum</dd>
+                    </div>
+
+                    <div>
+                        <dt class="rotulo-dado">QUANTIDADE:</dt>
+                        <dd class="valor-dado" id="view_quantidade">Lorem ipsum</dd>
+                    </div>
+
+                    <div>
+                        <dt class="rotulo-dado">Projeto:</dt>
+                        <dd class="valor-dado" id="view_projeto">Lorem ipsum dolor</dd>
+                    </div>
+                </dl>
+
+                <section class="qrcode-wrapper" aria-label="Código QR da etiqueta">
+                    <div id="qrcode"></div>
+                </section>
+
+                <section class="secao-observacoes">
+                    <h2 class="titulo-secao">OBSERVAÇÕES:</h2>
+                    <p class="texto-observacoes" id="view_obs"></p>
+                </section>
+
+                <section class="secao-imagem">
+                    <div class="imagem-material" id="view_imagem">
+                        <img src="../../assets/icons/imagem-perfil-material.svg" alt="">
+                        <span>Nenhuma imagem adicionada.</span>
+                    </div>
+                </section>
+
+                <section class="grupo-acoes">
+                    <a href="../material-pages/cadastrar-material.html" class="botao">
+                        CADASTRAR MAIS
+                    </a>
+
+                    <button type="button" id="btn-editar" class="botao botao-branco">
+                        EDITAR
+                    </button>
+
+                    <button type="button" class="botao-imprimir" onclick="window.print()">
+                        REIMPRIMIR ETIQUETA
+                    </button>
+                </section>
+
+            </article>
+        </main>
+    </div>
+
+    <script src="../../assets/js/material-js/etiqueta-gerada.js"></script>
+</body>
+
+</html>
