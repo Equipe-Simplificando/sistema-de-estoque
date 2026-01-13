@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <title>Visualização de Popups</title>
+
+    <style>
+        body {
+            background-color: #f0f0f0;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .popup-overlay {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h3>Exemplo 1: Cancelar Cadastro MATERIAL</h3>
+    <div class="popup-overlay">
+        <div class="popup-container">
+            <div class="popup-conteudo">
+                <h2 class="popup-titulo">Cancelar?</h2>
+                <p class="popup-texto">
+                    Os dados inseridos serão perdidos.
+                </p>
+            </div>
+            <div class="popup-acoes">
+                <button class="botao">Voltar</button>
+                <button class="botao botao-branco">Sim, cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <h3>Exemplo 2: Cancelar Edição MATERIAL</h3>
+    <div class="popup-overlay">
+        <div class="popup-container">
+            <div class="popup-conteudo">
+                <h2 class="popup-titulo">Descartar?</h2>
+                <p class="popup-texto">
+                    As alterações não salvas serão perdidas.
+                </p>
+            </div>
+            <div class="popup-acoes">
+                <button class="botao">Voltar</button>
+                <button class="botao botao-branco">Sim, descartar</button>
+            </div>
+        </div>
+    </div>
+
+    <h3>Exemplo 3: Imprimir Etiqueta? MATERIAL</h3>
+    <div class="popup-overlay">
+        <div class="popup-container">
+            <div class="popup-conteudo">
+                <h2 class="popup-titulo">Imprimir?</h2>
+                <p class="popup-texto">
+                    Confirma a impressão para <span id="#">[MATERIAL]</span> <span id="#">#000</span>?
+                </p>
+            </div>
+            <div class="popup-acoes">
+                <button class="botao">Voltar</button>
+                <button class="botao botao-branco">Sim, imprimir</button>
+            </div>
+        </div>
+    </div>
+
+    <h3>Exemplo 4: Cancelar Cadastro PROJETO</h3>
+    <div class="popup-overlay">
+        <div class="popup-container">
+            <div class="popup-conteudo">
+                <h2 class="popup-titulo">Cancelar?</h2>
+                <p class="popup-texto">
+                    Os dados inseridos serão perdidos.
+                </p>
+            </div>
+            <div class="popup-acoes">
+                <button class="botao botao-amarelo">Voltar</button>
+                <button class="botao botao-branco">Sim, cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <h3>Exemplo 2: Cancelar Edição PROJETO</h3>
+    <div class="popup-overlay">
+        <div class="popup-container">
+            <div class="popup-conteudo">
+                <h2 class="popup-titulo">Descartar?</h2>
+                <p class="popup-texto">
+                    As alterações não salvas serão perdidas.
+                </p>
+            </div>
+            <div class="popup-acoes">
+                <button class="botao botao-amarelo">Voltar</button>
+                <button class="botao botao-branco">Sim, descartar</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

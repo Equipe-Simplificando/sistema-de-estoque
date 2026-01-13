@@ -324,6 +324,12 @@ body {
   text-decoration: none;
 }
 
+.botao-amarelo {
+    background: var(--cor-secundaria);
+    box-shadow: inset 0 -4px 0 1.5px var(--sombra-secundaria);
+    color: var(--cor-texto-escuro);
+}
+
 .botao-branco {
   background: var(--cor-fundo);
   color: var(--cor-texto-escuro);
@@ -577,4 +583,75 @@ body {
   height: 3px;
   background: #000;
   border-radius: 2px;
+}
+
+/* Pop-Up */
+
+/* Container Principal (Fundo escurecido/Posicionamento) */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Card do Popup */
+.popup-container {
+  background: var(--cor-texto-claro);
+  
+  width: 80%;             
+  max-width: 450px;        
+  aspect-ratio: 4 / 3;    
+
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  
+  display: flex;
+  flex-direction: column;  
+  box-shadow: 0 4px 10px var(--sombra-primaria);
+}
+
+/* Conteúdo de Texto */
+.popup-conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: start;
+  justify-content: center;
+  flex-grow: 1;
+  margin-bottom: 2rem;
+}
+
+.popup-titulo {
+  color: var(--cor-texto-escuro);
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.popup-texto {
+  color: var(--cor-texto-escuro);
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.popup-acoes {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+}
+
+/* Ajuste nos botões para ficarem proporcionais */
+.popup-acoes .botao {
+    flex: 1;
 }

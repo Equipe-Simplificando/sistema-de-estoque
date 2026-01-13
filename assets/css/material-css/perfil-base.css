@@ -103,10 +103,13 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  overflow: hidden;
 }
 
 .imagem-material img {
   max-width: 100%;
+  border: var(--borda);
+  border-radius: var(--radius);
 }
 
 .grupo-acoes {
