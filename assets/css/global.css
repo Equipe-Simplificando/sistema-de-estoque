@@ -181,17 +181,18 @@ body {
 
 #pesquisa-item,
 #pesquisa-projeto {
-    padding-right: 3rem; /* Abre espaço para o ícone da lupa não cobrir o texto */
+  padding-right: 3rem;
+  /* Abre espaço para o ícone da lupa não cobrir o texto */
 }
 
 #pesquisa-item::-webkit-calendar-picker-indicator,
 #pesquisa-projeto::-webkit-calendar-picker-indicator {
-    display: none !important;
+  display: none !important;
 }
 
 #pesquisa-item::-webkit-search-cancel-button,
 #pesquisa-projeto::-webkit-search-cancel-button {
-    display: none;
+  display: none;
 }
 
 /* Radio Buttons (Abas) */
@@ -230,6 +231,8 @@ body {
   border-radius: 1.3rem 0 0 1.3rem;
   /* Arredonda a esquerda */
   border-right: 2px solid var(--cor-texto-escuro);
+  border-radius: 0 1.5rem 1.5rem 0;
+  box-shadow: inset -2px -2px 0 1.5px var(--sombra-primaria);
   font-size: 1.5rem;
 }
 
@@ -240,6 +243,8 @@ body {
   border-radius: 0 1.3rem 1.3rem 0;
   /* Arredonda a direita */
   border-left: 2px solid var(--cor-texto-escuro);
+  border-radius: 1.5rem 0 0 1.5rem;
+  box-shadow: inset 2px -2px 0 1.5px var(--sombra-secundaria);
   font-size: 1.5rem;
 }
 
@@ -325,9 +330,9 @@ body {
 }
 
 .botao-amarelo {
-    background: var(--cor-secundaria);
-    box-shadow: inset 0 -4px 0 1.5px var(--sombra-secundaria);
-    color: var(--cor-texto-escuro);
+  background: var(--cor-secundaria);
+  box-shadow: inset 0 -4px 0 1.5px var(--sombra-secundaria);
+  color: var(--cor-texto-escuro);
 }
 
 .botao-branco {
@@ -426,7 +431,7 @@ body {
 
 .tabela-itens tbody td {
   font-size: 1rem;
-  padding: 0.8rem 0.3rem;
+  padding: 0.4rem 0.3rem;
 
   overflow: hidden;
   white-space: nowrap;
@@ -449,10 +454,21 @@ body {
   border-bottom: var(--borda);
 }
 
-.tabela-itens th:nth-child(1) { width: 45px; } 
-.tabela-itens th:nth-child(2) { width: 70px; } 
-.tabela-itens th:nth-child(3) { width: auto; } 
-.tabela-itens th:nth-child(4) { width: 85px; }
+.tabela-itens th:nth-child(1) {
+  width: 45px;
+}
+
+.tabela-itens th:nth-child(2) {
+  width: 70px;
+}
+
+.tabela-itens th:nth-child(3) {
+  width: auto;
+}
+
+.tabela-itens th:nth-child(4) {
+  width: 85px;
+}
 
 /* Remove bordas duplicadas nas extremidades */
 .tabela-itens th:last-child,
@@ -595,8 +611,8 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center; 
-  align-items: center;     
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.1);
 }
@@ -604,16 +620,16 @@ body {
 /* Card do Popup */
 .popup-container {
   background: var(--cor-texto-claro);
-  
-  width: 80%;             
-  max-width: 450px;        
-  aspect-ratio: 4 / 3;    
+
+  width: 80%;
+  max-width: 450px;
+  aspect-ratio: 4 / 3;
 
   padding: 1.25rem;
   border-radius: var(--radius);
-  
+
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
   box-shadow: 0 4px 10px var(--sombra-primaria);
 }
 
@@ -653,5 +669,5 @@ body {
 
 /* Ajuste nos botões para ficarem proporcionais */
 .popup-acoes .botao {
-    flex: 1;
+  flex: 1;
 }
