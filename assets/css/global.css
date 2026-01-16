@@ -256,7 +256,7 @@ body {
   opacity: 1;
   border-radius: var(--radius) 0 0 var(--radius);
   /* Arredonda esquerda */
-  box-shadow: inset -2px -2px 4px 0 var(--sombra-primaria);
+  box-shadow: inset -2px -2px 0 1.5px var(--sombra-primaria);
 }
 
 #manutencao:checked+.rotulo-radio {
@@ -265,7 +265,7 @@ body {
   opacity: 1;
   border-radius: 0 var(--radius) var(--radius) 0;
   /* Arredonda direita */
-  box-shadow: inset 2px -2px 0 1.5px var(--sombra-primaria);
+  box-shadow: inset 2px -2px 0 1.5px var(--sombra-secundaria);
 }
 
 /* Campo de Preço */

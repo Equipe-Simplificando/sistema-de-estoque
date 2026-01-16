@@ -6,153 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Material</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/material-css/cadastrar-material.css">
-    <style>
-        /* Estilo para preview de arquivo */
-        #preview-container {
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            min-height: 60px;
-        }
-
-        .nome-arquivo {
-            font-weight: bold;
-            color: #333;
-            font-size: 0.9rem;
-            word-break: break-all;
-            text-align: center;
-        }
-
-        .aviso-preview {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .imagem-preview-db {
-            max-width: 100%;
-            max-height: 250px;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            object-fit: contain;
-        }
-
-        /* --- ESTILOS NOME + QTD --- */
-        .row-input {
-            display: flex;
-            flex-direction: row;
-            gap: 1.5rem;
-            align-items: flex-start;
-            width: 100%;
-        }
-
-        .col-nome {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .col-qtd {
-            width: 8rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .qtd-wrapper {
-            display: flex;
-            height: 3.5rem;
-            width: 100%;
-        }
-
-        .qtd-wrapper .campo-entrada {
-            width: 100%;
-            height: 100%;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-            border-right: none;
-            text-align: center;
-            padding: 0;
-        }
-
-        .btn-plus {
-            background-color: #1f731d;;
-            border: 2px solid #161614;
-            border-left: none;
-            color: #fff;
-            width: 3.5rem;
-            height: 3.5rem;
-            font-size: 2rem;
-            font-weight: 500;
-            border-top-right-radius: 1rem;
-            border-bottom-right-radius: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-bottom: 4px;
-            transition: background 0.2s;
-        }
-
-        .btn-plus:hover {
-            background-color: #05A51D;
-        }
-
-        /* --- NOVO ESTILO DO BOTÃO EXCLUIR --- */
-        .botao-excluir {
-            background-color: #d32f2f !important; /* Vermelho */
-            color: white !important;
-            border: 2px solid #161614;
-        }
-        
-        .botao-excluir:hover {
-            background-color: #b71c1c !important;
-            transform: scale(1.02);
-        }
-
-        /* Ajuste para o grupo de botões caberem os 3 */
-        .grupo-acoes {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap; /* Permite quebrar linha no mobile */
-            justify-content: center;
-        }
-
-        .grupo-acoes .botao {
-            flex: 1; /* Todos com o mesmo tamanho */
-            min-width: 120px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @media (max-width: 480px) {
-            .row-input {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .col-qtd {
-                width: 100%;
-            }
-            .col-qtd .qtd-wrapper {
-                width: 50%;
-            }
-            .grupo-acoes {
-                flex-direction: column;
-            }
-            .grupo-acoes .botao {
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../../assets/css/material-css/material-base.css">
 </head>
 
 <body>
@@ -173,17 +27,18 @@
                 <form id="formulario" class="formulario" method="POST">
                     <input type="hidden" id="material-id" name="id">
 
-                    <div class="row-input">
-                        <div class="col-nome">
+                    <div class="campo-nomeqtd">
+                        <div class="campo-grupo col-nome">
                             <label for="item" class="campo-rotulo">NOME DO ITEM</label>
                             <input type="text" id="item" name="item" class="campo-entrada" required>
                         </div>
 
-                        <div class="col-qtd">
+                        <div class="campo-grupo col-qtd">
                             <label for="quantidade" class="campo-rotulo">QTD*</label>
-                            <div class="qtd-wrapper">
-                                <input type="number" id="quantidade" name="quantidade" class="campo-entrada" value="1" min="1" required>
-                                <button type="button" class="btn-plus" onclick="incrementarQtd()">+</button>
+                            <div class="campo-quantidade">
+                                <button type="button" class="botao-qtd botao-menos" onclick="decrementarQtd()">-</button>
+                                <input type="number" id="quantidade" name="quantidade" class="campo-entrada input-qtd-central" value="1" min="1" required>
+                                <button type="button" class="botao-qtd botao-mais" onclick="incrementarQtd()">+</button>
                             </div>
                         </div>
                     </div>
@@ -221,20 +76,25 @@
 
                     <div class="campo-grupo">
                         <label class="campo-rotulo">ARQUIVO ATUAL</label>
-                        <div id="preview-container">
-                            <span class="aviso-preview">Verificando anexos...</span>
+                        <div id="preview-container" class="preview-arquivo ">
+                            <span>Verificando anexos...</span>
                         </div>
                     </div>
 
                     <div class="campo-grupo">
-                        <label for="arquivo" class="campo-rotulo">
+                        <span class="campo-rotulo">
                             SUBSTITUIR ARQUIVO <span class="texto-opcional">(OPCIONAL)</span>
-                        </label>
-                        <input type="file" id="arquivo" name="arquivo" class="campo-entrada" accept="image/*,video/*"
-                            style="padding: 10px; background: white;">
+                        </span>
 
-                        <small style="color: #666; font-size: 0.8rem; display:block;">
-                            Se selecionar um arquivo novo, o anterior será substituído.
+                        <label for="arquivo" class="campo-entrada">
+                            <img src="../../assets/icons/icon-camera.svg" alt="Ícone Câmera" class="icone-camera">
+                            
+                            <span id="nome-arquivo" class="texto-arquivo"></span>
+
+                            <input type="file" id="arquivo" name="arquivo" class="input-escondido" accept="image/*,video/*">
+                        </label>
+                        <small>
+                            Se você selecionar um novo arquivo, o "Arquivo Atual" será substituído.
                         </small>
                     </div>
 
@@ -250,24 +110,18 @@
                         <button type="submit" class="botao">
                             SALVAR
                         </button>
-
-                        <a href="../main-pages/home/home-material.html" class="botao botao-branco">
-                            CANCELAR
-                        </a>
+                        
+                        <button type="button" class="botao botao-vermelho">
+                            EXCLUIR
+                        </button>
                     </div>
 
                 </form>
             </section>
         </main>
     </div>
+
     <script src="../../assets/js/material-js/editar-material.js"></script>
-    <script>
-        function incrementarQtd() {
-            const input = document.getElementById('quantidade');
-            let val = parseInt(input.value) || 0;
-            input.value = val + 1;
-        }
-    </script>
 </body>
 
 </html>
