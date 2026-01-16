@@ -55,7 +55,6 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 3rem 1.5rem;
-  /* Espaço para não colar nas bordas */
 }
 
 .conteudo {
@@ -63,7 +62,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* gap pode ser adicionado aqui se quiser espaçamento padrão entre elementos */
 }
 
 /* Cabeçalho da Página (Título + Botão Fechar) */

@@ -15,50 +15,54 @@
     <div class="container">
 
         <header class="cabecalho">
-            <button class="botao-fechar" type="button" onclick="window.location.href='../main-pages/home/home-material.html'"
-                aria-label="Fechar janela">
-                <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
+            <button class="botao-fechar" type="button"
+                onclick="window.location.href='../main-pages/home/home-material.html'" aria-label="Voltar para a home">
+                <img src="../../assets/icons/botao-fechar.svg" alt="" aria-hidden="true">
             </button>
         </header>
 
         <main class="conteudo">
-            <h1 class="titulo-pagina">ETIQUETA <br> GERADA!</h1>
-            
-            <section class="secao-etiqueta">
-                
-                <div class="container-lembrete">
-                    <p class="texto-lembrete">Lembre-se de conferir a etiqueta antes de colar no material.</p>
-                </div>
 
-                <section class="dados-etiqueta">
-                    <span class="rotulo-dado">ID:</span>
-                    <span class="valor-dado" id="view_id"></span>
+            <h1 class="titulo">ETIQUETA <br> GERADA!</h1>
 
-                    <span class="rotulo-dado">Item:</span>
-                    <span class="valor-dado" id="view_nome"></span>
+            <div class="container-lembrete">
+                <p>Lembre-se de conferir a etiqueta antes de colar no material.</p>
+            </div>
 
-                    <span class="rotulo-dado">Destino:</span>
-                    <span class="valor-dado" id="view_destino"></span>
+            <article class="secao-etiqueta">
+                <dl class="dados-etiqueta">
+                    <div>
+                        <dt class="rotulo-dado">ID:</dt>
+                        <dd class="valor-dado" id="view_id">Carregando...</dd>
+                    </div>
+                    <div>
+                        <dt class="rotulo-dado">ITEM:</dt>
+                        <dd class="valor-dado" id="view_nome">Carregando...</dd>
+                    </div>
 
-                    <span class="rotulo-dado">Projeto:</span>
-                    <span class="valor-dado" id="view_projeto"></span>
-                </section>
+                    <div>
+                        <dt class="rotulo-dado">DESTINO:</dt>
+                        <dd class="valor-dado" id="view_destino">-</dd>
+                    </div>
 
-                <div class="qrcode-wrapper">
+                    <div>
+                        <dt class="rotulo-dado">PROJETO:</dt>
+                        <dd class="valor-dado" id="view_projeto">-</dd>
+                    </div>
+                </dl>
+
+                <section class="qrcode-wrapper" aria-label="Código QR da etiqueta">
                     <div id="qrcode"></div>
-                </div>
+                </section>
 
                 <section class="secao-observacoes">
                     <h2 class="titulo-secao">OBSERVAÇÕES:</h2>
-                    <p class="texto-observacoes" id="view_obs">
-                        -
-                    </p>
+                    <p class="texto-observacoes" id="view_obs">-</p>
                 </section>
 
-                <div class="grupo-acoes">
-
+                <section class="grupo-acoes">
                     <a href="../material-pages/cadastrar-material.html" class="botao">
-                        CADASTRAR MAIS
+                        CADASTRAR OUTRO
                     </a>
 
                     <button type="button" id="btn-editar" class="botao botao-branco">
@@ -66,12 +70,11 @@
                     </button>
 
                     <button type="button" class="botao-imprimir" onclick="window.print()">
-                        REIMPRIMIR ETIQUETA
+                        IMPRIMIR ETIQUETA
                     </button>
+                </section>
 
-                </div>
-
-            </section>
+            </article>
         </main>
     </div>
 
