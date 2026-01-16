@@ -1,37 +1,21 @@
 /* assets/css/main-css/home-css/home-projeto.css */
 
-/* 1. CORES E SOBRESCRITAS */
-
+/* 1. CORES E ELEMENTOS BASE */
 .menu-inferior {
     background: var(--cor-secundaria);
 }
 
-/* Botão Amarelo */
-.botao {
-    background: var(--cor-secundaria);
-    box-shadow: inset 0 -4px 0 1px var(--sombra-secundaria);
-    color: var(--cor-texto-escuro);
-    align-self: end;
-}
-
-details.aba-projeto .tabela-itens thead th {
-    background: var(--cor-secundaria); 
-    color: var(--cor-texto-escuro);    
-}
-
-/* 2. LISTA DE PROJETOS */
+/* 2. LISTA / CONTAINER DE PROJETOS */
 .secao-projetos {
     flex: 1;
-    
     display: flex;
     flex-direction: column;
     width: 100%;
     gap: 1.75rem;
-
     overflow-y: auto;
 }
 
-/* Scrollbar Customizada */
+/* Scrollbar */
 .secao-projetos::-webkit-scrollbar {
     display: none;
 }
@@ -45,66 +29,69 @@ details.aba-projeto .tabela-itens thead th {
     border-radius: 10px;
 }
 
-/* 3. DETALHES DO PROJETO */
-
+/* 3. ABA / DETALHES DO PROJETO */
 details.aba-projeto {
     width: 100%;
     flex-shrink: 0;
-    
     background: var(--cor-input);
     border-radius: var(--radius);
     box-shadow: inset -4px -4px 0 1px rgba(69, 11, 0, 0.50);
-
     overflow: hidden;
 }
 
-/* Remove a sombra interna quando o item está aberto */
 details[open].aba-projeto {
     box-shadow: none;
 }
 
-/* Cabeçalho Projeto Aberto */
-details.aba-projeto > summary {
+/* 4. CABEÇALHO DA ABA */
+details.aba-projeto>summary {
     position: relative;
     height: 2.8rem;
     padding: 0.5rem 0.8rem;
-    
     display: flex;
     align-items: center;
-
     cursor: pointer;
     list-style: none;
-    
-    /* Remove estilos nativos */
     -webkit-appearance: none;
     appearance: none;
 }
 
-/* Remove o triângulo padrão do navegador */
-details.aba-projeto > summary::-webkit-details-marker {
+details.aba-projeto>summary::-webkit-details-marker {
     display: none;
+}
+
+/* CABEÇALHO COM ÍCONE */
+.cabecalho-conteudo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+}
+
+.grupo-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.icone-categoria {
+    width: 32px;
+    height: 32px;
 }
 
 .titulo-projeto {
     font-size: 1.5rem;
-    color: var(--cor-texto-escuro);
     font-weight: 700;
-
-    white-space: nowrap;     
-    overflow: hidden;       
-    text-overflow: ellipsis; 
-    
-    display: block;           
-    max-width: 70%;           
+    color: var(--cor-texto-escuro);
 }
 
-/* Ícone da Seta (Animação) */
+/* Ícone da seta */
 .icone-seta {
     position: absolute;
     top: 50%;
     right: 1rem;
     transform: translateY(-50%);
-    
     pointer-events: none;
     transition: transform 0.3s ease;
 }
@@ -113,11 +100,73 @@ details[open] .icone-seta {
     transform: translateY(-50%) rotate(180deg);
 }
 
-/* Conteúdo Interno */
+/* 5. CONTEÚDO INTERNO */
 .conteudo-aba {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 0.5rem;
+    padding: 1rem 1rem 1rem 2rem;
     background: var(--cor-fundo);
+}
+
+.preco-projeto {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--cor-texto-escuro);
+}
+
+/* 6. TABELA */
+details.aba-projeto .tabela-itens thead th {
+    background: var(--cor-secundaria);
+    color: var(--cor-texto-escuro);
+}
+
+.tabela-itens th:nth-child(1) {
+    width: 70px;
+}
+
+.tabela-itens th:nth-child(2) {
+    width: auto;
+}
+
+.tabela-itens th:nth-child(3) {
+    width: 70px;
+}
+
+/* (Ver mais) */
+.container-ver-mais {
+    text-align: right;
+}
+
+/* Estilo do link */
+.link-ver-mais {
+    font-size: 1rem;
+    color: var(--cor-texto-escuro);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s;
+}
+
+.link-ver-mais:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+/* 7. MENSAGENS DE STATUS */
+.msg-status {
+    text-align: center;
+    padding: 1rem;
+    color: var(--cor-texto-escuro);
+}
+
+.msg-erro {
+    color: var(--cor-erro);
+}
+
+/* 8. AÇÕES / BOTÕES */
+.grupo-acoes {
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    padding-left: 2rem;
 }

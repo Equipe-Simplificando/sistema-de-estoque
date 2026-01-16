@@ -1,4 +1,6 @@
-// Variáveis globais
+/* ==========================================================================
+   GLOBAL E INICIALIZAÇÃO
+   ========================================================================== */
 let listaGlobalProjetos = [];
 let listaGlobalMateriais = [];
 
@@ -6,8 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarDados();
     configurarPesquisa();
     atualizarMenuAtivo();
+    configurarAcoesBotoes();
+    configurarAcaoToggle(); // Renomeado para refletir que agora abre e fecha
 });
 
+/* ==========================================================================
+   CARREGAMENTO DE DADOS (API)
+   ========================================================================== */
 async function carregarDados() {
     const container = document.getElementById("lista-projetos");
     
@@ -22,7 +29,6 @@ async function carregarDados() {
         let projetos = await resProjetos.json();
         listaGlobalMateriais = await resMateriais.json();
 
-        // --- LÓGICA DE FILTRO VIA URL (?setor=...) ---
         const urlParams = new URLSearchParams(window.location.search);
         const filtroSetor = urlParams.get('setor');
 
@@ -30,13 +36,11 @@ async function carregarDados() {
             projetos = projetos.filter(projeto => {
                 const termo = filtroSetor.toLowerCase();
                 
-                // 1. REGRA PARA VENDA: Ignora o setor e mostra tudo que tem preço
                 if (termo === 'venda') {
                     const valor = projeto.preco ? parseFloat(projeto.preco) : 0;
                     return valor > 0;
                 }
 
-                // 2. REGRA PARA SETORES (Robótica/Manutenção)
                 const normalizar = (str) => str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
                 const setorProj = normalizar(projeto.setor);
 
@@ -54,167 +58,298 @@ async function carregarDados() {
     } catch (error) {
         console.error("Erro:", error);
         if(container) {
-            container.innerHTML = `<p style="text-align:center; color:red;">Erro ao carregar dados.</p>`;
+            container.innerHTML = `<p class="msg-status msg-erro">Erro ao carregar dados.</p>`;
         }
     }
 }
 
-// --- FUNÇÃO DE MENU ATIVO (COM CAMINHOS MANUAIS) ---
-function atualizarMenuAtivo() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const setor = urlParams.get('setor');
-    
-    let idAtivo = 'menu-home'; 
-    if (setor === 'robotica') idAtivo = 'menu-robotica';
-    else if (setor === 'manutencao') idAtivo = 'menu-manutencao';
-    else if (setor === 'venda') idAtivo = 'menu-venda';
-
-    // Mapeamento manual dos caminhos das imagens
-    const iconesAtivos = {
-        'menu-home': '../../../assets/icons/icon-home-ativo.svg',
-        'menu-robotica': '../../../assets/icons/icon-robotica-ativo.svg',
-        'menu-manutencao': '../../../assets/icons/icon-manutencao-ativo.svg',
-        'menu-venda': '../../../assets/icons/icon-venda-ativo.svg'
-    };
-
-    const iconesPadrao = {
-        'menu-home': '../../../assets/icons/icon-home.svg',
-        'menu-robotica': '../../../assets/icons/icon-robotica.svg',
-        'menu-manutencao': '../../../assets/icons/icon-manutencao.svg',
-        'menu-venda': '../../../assets/icons/icon-venda.svg'
-    };
-
-    // Reseta todos os menus
-    document.querySelectorAll('.item-menu').forEach(el => {
-        el.classList.remove('ativo');
-        const img = el.querySelector('img');
-        if (img && iconesPadrao[el.id]) {
-            img.src = iconesPadrao[el.id];
-        }
-    });
-
-    // Ativa o selecionado
-    const elementoAtivo = document.getElementById(idAtivo);
-    if (elementoAtivo) {
-        elementoAtivo.classList.add('ativo');
-        const img = elementoAtivo.querySelector('img');
-        if (img) {
-            img.src = iconesAtivos[idAtivo];
-        }
-    }
-}
-
-// --- RENDERIZAÇÃO E OUTRAS FUNÇÕES (MANTIDAS) ---
+/* ==========================================================================
+   RENDERIZAÇÃO (HTML)
+   ========================================================================== */
 function renderizarProjetos(projetos, materiais) {
     const container = document.getElementById("lista-projetos");
-    if(!container) return;
+    if (!container) return;
+  
     container.innerHTML = "";
-
+  
     const perfil = localStorage.getItem("perfilUsuario");
-    const ehAdmin = (perfil === "admin");
-
+    const ehAdmin = perfil === "admin";
+  
     if (!projetos || projetos.length === 0) {
-        container.innerHTML = `<p style="text-align:center; padding:1rem; color: #666;">Nenhum projeto encontrado.</p>`;
-        return;
+      container.innerHTML = `<p class="msg-status">Nenhum projeto encontrado.</p>`;
+      return;
     }
-
+  
     const normalizar = (texto) => {
         if (!texto) return "";
         return String(texto).normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
     };
+  
+    projetos.forEach((projeto) => {
+      const materiaisDoProjeto = materiais.filter((m) => {
+        if (!m.projeto) return false;
+        if (String(m.projeto) === String(projeto.id)) return true;
+        return normalizar(m.projeto) === normalizar(projeto.nome_projeto);
+      });
+  
+      const precoFormatado = projeto.preco
+        ? parseFloat(projeto.preco).toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0, maximumFractionDigits: 0 })
+        : "R$ 0";
+  
+      let iconHTML = "";
+      const setor = projeto.setor ? projeto.setor.toLowerCase() : "";
+      if (setor.includes("robótica") || setor.includes("robotica")) {
+        iconHTML = `<img src="../../../assets/icons/icon-robotica.svg" alt="Robótica" class="icone-categoria">`;
+      } else if (setor.includes("manutenção") || setor.includes("manutencao")) {
+        iconHTML = `<img src="../../../assets/icons/icon-manutencao.svg" alt="Manutenção" class="icone-categoria">`;
+      }
+  
+      const details = document.createElement("details");
+      details.classList.add("aba-projeto");
+  
+      const summary = document.createElement("summary");
+      summary.classList.add("cabecalho-projeto");
+      summary.innerHTML = `
+              <div class="cabecalho-conteudo">
+                  <div class="grupo-titulo">${iconHTML}<span class="titulo-projeto">${projeto.nome_projeto}</span></div>
+                  <span class="preco-projeto">${precoFormatado}</span>
+              </div>
+              <img src="../../../assets/icons/icon-seta.svg" alt="Abrir" class="icone-seta">
+          `;
+  
+      const divConteudo = document.createElement("div");
+      divConteudo.classList.add("conteudo-aba");
+  
+      // Lógica inicial: mostra apenas os 3 primeiros
+      const limite = 3;
+      const qtdTotal = materiaisDoProjeto.length;
+      const materiaisVisiveis = materiaisDoProjeto.slice(0, limite);
+      const temMais = qtdTotal > limite;
+  
+      const gerarLinhasHTML = (listaMats) => {
+         return listaMats.length > 0
+          ? listaMats.map((mat) => `
+                  <tr>
+                      <td>${String(mat.id).padStart(3, "0")}</td>
+                      <td>${mat.nome_item || "Sem nome"}</td>
+                      <td>x${mat.quantidade ?? 0}</td>
+                  </tr>`).join("")
+          : `<tr><td colspan="3" class="td-vazio">Nenhum material vinculado.</td></tr>`;
+      };
 
-    projetos.forEach(projeto => {
-        const materiaisDoProjeto = materiais.filter(m => {
-            if (!m.projeto) return false;
-            if (String(m.projeto) === String(projeto.id)) return true;
-            return normalizar(m.projeto) === normalizar(projeto.nome_projeto);
-        });
-
-        const precoFormatado = projeto.preco 
-            ? parseFloat(projeto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
-            : 'R$ 0,00';
-
-        const details = document.createElement("details");
-        details.classList.add("aba-projeto");
-
-        const summary = document.createElement("summary");
-        summary.classList.add("cabecalho-projeto");
-        summary.innerHTML = `
-            <div style="display: flex; justify-content: space-between; width: 90%; align-items: center;">
-                <span class="titulo-projeto">${projeto.nome_projeto}</span>
-                <span style="font-weight: bold; color: #2E7D32; font-size: 0.9em;">${precoFormatado}</span>
-            </div>
-            <img src="../../../assets/icons/icon-seta.svg" alt="Abrir" class="icone-seta">
-        `;
-
-        const divConteudo = document.createElement("div");
-        divConteudo.classList.add("conteudo-aba");
-
-        const linhasTabela = materiaisDoProjeto.length > 0 
-            ? materiaisDoProjeto.map(mat => `
-                <tr>
-                    <td>${String(mat.id).padStart(3, '0')}</td>
-                    <td>${mat.nome_item || "Sem nome"}</td>
-                    <td>x${mat.quantidade ?? 0}</td>
-                </tr>`).join("")
-            : `<tr><td colspan="3" style="text-align:center; color: #777;">Nenhum material vinculado.</td></tr>`;
-
-        let botaoExcluirProj = ehAdmin ? `<button type="button" class="botao" style="background-color: #d32f2f; margin-left: 10px;" onclick="deletarProjeto(${projeto.id})">EXCLUIR</button>` : "";
-
-        divConteudo.innerHTML = `
-            <div class="grupo-tabela">
-                <table class="tabela-itens">
-                    <thead><tr><th style="width: 20%;">ID</th><th style="width: 60%;">ITEM</th><th style="width: 20%;">QTD</th></tr></thead>
-                    <tbody>${linhasTabela}</tbody>
-                </table>
-            </div>
-            <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-                <button type="button" class="botao" onclick="editarProjeto(${projeto.id})">EDITAR</button>
-                ${botaoExcluirProj}
-            </div>
-        `;
-
-        details.appendChild(summary);
-        details.appendChild(divConteudo);
-        container.appendChild(details);
+      const linhasTabelaInicial = gerarLinhasHTML(materiaisVisiveis);
+  
+      let htmlVerMais = "";
+      if (temMais) {
+          // Usei data-estado="fechado" para controlar se está expandido ou não
+          htmlVerMais = `
+              <div class="container-ver-mais">
+                  <span class="link-ver-mais acao-toggle" data-id="${projeto.id}" data-estado="fechado" style="cursor: pointer;">
+                      Ver mais
+                  </span>
+              </div>
+          `;
+      }
+  
+      let htmlBotoes = `
+              <button type="button" class="botao acao-amarelo" data-id="${projeto.id}">EDITAR</button>
+          `;
+      if (ehAdmin) {
+        htmlBotoes += `<button type="button" class="botao botao-vermelho acao-excluir" data-id="${projeto.id}">EXCLUIR</button>`;
+      }
+  
+      divConteudo.innerHTML = `
+              <div class="grupo-tabela">
+                  <table class="tabela-itens">
+                      <thead>
+                          <tr>
+                              <th class="col-id">ID</th>
+                              <th class="col-item">ITEM</th>
+                              <th class="col-qtd">QTD</th>
+                          </tr>
+                      </thead>
+                      <tbody id="tbody-${projeto.id}">${linhasTabelaInicial}</tbody>
+                  </table>
+              </div>
+  
+              ${htmlVerMais}
+  
+              <div class="grupo-acoes">
+                  ${htmlBotoes}
+              </div>
+          `;
+  
+      details.appendChild(summary);
+      details.appendChild(divConteudo);
+      container.appendChild(details);
     });
 }
 
-// Funções de pesquisa, sugestões e deletar permanecem iguais...
-function configurarPesquisa() {
-    const inputPesquisa = document.getElementById("pesquisa-projeto");
-    if(inputPesquisa) {
-        inputPesquisa.addEventListener("input", (e) => {
-            const termo = e.target.value.toLowerCase();
-            const listaFiltrada = listaGlobalProjetos.filter(projeto => 
-                String(projeto.nome_projeto).toLowerCase().includes(termo)
-            );
-            renderizarProjetos(listaFiltrada, listaGlobalMateriais);
+/* ==========================================================================
+   LÓGICA DE INTERAÇÃO (BOTÕES E TOGGLE VER MAIS/MENOS)
+   ========================================================================== */
+function configurarAcoesBotoes() {
+    const container = document.getElementById("lista-projetos");
+    
+    container.addEventListener('click', (event) => {
+        const botao = event.target.closest('button');
+
+        if (!botao) return;
+
+        if (botao.classList.contains('acao-editar')) {
+            const id = botao.dataset.id;
+            window.location.href = `../../project-pages/editar-projeto.html?id=${id}`;
+        }
+
+        if (botao.classList.contains('acao-excluir')) {
+            const id = botao.dataset.id;
+            deletarProjeto(id);
+        }
+    });
+}
+
+function configurarAcaoToggle() {
+    const container = document.getElementById("lista-projetos");
+
+    container.addEventListener('click', (event) => {
+        const gatilho = event.target.closest('.acao-toggle');
+        if (!gatilho) return;
+
+        const idProjeto = gatilho.dataset.id;
+        const estadoAtual = gatilho.dataset.estado; // 'fechado' ou 'aberto'
+
+        // Busca dados do projeto
+        const projetoAlvo = listaGlobalProjetos.find(p => String(p.id) === String(idProjeto));
+        if (!projetoAlvo) return;
+
+        // Normalização
+        const normalizar = (texto) => String(texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+
+        // Filtra todos os materiais
+        const todosMateriais = listaGlobalMateriais.filter(m => {
+            if (!m.projeto) return false;
+            if (String(m.projeto) === String(projetoAlvo.id)) return true;
+            return normalizar(m.projeto) === normalizar(projetoAlvo.nome_projeto);
         });
-    }
+
+        let materiaisParaExibir;
+        let novoTexto;
+        let novoEstado;
+
+        // Lógica de Alternância
+        if (estadoAtual === 'fechado') {
+            // Se está fechado, mostra TUDO e muda para "Ver menos"
+            materiaisParaExibir = todosMateriais;
+            novoTexto = "Ver menos";
+            novoEstado = "aberto";
+        } else {
+            // Se está aberto, mostra só 3 e muda para "Ver mais"
+            materiaisParaExibir = todosMateriais.slice(0, 3);
+            novoTexto = "Ver mais";
+            novoEstado = "fechado";
+        }
+
+        // Gera HTML das linhas
+        const linhasHTML = materiaisParaExibir.map((mat) => `
+            <tr>
+                <td>${String(mat.id).padStart(3, "0")}</td>
+                <td>${mat.nome_item || "Sem nome"}</td>
+                <td>x${mat.quantidade ?? 0}</td>
+            </tr>`).join("");
+
+        // Atualiza a tabela
+        const tbodyAlvo = document.getElementById(`tbody-${idProjeto}`);
+        if (tbodyAlvo) {
+            tbodyAlvo.innerHTML = linhasHTML;
+        }
+
+        // Atualiza o texto do botão e o estado
+        gatilho.textContent = novoTexto;
+        gatilho.dataset.estado = novoEstado;
+    });
+}
+
+/* ==========================================================================
+   FUNÇÕES AUXILIARES
+   ========================================================================== */
+function configurarPesquisa() {
+  const inputPesquisa = document.getElementById("pesquisa-projeto");
+  if (inputPesquisa) {
+    inputPesquisa.addEventListener("input", (e) => {
+      const termo = e.target.value.toLowerCase();
+      const listaFiltrada = listaGlobalProjetos.filter((projeto) =>
+        String(projeto.nome_projeto).toLowerCase().includes(termo)
+      );
+      renderizarProjetos(listaFiltrada, listaGlobalMateriais);
+    });
+  }
 }
 
 function atualizarSugestoes(projetos) {
-    const datalist = document.getElementById("sugestoes-projetos");
-    if(datalist) {
-        datalist.innerHTML = ""; 
-        const nomesUnicos = new Set(projetos.map(p => p.nome_projeto));
-        nomesUnicos.forEach(nome => {
-            const option = document.createElement("option");
-            option.value = nome;
-            datalist.appendChild(option);
-        });
-    }
-}
-
-function editarProjeto(id) {
-    window.location.href = `../../project-pages/editar-projeto.html?id=${id}`;
+  const datalist = document.getElementById("sugestoes-projetos");
+  if (datalist) {
+    datalist.innerHTML = "";
+    const nomesUnicos = new Set(projetos.map((p) => p.nome_projeto));
+    nomesUnicos.forEach((nome) => {
+      const option = document.createElement("option");
+      option.value = nome;
+      datalist.appendChild(option);
+    });
+  }
 }
 
 async function deletarProjeto(id) {
-    if(!confirm("Tem certeza?")) return;
-    try {
-        const response = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, { method: 'DELETE' });
-        if (response.ok) { location.reload(); }
-    } catch (e) { console.error(e); }
+  if (!confirm("Tem certeza que deseja excluir este projeto?")) return;
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/deletar-projeto/${id}`,
+      { method: "DELETE" }
+    );
+    if (response.ok) {
+      location.reload();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function atualizarMenuAtivo() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const setor = urlParams.get("setor");
+
+  let idAtivo = "menu-home";
+  if (setor === "robotica") idAtivo = "menu-robotica";
+  else if (setor === "manutencao") idAtivo = "menu-manutencao";
+  else if (setor === "venda") idAtivo = "menu-venda";
+
+  const iconesAtivos = {
+    "menu-home": "../../../assets/icons/icon-home-ativo.svg",
+    "menu-robotica": "../../../assets/icons/icon-robotica-ativo.svg",
+    "menu-manutencao": "../../../assets/icons/icon-manutencao-ativo.svg",
+    "menu-venda": "../../../assets/icons/icon-venda-ativo.svg",
+  };
+
+  const iconesPadrao = {
+    "menu-home": "../../../assets/icons/icon-home.svg",
+    "menu-robotica": "../../../assets/icons/icon-robotica.svg",
+    "menu-manutencao": "../../../assets/icons/icon-manutencao.svg",
+    "menu-venda": "../../../assets/icons/icon-venda.svg",
+  };
+
+  document.querySelectorAll(".item-menu").forEach((el) => {
+    el.classList.remove("ativo");
+    const img = el.querySelector("img");
+    if (img && iconesPadrao[el.id]) {
+      img.src = iconesPadrao[el.id];
+    }
+  });
+
+  const elementoAtivo = document.getElementById(idAtivo);
+  if (elementoAtivo) {
+    elementoAtivo.classList.add("ativo");
+    const img = elementoAtivo.querySelector("img");
+    if (img) {
+      img.src = iconesAtivos[idAtivo];
+    }
+  }
 }

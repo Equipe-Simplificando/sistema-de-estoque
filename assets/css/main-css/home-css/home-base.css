@@ -38,7 +38,7 @@
 /*  3. RADIO BUTTONS (ABAS DE NAVEGAÇÃO MATERIAL/PROJETO) */
 .grupo-radio {
     height: 3.4375rem;
-    border: 2px solid #000;
+    border: 2px solid var(--cor-texto-escuro);
     border-radius: 1.5rem;
     background: #FFF;
 }

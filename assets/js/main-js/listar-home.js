@@ -140,36 +140,36 @@ function renderizarTabela(listaMateriais) {
 
     listaMateriais.forEach(material => {
         const tr = document.createElement("tr");
-
-        // Classe para feedback visual e evento de clique na linha inteira
         tr.classList.add("linha-clicavel");
-        
+
         tr.addEventListener("click", () => {
-            // Redireciona para a tela de edição passando o ID do material
             window.location.href = `../../material-pages/editar-material.html?id=${material.id}`;
         });
 
-        let iconPath = "../../../assets/icons/icon-manutencao.svg"; 
-        let altText = "Ícone Manutenção";
+        let iconHTML = ""; 
         const destino = material.destino ? material.destino.toLowerCase() : "";
 
         if (destino.includes("robótica") || destino.includes("robotica")) {
-            iconPath = "../../../assets/icons/icon-robotica.svg";
-            altText = "Ícone Robótica";
+            iconHTML = `
+                <img src="../../../assets/icons/icon-robotica.svg" alt="Ícone Robótica">
+            `;
+        } else if (destino.includes("manutenção") || destino.includes("manutencao")) {
+            iconHTML = `
+                <img src="../../../assets/icons/icon-manutencao.svg" alt="Ícone Manutenção">
+            `;
         }
 
         const idFormatado = String(material.id).padStart(3, '0');
 
-        // LÓGICA DE QUANTIDADE CORRIGIDA:
-        // Verifica se quantidade existe e não é nula. Se for 0, mostra 0. Se for nulo, mostra 0.
-        const qtdExibida = (material.quantidade !== undefined && material.quantidade !== null) 
-                           ? material.quantidade 
-                           : 0;
+        const qtdExibida =
+            material.quantidade !== undefined && material.quantidade !== null
+                ? material.quantidade
+                : 0;
 
         tr.innerHTML = `
             <td>
                 <div class="icone-setor">
-                    <img src="${iconPath}" alt="${altText}">
+                    ${iconHTML}
                 </div>
             </td>
             <td>${idFormatado}</td>
@@ -180,6 +180,7 @@ function renderizarTabela(listaMateriais) {
         tbody.appendChild(tr);
     });
 }
+
 
 // --- Menu Ativo ---
 function atualizarMenuAtivo() {
