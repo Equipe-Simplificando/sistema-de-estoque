@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const id = params.get("id");
 
     if (!id) {
-        alert("ID não identificado.");
+        alert("ID não encontrado!");
         window.location.href = "../main-pages/home/home-material.html";
         return;
     }
@@ -20,22 +20,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const idVisual = "#" + String(material.id).padStart(4, '0');
-        document.getElementById("view_id").innerText = idVisual;
+        document.getElementById("view_id").textContent = idVisual;
 
-        document.getElementById("view_nome").innerText = material.nome_item || "Sem nome";
-
-        if (material.destino) {
-            document.getElementById("view_destino").innerText = 
-                material.destino.charAt(0).toUpperCase() + material.destino.slice(1);
-        } else {
-            document.getElementById("view_destino").innerText = "-";
-        }
-
-        document.getElementById("view_projeto").innerText = 
-            (material.projeto && material.projeto !== "") ? material.projeto : "-";
-
-        document.getElementById("view_obs").innerText = 
-            (material.observacoes && material.observacoes !== "") ? material.observacoes : "-";
+        document.getElementById("view_item").textContent = material.nome_item || "-";
+        
+        const destino = material.destino ? material.destino.charAt(0).toUpperCase() + material.destino.slice(1) : "-";
+        document.getElementById("view_destino").textContent = destino;
+        
+        document.getElementById("view_quantidade").textContent = material.quantidade || "0";
+        document.getElementById("view_projeto").textContent = material.projeto || "-";
+        document.getElementById("view_obs").textContent = material.observacoes || "Sem observações.";
 
         const containerImagem = document.getElementById("view_imagem");
         
@@ -43,17 +37,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             containerImagem.innerHTML = ''; 
             
             const img = document.createElement('img');
-            img.src = `http://localhost:3000/api/materiais/arquivo/${id}?t=${Date.now()}`;
-            img.style.maxWidth = "100%";
-            img.style.borderRadius = "var(--radius)";
+            img.src = `http://localhost:3000/api/materiais/arquivo/${material.id}?t=${Date.now()}`;
             img.alt = "Imagem do material";
             
             containerImagem.appendChild(img);
-        } 
+        }
 
         const qrContainer = document.getElementById("qrcode");
-        qrContainer.innerHTML = ""; 
-
+        qrContainer.innerHTML = "";
+        
         const conteudoQR = material.cod || `MAT-${String(material.id).padStart(4, '0')}`;
 
         new QRCode(qrContainer, {
@@ -67,18 +59,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const btnEditar = document.getElementById("btn-editar");
         if (btnEditar) {
-            btnEditar.addEventListener("click", () => {
+            btnEditar.onclick = () => {
                 window.location.href = `editar-material.html?id=${id}`;
-            });
+            };
         }
 
-        const btnDeletar = document.querySelector(".botao-vermelho");
+        const btnExcluir = document.querySelector(".botao-vermelho");
         const perfilUsuario = localStorage.getItem("perfilUsuario");
 
-        if (btnDeletar) {
+        if (btnExcluir) {
             if (perfilUsuario === "admin") {
-                btnDeletar.onclick = async () => {
-                    if (confirm("ATENÇÃO: Tem certeza que deseja DELETAR este material permanentemente?")) {
+                btnExcluir.onclick = async () => {
+                    if (confirm("Tem certeza que deseja EXCLUIR este material permanentemente?")) {
                         try {
                             const res = await fetch(`http://localhost:3000/api/deletar/${id}`, { method: 'DELETE' });
                             if (res.ok) {
@@ -90,17 +82,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                             }
                         } catch (err) {
                             console.error(err);
-                            alert("Erro de conexão com o servidor.");
+                            alert("Erro de conexão.");
                         }
                     }
                 };
             } else {
-                btnDeletar.style.display = "none";
+                btnExcluir.style.display = "none";
             }
         }
 
     } catch (error) {
         console.error(error);
-        alert("Erro de conexão com o servidor.");
+        alert("Erro ao carregar dados.");
     }
 });

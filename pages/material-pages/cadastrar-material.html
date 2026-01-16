@@ -29,7 +29,7 @@
                     <div class="campo-nomeqtd">
                         <div class="campo-grupo col-nome">
                             <label for="item" class="campo-rotulo">NOME DO ITEM*</label>
-                            <input type="text" id="item" name="item" class="campo-entrada" required>
+                            <input type="text" id="item" name="item" class="campo-entrada" required maxlength="25">
                         </div>
 
                         <div class="campo-grupo col-qtd">
@@ -38,7 +38,8 @@
                                 <button type="button" class="botao-qtd botao-menos"
                                     onclick="decrementarQtd()">-</button>
                                 <input type="number" id="quantidade" name="quantidade"
-                                    class="campo-entrada input-qtd-central" value="1" min="1" required>
+                                    class="campo-entrada input-qtd-central" value="1" min="1" required
+                                    oninput="if(this.value.length > 5) this.value = this.value.slice(0, 5);">
                                 <button type="button" class="botao-qtd botao-mais" onclick="incrementarQtd()">+</button>
                             </div>
                         </div>
@@ -95,7 +96,8 @@
                             OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
                         </label>
 
-                        <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"></textarea>
+                        <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"
+                            maxlength="100"></textarea>
                     </div>
 
                     <div class="grupo-acoes">

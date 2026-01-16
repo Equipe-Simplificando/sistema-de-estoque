@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Material Editado</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/material-css/etiqueta-gerada.css">
-
+    <link rel="stylesheet" href="../../assets/css/material-css/perfil-base.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
@@ -15,48 +14,56 @@
     <div class="container">
 
         <header class="cabecalho">
-            <button class="botao-fechar" type="button" onclick=window.location.href="../main-pages/home/home-material.html"
-                aria-label="Fechar janela">
+            <button class="botao-fechar" type="button"
+                onclick="window.location.href='../main-pages/home/home-material.html'" aria-label="Voltar para a home">
                 <img src="../../assets/icons/botao-fechar.svg" alt="Botão fechar">
             </button>
         </header>
 
         <main class="conteudo">
-            <h1 class="titulo-pagina">MATERIAL <br> EDITADO!</h1>
 
-            <section class="secao-etiqueta">
+            <h1 class="titulo">MATERIAL <br> EDITADO!</h1>
 
-                <div class="container-lembrete">
-                    <p class="texto-lembrete">Lembre-se de conferir a etiqueta antes de colar no material.</p>
-                </div>
+            <article class="secao-etiqueta">
+                
+                <dl class="dados-etiqueta">
+                    <div>
+                        <dt class="rotulo-dado">ID:</dt>
+                        <dd class="valor-dado" id="view_id">Carregando...</dd>
+                    </div>
+                    <div>
+                        <dt class="rotulo-dado">ITEM:</dt>
+                        <dd class="valor-dado" id="view_nome">Carregando...</dd>
+                    </div>
 
-                <section class="dados-etiqueta">
-                    <span class="rotulo-dado">ID:</span>
-                    <span class="valor-dado" id="view_id"></span>
+                    <div>
+                        <dt class="rotulo-dado">DESTINO:</dt>
+                        <dd class="valor-dado" id="view_destino">-</dd>
+                    </div>
 
-                    <span class="rotulo-dado">Item:</span>
-                    <span class="valor-dado" id="view_nome"></span>
+                    <div>
+                        <dt class="rotulo-dado">PROJETO:</dt>
+                        <dd class="valor-dado" id="view_projeto">-</dd>
+                    </div>
+                </dl>
 
-                    <span class="rotulo-dado">Destino:</span>
-                    <span class="valor-dado" id="view_destino"></span>
-
-                    <span class="rotulo-dado">Projeto:</span>
-                    <span class="valor-dado" id="view_projeto"></span>
-                </section>
-
-                <div class="qrcode-wrapper">
+                <section class="qrcode-wrapper" aria-label="Código QR da etiqueta">
                     <div id="qrcode"></div>
-                </div>
+                </section>
 
                 <section class="secao-observacoes">
                     <h2 class="titulo-secao">OBSERVAÇÕES:</h2>
-                    <p class="texto-observacoes" id="view_obs">
-                        -
-                    </p>
+                    <p class="texto-observacoes" id="view_obs">-</p>
                 </section>
 
-                <div class="grupo-acoes">
+                <section class="secao-imagem">
+                    <div class="imagem-material" id="view_imagem">
+                        <img src="../../assets/icons/imagem-perfil-material.svg" alt="">
+                        <span>Nenhuma imagem adicionada.</span>
+                    </div>
+                </section>
 
+                <section class="grupo-acoes">
                     <a href="../material-pages/cadastrar-material.html" class="botao">
                         CADASTRAR MAIS
                     </a>
@@ -65,17 +72,20 @@
                         EDITAR
                     </button>
 
+                    <button type="button" class="botao botao-vermelho">
+                            DELETAR
+                        </button>
+
                     <button type="button" class="botao-imprimir" onclick="window.print()">
                         REIMPRIMIR ETIQUETA
                     </button>
+                </section>
 
-                </div>
-
-            </section>
+            </article>
         </main>
     </div>
-</body>
 
-<script src="../../assets/js/material-js/material-editado.js"></script>
+    <script src="../../assets/js/material-js/material-editado.js"></script>
+</body>
 
 </html>
