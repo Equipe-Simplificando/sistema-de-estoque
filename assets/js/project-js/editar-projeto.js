@@ -1,8 +1,9 @@
+const API_BASE = `http://${window.location.hostname}:3000`;
+
 document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
     
-    // Variável para armazenar todos os materiais do sistema (para pesquisa correta)
     let materiaisDisponiveis = [];
 
     if (!id) {
@@ -14,27 +15,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     const inputId = document.getElementById("id-projeto");
     if(inputId) inputId.value = id;
 
-    // 1. CARREGAR SUGESTÕES E POPULAR LISTA GLOBAL DE MATERIAIS
     await carregarMateriaisGlobais();
 
-    // 2. CARREGAR DADOS DO PROJETO (Inputs básicos)
     try {
-        const response = await fetch(`http://localhost:3000/api/projetos/${id}`);
+        const response = await fetch(`${API_BASE}/api/projetos/${id}`);
         if (!response.ok) throw new Error("Erro ao buscar projeto");
         
         const projeto = await response.json();
 
-        // Preenche Nome e Observações
         document.getElementById("item").value = projeto.nome_projeto || "";
         document.getElementById("observacoes").value = projeto.observacoes || "";
         
-        // Preenche Preço
         const campoPreco = document.getElementById("preco");
         if(campoPreco) {
             campoPreco.value = projeto.preco ? projeto.preco : "";
         }
 
-        // Preenche Radio Button (Setor)
         if (projeto.setor) {
             const radio = document.querySelector(`input[name="destino"][value="${projeto.setor.toLowerCase()}"]`);
             if (radio) radio.checked = true;
@@ -45,9 +41,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Erro ao carregar dados do projeto. Verifique o console.");
     }
 
-    // 3. CARREGAR ITENS JÁ VINCULADOS AO PROJETO
     try {
-        const resMateriais = await fetch(`http://localhost:3000/api/materiais/projeto/${id}`);
+        const resMateriais = await fetch(`${API_BASE}/api/materiais/projeto/${id}`);
         if(resMateriais.ok) {
             const materiais = await resMateriais.json();
             renderizarTabela(materiais);
@@ -56,24 +51,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Erro ao carregar itens do projeto:", error);
     }
 
-    // 4. CONFIGURAR O BOTÃO DE ADICIONAR ITEM PELA PESQUISA
     const btnAdicionar = document.getElementById("btn-adicionar-material");
     const inputPesquisa = document.getElementById("pesquisa-item");
 
     if(btnAdicionar && inputPesquisa) {
-        // Função para adicionar
         const adicionarItem = () => {
             const termoPesquisado = inputPesquisa.value.trim();
             if(!termoPesquisado) return;
 
-            // Busca o material na lista global para pegar ID e QTD reais
             const materialEncontrado = materiaisDisponiveis.find(m => 
                 m.nome_item.toLowerCase() === termoPesquisado.toLowerCase()
             );
 
             if (materialEncontrado) {
-                // Verifica se já não está na tabela visualmente (opcional, mas bom pra UX)
-                // Se quiser permitir duplicados, remova essa verificação
                 const idsNaTabela = Array.from(document.querySelectorAll('.item-id'))
                                          .map(td => td.textContent);
                 if(idsNaTabela.includes(String(materialEncontrado.id))){
@@ -82,7 +72,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return;
                 }
 
-                // Adiciona usando os dados REAIS do banco
                 adicionarLinhaNaTabela(
                     materialEncontrado.nome_item, 
                     materialEncontrado.quantidade, 
@@ -105,20 +94,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 5. CONFIGURAR DELEÇÃO DE ITENS DA TABELA (EVENT DELEGATION)
     const tabelaCorpo = document.getElementById("tabela-corpo");
     if (tabelaCorpo) {
         tabelaCorpo.addEventListener("click", (e) => {
-            // Verifica se clicou no botão excluir ou na imagem dentro dele
             const botaoExcluir = e.target.closest(".botao-excluir");
             if (botaoExcluir) {
-                // Remove a linha (TR) correspondente
                 botaoExcluir.closest("tr").remove();
             }
         });
     }
 
-    // --- LÓGICA DO BOTÃO EXCLUIR PROJETO (ADMIN) ---
     const perfil = localStorage.getItem("perfilUsuario");
     if (perfil === "admin") {
         const grupoAcoes = document.querySelector(".grupo-acoes");
@@ -136,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             btnExcluir.onclick = async function() {
                 if (confirm("ATENÇÃO: Excluir este projeto irá desvincular todos os materiais associados a ele. Continuar?")) {
                     try {
-                        const res = await fetch(`http://localhost:3000/api/deletar-projeto/${id}`, { method: 'DELETE' });
+                        const res = await fetch(`${API_BASE}/api/deletar-projeto/${id}`, { method: 'DELETE' });
                         if (res.ok) {
                             alert("Projeto excluído com sucesso!");
                             window.location.href = "../main-pages/home/home-projeto.html";
@@ -156,7 +141,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- EVENTO DE SALVAR (UPDATE) ---
     const form = document.getElementById("formulario");
     if(form){
         form.addEventListener("submit", async (e) => {
@@ -165,7 +149,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const radioSelecionado = document.querySelector('input[name="destino"]:checked');
             const setorValor = radioSelecionado ? radioSelecionado.value : "";
 
-            // CAPTURA DOS IDs DOS MATERIAIS DA TABELA
             const materiaisParaSalvar = [];
             document.querySelectorAll('#tabela-corpo tr').forEach(row => {
                 const idMat = row.querySelector('.item-id').textContent;
@@ -178,11 +161,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 destino: setorValor,
                 observacoes: document.getElementById("observacoes").value,
                 preco: document.getElementById("preco").value,
-                materiais: materiaisParaSalvar // Envia a lista atualizada de IDs
+                materiais: materiaisParaSalvar 
             };
 
             try {
-                const response = await fetch("http://localhost:3000/api/atualizar-projeto", {
+                const response = await fetch(`${API_BASE}/api/atualizar-projeto`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(dados)
@@ -201,11 +184,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- FUNÇÕES AUXILIARES ---
-
     async function carregarMateriaisGlobais() {
         try {
-            const response = await fetch('http://localhost:3000/api/materiais');
+            const response = await fetch(`${API_BASE}/api/materiais`);
             if (!response.ok) throw new Error("Erro ao buscar lista de materiais");
     
             materiaisDisponiveis = await response.json();
@@ -234,7 +215,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(listaMateriais.length === 0) return;
     
         listaMateriais.forEach(material => {
-            // Garante que pega a quantidade certa, tratando 0 ou null
             const qtdReal = (material.quantidade !== undefined && material.quantidade !== null) 
                             ? material.quantidade 
                             : 0;
@@ -243,7 +223,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // Função que cria a linha com o botão de excluir
     function adicionarLinhaNaTabela(nome, qtd, id) {
         const tbody = document.getElementById("tabela-corpo");
         const tr = document.createElement("tr");

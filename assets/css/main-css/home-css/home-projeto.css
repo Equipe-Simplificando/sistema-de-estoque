@@ -66,6 +66,7 @@ details.aba-projeto>summary::-webkit-details-marker {
     justify-content: space-between;
     align-items: center;
     width: 90%;
+    gap: 0.5rem;
 }
 
 .grupo-titulo {
@@ -73,6 +74,7 @@ details.aba-projeto>summary::-webkit-details-marker {
     align-items: center;
     gap: 0.5rem;
     flex: 1;
+    min-width: 0
 }
 
 .icone-categoria {
@@ -84,6 +86,14 @@ details.aba-projeto>summary::-webkit-details-marker {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--cor-texto-escuro);
+
+    white-space: nowrap;      
+    overflow: hidden;         
+    text-overflow: ellipsis;  
+
+    min-width: 0;
+    flex: 1;
+    display: block;
 }
 
 /* Ícone da seta */

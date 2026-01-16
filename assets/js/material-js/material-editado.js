@@ -1,3 +1,5 @@
+const API_BASE = `http://${window.location.hostname}:3000`; 
+
 document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
@@ -9,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        const response = await fetch("http://localhost:3000/api/materiais");
+        const response = await fetch(`${API_BASE}/api/materiais`);
         const materiais = await response.json();
         const material = materiais.find((m) => m.id == id);
 
@@ -43,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             containerImagem.innerHTML = ''; 
             
             const img = document.createElement('img');
-            img.src = `http://localhost:3000/api/materiais/arquivo/${id}?t=${Date.now()}`;
+            img.src = `${API_BASE}/api/materiais/arquivo/${id}?t=${Date.now()}`;
             img.style.maxWidth = "100%";
             img.style.borderRadius = "var(--radius)";
             img.alt = "Imagem do material";
@@ -80,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 btnDeletar.onclick = async () => {
                     if (confirm("ATENÇÃO: Tem certeza que deseja DELETAR este material permanentemente?")) {
                         try {
-                            const res = await fetch(`http://localhost:3000/api/deletar/${id}`, { method: 'DELETE' });
+                            const res = await fetch(`${API_BASE}/api/deletar/${id}`, { method: 'DELETE' });
                             if (res.ok) {
                                 alert("Material excluído com sucesso!");
                                 window.location.href = "../main-pages/home/home-material.html";

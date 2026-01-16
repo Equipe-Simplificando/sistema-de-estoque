@@ -1,6 +1,4 @@
-/* ==========================================================================
-   GLOBAL E INICIALIZAÇÃO
-   ========================================================================== */
+const API_BASE = `http://${window.location.hostname}:3000`;
 let listaGlobalProjetos = [];
 let listaGlobalMateriais = [];
 
@@ -9,19 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
     configurarPesquisa();
     atualizarMenuAtivo();
     configurarAcoesBotoes();
-    configurarAcaoToggle(); // Renomeado para refletir que agora abre e fecha
+    configurarAcaoToggle(); 
 });
 
-/* ==========================================================================
-   CARREGAMENTO DE DADOS (API)
-   ========================================================================== */
 async function carregarDados() {
     const container = document.getElementById("lista-projetos");
     
     try {
         const [resProjetos, resMateriais] = await Promise.all([
-            fetch('http://localhost:3000/api/projetos'),
-            fetch('http://localhost:3000/api/materiais')
+            fetch(`${API_BASE}/api/projetos`),
+            fetch(`${API_BASE}/api/materiais`)
         ]);
         
         if (!resProjetos.ok || !resMateriais.ok) throw new Error("Erro na resposta da API");
@@ -63,9 +58,6 @@ async function carregarDados() {
     }
 }
 
-/* ==========================================================================
-   RENDERIZAÇÃO (HTML)
-   ========================================================================== */
 function renderizarProjetos(projetos, materiais) {
     const container = document.getElementById("lista-projetos");
     if (!container) return;
@@ -120,7 +112,6 @@ function renderizarProjetos(projetos, materiais) {
       const divConteudo = document.createElement("div");
       divConteudo.classList.add("conteudo-aba");
   
-      // Lógica inicial: mostra apenas os 3 primeiros
       const limite = 3;
       const qtdTotal = materiaisDoProjeto.length;
       const materiaisVisiveis = materiaisDoProjeto.slice(0, limite);
@@ -141,7 +132,6 @@ function renderizarProjetos(projetos, materiais) {
   
       let htmlVerMais = "";
       if (temMais) {
-          // Usei data-estado="fechado" para controlar se está expandido ou não
           htmlVerMais = `
               <div class="container-ver-mais">
                   <span class="link-ver-mais acao-toggle" data-id="${projeto.id}" data-estado="fechado" style="cursor: pointer;">
@@ -152,7 +142,7 @@ function renderizarProjetos(projetos, materiais) {
       }
   
       let htmlBotoes = `
-              <button type="button" class="botao acao-amarelo" data-id="${projeto.id}">EDITAR</button>
+              <button type="button" class="botao acao-amarelo acao-editar" data-id="${projeto.id}">EDITAR</button>
           `;
       if (ehAdmin) {
         htmlBotoes += `<button type="button" class="botao botao-vermelho acao-excluir" data-id="${projeto.id}">EXCLUIR</button>`;
@@ -185,9 +175,6 @@ function renderizarProjetos(projetos, materiais) {
     });
 }
 
-/* ==========================================================================
-   LÓGICA DE INTERAÇÃO (BOTÕES E TOGGLE VER MAIS/MENOS)
-   ========================================================================== */
 function configurarAcoesBotoes() {
     const container = document.getElementById("lista-projetos");
     
@@ -216,16 +203,13 @@ function configurarAcaoToggle() {
         if (!gatilho) return;
 
         const idProjeto = gatilho.dataset.id;
-        const estadoAtual = gatilho.dataset.estado; // 'fechado' ou 'aberto'
+        const estadoAtual = gatilho.dataset.estado;
 
-        // Busca dados do projeto
         const projetoAlvo = listaGlobalProjetos.find(p => String(p.id) === String(idProjeto));
         if (!projetoAlvo) return;
 
-        // Normalização
         const normalizar = (texto) => String(texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
 
-        // Filtra todos os materiais
         const todosMateriais = listaGlobalMateriais.filter(m => {
             if (!m.projeto) return false;
             if (String(m.projeto) === String(projetoAlvo.id)) return true;
@@ -236,20 +220,16 @@ function configurarAcaoToggle() {
         let novoTexto;
         let novoEstado;
 
-        // Lógica de Alternância
         if (estadoAtual === 'fechado') {
-            // Se está fechado, mostra TUDO e muda para "Ver menos"
             materiaisParaExibir = todosMateriais;
             novoTexto = "Ver menos";
             novoEstado = "aberto";
         } else {
-            // Se está aberto, mostra só 3 e muda para "Ver mais"
             materiaisParaExibir = todosMateriais.slice(0, 3);
             novoTexto = "Ver mais";
             novoEstado = "fechado";
         }
 
-        // Gera HTML das linhas
         const linhasHTML = materiaisParaExibir.map((mat) => `
             <tr>
                 <td>${String(mat.id).padStart(3, "0")}</td>
@@ -257,21 +237,16 @@ function configurarAcaoToggle() {
                 <td>x${mat.quantidade ?? 0}</td>
             </tr>`).join("");
 
-        // Atualiza a tabela
         const tbodyAlvo = document.getElementById(`tbody-${idProjeto}`);
         if (tbodyAlvo) {
             tbodyAlvo.innerHTML = linhasHTML;
         }
 
-        // Atualiza o texto do botão e o estado
         gatilho.textContent = novoTexto;
         gatilho.dataset.estado = novoEstado;
     });
 }
 
-/* ==========================================================================
-   FUNÇÕES AUXILIARES
-   ========================================================================== */
 function configurarPesquisa() {
   const inputPesquisa = document.getElementById("pesquisa-projeto");
   if (inputPesquisa) {
@@ -302,7 +277,7 @@ async function deletarProjeto(id) {
   if (!confirm("Tem certeza que deseja excluir este projeto?")) return;
   try {
     const response = await fetch(
-      `http://localhost:3000/api/deletar-projeto/${id}`,
+      `${API_BASE}/api/deletar-projeto/${id}`,
       { method: "DELETE" }
     );
     if (response.ok) {

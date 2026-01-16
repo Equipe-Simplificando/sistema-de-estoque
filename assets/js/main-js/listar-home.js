@@ -1,3 +1,4 @@
+const API_BASE = `http://${window.location.hostname}:3000`;
 let listaGlobalMateriais = [];
 
 let estadoOrdenacao = {
@@ -80,7 +81,7 @@ function atualizarSugestoes(materiais) {
 
 async function carregarMateriais() {
   try {
-    const response = await fetch("http://localhost:3000/api/materiais");
+    const response = await fetch(`${API_BASE}/api/materiais`);
 
     if (!response.ok) throw new Error("Erro ao conectar com servidor");
 

@@ -257,6 +257,6 @@ app.delete('/api/deletar/:id', (req, res) => {
 
 app.use(express.static(__dirname));
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0',() => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });

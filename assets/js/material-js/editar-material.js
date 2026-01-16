@@ -1,3 +1,5 @@
+const API_BASE = `http://${window.location.hostname}:3000`;
+
 window.incrementarQtd = function() {
     const input = document.getElementById("quantidade");
     let val = parseInt(input.value) || 0;
@@ -45,7 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function carregarListaDeProjetos() {
         try {
-            const res = await fetch("http://localhost:3000/api/projetos");
+            // Busca projetos usando a URL dinâmica
+            const res = await fetch(`${API_BASE}/api/projetos`);
             const projetos = await res.json();
             const select = document.getElementById("projeto");
             
@@ -69,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function carregarDadosDoMaterial(id) {
         try {
-            const response = await fetch("http://localhost:3000/api/materiais");
+            const response = await fetch(`${API_BASE}/api/materiais`);
             const materiais = await response.json();
             const material = materiais.find((m) => m.id == id);
     
@@ -101,7 +104,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     
                     if (material.arquivo_tipo && material.arquivo_tipo.startsWith('image/')) {
                         const img = document.createElement('img');
-                        img.src = `http://localhost:3000/api/materiais/arquivo/${id}?t=${Date.now()}`;
+                        // Garante que a imagem carregue corretamente no celular usando o IP do notebook
+                        img.src = `${API_BASE}/api/materiais/arquivo/${id}?t=${Date.now()}`;
                         img.style.maxWidth = "100%";
                         img.style.maxHeight = "200px";
                         img.style.borderRadius = "var(--radius)";
@@ -138,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     
                     if (confirmacao) {
                         try {
-                            const res = await fetch(`http://localhost:3000/api/deletar/${id}`, { method: 'DELETE' });
+                            const res = await fetch(`${API_BASE}/api/deletar/${id}`, { method: 'DELETE' });
                             
                             if (res.ok) {
                                 alert("Material excluído com sucesso!");
@@ -179,7 +183,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/atualizar", {
+            // Envia a atualização para o IP dinâmico
+            const response = await fetch(`${API_BASE}/api/atualizar`, {
                 method: "PUT",
                 body: formData,
             });

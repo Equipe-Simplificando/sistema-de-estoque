@@ -1,3 +1,4 @@
+const API_BASE = `http://${window.location.hostname}:3000`; 
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
@@ -7,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const obs = params.get("obs");
     const codigoParaQRCode = params.get("cod") || id || "ERRO";
 
+    // Formatação visual do ID
     if (id) {
         const idVisual = id.includes("-") ? id : "#" + String(id).padStart(4, '0');
         document.getElementById("view_id").innerText = idVisual;
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("view_obs").innerText =
         (obs && obs !== "null" && obs !== "") ? obs : "Sem observações.";
 
+    // Geração do QR Code
     if (codigoParaQRCode) {
         const qrContainer = document.getElementById("qrcode");
         qrContainer.innerHTML = ""; 
@@ -41,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Botão Editar
     const btnEditar = document.getElementById("btn-editar");
     if (btnEditar) {
         btnEditar.addEventListener("click", () => {
@@ -55,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Lógica de Exclusão
     const btnDeletar = document.querySelector(".botao-vermelho");
     const perfilUsuario = localStorage.getItem("perfilUsuario");
 
@@ -63,7 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
             btnDeletar.onclick = async () => {
                 if (confirm("ATENÇÃO: Tem certeza que deseja excluir este material?")) {
                     try {
-                        const res = await fetch(`http://localhost:3000/api/deletar/${id}`, { method: 'DELETE' });
+                        // Usa a URL dinâmica para deletar via rede local
+                        const res = await fetch(`${API_BASE}/api/deletar/${id}`, { method: 'DELETE' });
                         if (res.ok) {
                             alert("Material excluído com sucesso!");
                             window.location.href = "../main-pages/home/home-material.html";

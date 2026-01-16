@@ -1,3 +1,5 @@
+const API_BASE = `http://${window.location.hostname}:3000`;
+
 document.addEventListener("DOMContentLoaded", () => {
     carregarVendas();
     configurarPesquisa();
@@ -7,17 +9,15 @@ async function carregarVendas() {
     const tabela = document.querySelector(".tabela-itens tbody");
     if (!tabela) return;
 
-    // Limpa a tabela antes de carregar
     tabela.innerHTML = "";
 
     try {
-        const response = await fetch('http://localhost:3000/api/projetos');
+        const response = await fetch(`${API_BASE}/api/projetos`);
         
         if (!response.ok) throw new Error("Erro na resposta da API");
 
         const projetos = await response.json();
 
-        // FILTRO: Apenas projetos com preço numérico válido e maior que zero
         const vendas = projetos.filter(p => {
             const preco = parseFloat(p.preco);
             return !isNaN(preco) && preco > 0;
@@ -31,10 +31,8 @@ async function carregarVendas() {
         vendas.forEach(projeto => {
             const tr = document.createElement("tr");
             
-            // Formata ID (ex: 001, 002)
             const idFormatado = String(projeto.id).padStart(3, '0');
             
-            // Formata Preço (R$ 1.000,00)
             const precoFormatado = parseFloat(projeto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
             tr.innerHTML = `
@@ -52,7 +50,6 @@ async function carregarVendas() {
     }
 }
 
-// Configuração simples da barra de pesquisa para filtrar na tela
 function configurarPesquisa() {
     const inputPesquisa = document.getElementById("pesquisa-item");
     if(inputPesquisa) {

@@ -1,3 +1,5 @@
+const API_BASE = `http://${window.location.hostname}:3000`;
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formulario");
   const inputPesquisa = document.getElementById("pesquisa-item");
@@ -7,10 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let materiaisDisponiveis = [];
 
-  // 1. CARREGAR MATERIAIS
   async function carregarMateriais() {
     try {
-      const response = await fetch('http://localhost:3000/api/materiais');
+      const response = await fetch(`${API_BASE}/api/materiais`);
       if (!response.ok) throw new Error('Falha ao buscar materiais');
       
       materiaisDisponiveis = await response.json();
@@ -27,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   carregarMateriais();
 
-  // 2. ADICIONAR NA TABELA (COM QUANTIDADE CORRETA)
   function adicionarMaterialNaTabela() {
     const termoPesquisado = inputPesquisa.value.trim();
     if (!termoPesquisado) return;
@@ -39,12 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (materialEncontrado) {
       const novaLinha = document.createElement('tr');
       
-      // CORREÇÃO: Pega a quantidade real do material, tratando 0 e null
       const qtdReal = (materialEncontrado.quantidade !== undefined && materialEncontrado.quantidade !== null) 
                       ? materialEncontrado.quantidade 
                       : 0;
 
-      // Adiciona o ID real do material para envio e exibe a quantidade correta
       novaLinha.innerHTML = `
         <td class="item-id">${materialEncontrado.id}</td>
         <td class="item-nome">${materialEncontrado.nome_item}</td>
@@ -73,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3. EXCLUIR DA TABELA
   if (tabelaCorpo) {
     tabelaCorpo.addEventListener("click", (e) => {
       const botaoExcluir = e.target.closest(".botao-excluir");
@@ -81,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 4. SUBMIT
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -96,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // --- CAPTURA DOS IDs DOS MATERIAIS ---
     const materiaisParaSalvar = [];
     const materiaisVisualizacao = [];
 
@@ -105,12 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const nomeItem = row.querySelector('.item-nome').textContent;
         const qtd = row.querySelector('.item-qtd').textContent;
 
-        materiaisParaSalvar.push(parseInt(id)); // Importante: ID Numérico
+        materiaisParaSalvar.push(parseInt(id)); 
         materiaisVisualizacao.push({ id, item: nomeItem, qtd });
     });
 
     try {
-      const response = await fetch("http://localhost:3000/api/cadastrar-projeto", {
+      const response = await fetch(`${API_BASE}/api/cadastrar-projeto`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -118,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
             destino: setor, 
             observacoes: obs, 
             preco: preco,
-            materiais: materiaisParaSalvar // Envia ARRAY DE IDs [1, 2, 5]
+            materiais: materiaisParaSalvar 
         }),
       });
 
