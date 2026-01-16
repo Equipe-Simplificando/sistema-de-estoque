@@ -1,89 +1,65 @@
-**📦 Sistema de Estoque – Simplificando**
+# Sistema de Gerenciamento de Estoque para o Instituto Robótica Sustentável
 
-Este é um sistema web de Gerenciamento de Estoque desenvolvido para facilitar o controle de materiais e projetos.
-O projeto utiliza uma arquitetura cliente-servidor, com Node.js e Express no backend e MySQL para persistência de dados.
+Este projeto foi desenvolvido pela **Equipe Simplificando** no contexto da disciplina de **Projeto Integrado**, do curso de **Sistemas e Mídias Digitais (Universidade Federal do Ceará – UFC)**.
 
-O sistema permite o cadastro de materiais, incluindo upload de imagens e vídeos, além da organização por projetos/setores.
+O sistema atende às necessidades do **Instituto Robótica Sustentável**, uma **organização social sem fins lucrativos**, com sede em **Fortaleza**, que atua na **transformação de resíduos eletrônicos em impacto socioambiental**. A instituição desenvolve ações de **inclusão digital e capacitação tecnológica de jovens**, além de realizar **serviços de manutenção** e **comercialização de equipamentos e componentes reaproveitados**.
 
-🚀 Funcionalidades
+---
 
-Autenticação Simples
+## Objetivo
 
-Login diferenciado para Administrador e Logística
+Desenvolver um sistema web para gerenciar o estoque, os projetos e as movimentações de materiais do Instituto, contribuindo para a organização, o controle e a rastreabilidade dos componentes utilizados em suas diferentes atividades.
 
-Gestão de Projetos
+---
 
-Cadastro e edição de projetos/setores
+## Funcionalidades
 
-Gestão de Materiais
+* Cadastro e consulta de materiais eletrônicos;
+* Gestão de projetos, serviços de manutenção e vendas;
+* Leitura de QR Code para identificação rápida de materiais;
+* Geração de etiquetas para organização física;
+* Controle de acesso por perfis de usuário.
 
-Cadastro completo de materiais vinculados a projetos
+---
 
-Listagem, edição e exclusão de itens
+## Tecnologias Utilizadas
 
-Geração de etiquetas (visualização simples)
+* Node.js e Express
+* MySQL
+* JavaScript (Vanilla)
+* HTML5 e CSS3
+* Multer
 
-Upload de Arquivos
+---
 
-Suporte para anexar imagens ou vídeos aos materiais
+## Como Rodar o Projeto
 
-Interface Intuitiva
+Para executar o sistema localmente, é necessário ter **Node.js** e **MySQL** instalados.
 
-Frontend responsivo utilizando HTML, CSS e JavaScript puro
+### 1. Clone o repositório
 
-🛠️ Tecnologias Utilizadas
-Backend
-
-Node.js
-
-Express
-
-MySQL2
-
-Multer (upload de arquivos/blobs)
-
-CORS
-
-Dotenv
-
-Frontend
-
-HTML5
-
-CSS3
-
-JavaScript (ES6+)
-
-Banco de Dados
-
-MySQL
-
-📋 Pré-requisitos
-
-Antes de começar, você precisará ter instalado em sua máquina:
-
-Node.js (recomendado v14 ou superior)
-
-MySQL Server
-
-🔧 Instalação e Configuração
-1️⃣ Clone o Repositório
-git clone https://github.com/seu-usuario/sistema-de-estoque.git
+```bash
+git clone https://github.com/ntyGabriel/sistema-de-estoque.git
 cd sistema-de-estoque
+```
 
-2️⃣ Instale as Dependências
+### 2. Instale as dependências
+
+No terminal, dentro da pasta do projeto:
+
+```bash
 npm install
+```
 
-3️⃣ Configuração do Banco de Dados
+### 3. Prepare o banco de dados
 
-Acesse seu cliente MySQL (Workbench, DBeaver ou Terminal) e execute o script abaixo:
+Acesse seu cliente MySQL (Workbench, DBeaver ou terminal) e execute os comandos abaixo:
 
-CREATE DATABASE IF NOT EXISTS sistemadeestoque
-CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;
-
+```sql
+CREATE DATABASE IF NOT EXISTS sistemadeestoque;
 USE sistemadeestoque;
 
+-- Tabela de Materiais
 CREATE TABLE IF NOT EXISTS materiais (
     id INT PRIMARY KEY,
     nome_item VARCHAR(255) NOT NULL,
@@ -98,6 +74,7 @@ CREATE TABLE IF NOT EXISTS materiais (
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tabela de Projetos
 CREATE TABLE IF NOT EXISTS projetos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_projeto VARCHAR(150) NOT NULL,
@@ -107,6 +84,7 @@ CREATE TABLE IF NOT EXISTS projetos (
     preco DECIMAL(10, 2) DEFAULT 0.00
 );
 
+-- Tabela de Usuários
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome_usuario VARCHAR(100) NOT NULL,
@@ -116,78 +94,39 @@ CREATE TABLE IF NOT EXISTS usuarios (
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-4️⃣ Variáveis de Ambiente (.env)
+-- Usuários padrão para teste
+INSERT INTO usuarios (nome_usuario, senha_hash, tipo_perfil) VALUES 
+('admin', 'admin', 'ADMINISTRADOR'),
+('logistico', '1234', 'LOGISTICO');
+```
 
-O projeto já possui um arquivo .env. Verifique se os dados estão corretos:
+### 4. Configure o ambiente (.env)
 
+Crie um arquivo `.env` na raiz do projeto (mesmo nível do `package.json`) com o seguinte conteúdo:
+
+```env
 DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=1234   # Altere para a senha do seu MySQL
+DB_USER=seu_usuario_mysql
+DB_PASSWORD=sua_senha_mysql
 DB_NAME=sistemadeestoque
+PORT=3000
+```
 
-5️⃣ Rodando o Projeto
+### 5. Inicie o servidor
 
-Inicie o servidor backend:
+```bash
+npm start
+```
 
-node server.js
+Acesse no navegador:
 
+```
+http://localhost:3000
+```
 
-O servidor será iniciado na porta 3000.
+---
 
-Para acessar o frontend, abra:
+## Desenvolvido por
 
-index.html
-ou
+**Equipe Simplificando**
 
-pages/auth/login.html
-
-💡 Dica: você pode utilizar o Live Server do VS Code para facilitar.
-
-🔐 Acesso ao Sistema (Login)
-
-Atualmente, o sistema utiliza uma validação simplificada no frontend (login.js).
-
-Credenciais para teste:
-
-Perfil	Usuário	Senha
-Administrador	admin	admin
-Logística	logistico	1234
-📂 Estrutura de Pastas
-sistema-de-estoque/
-├── assets/              # CSS, JavaScript e ícones
-├── node_modules/        # Dependências do Node.js
-├── pages/               # Páginas HTML (Login, Home, Materiais, Projetos)
-├── .env                 # Variáveis de ambiente
-├── server.js            # Servidor principal (API Backend)
-├── package.json         # Manifesto do projeto
-└── README.md            # Documentação
-
-📝 Rotas da API (Backend)
-Materiais
-
-POST /api/cadastrar
-Cadastra um novo material (multipart/form-data)
-
-GET /api/materiais
-Lista todos os materiais (metadados)
-
-GET /api/materiais/arquivo/:id
-Retorna a imagem ou vídeo do material
-
-PUT /api/atualizar
-Atualiza os dados de um material
-
-DELETE /api/deletar/:id
-Remove um material
-
-Projetos
-
-POST /api/cadastrar-projeto
-Cadastra um novo projeto
-
-GET /api/projetos
-Lista projetos (usado em dropdowns)
-
-👨‍💻 Desenvolvido por
-
-Equipe Simplificando
