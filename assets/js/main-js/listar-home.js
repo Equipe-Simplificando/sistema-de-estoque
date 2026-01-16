@@ -2,8 +2,8 @@ const API_BASE = `http://${window.location.hostname}:3000`;
 let listaGlobalMateriais = [];
 
 let estadoOrdenacao = {
-  coluna: null,
-  direcao: "asc",
+  coluna: "id", 
+  direcao: "asc", 
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -94,7 +94,9 @@ async function carregarMateriais() {
       materiais = materiais.filter((material) => {
         const destino = material.destino ? material.destino.toLowerCase() : "";
         const termo = filtroSetor.toLowerCase();
-
+        if (termo === "venda") {
+          return material.preco && Number(material.preco) > 0;
+        }
         if (
           termo === "robotica" &&
           (destino.includes("robótica") || destino.includes("robotica"))

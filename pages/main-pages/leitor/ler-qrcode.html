@@ -1,75 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ler QR Code</title>
     <link rel="stylesheet" href="../../../assets/css/global.css">
+    <link rel="stylesheet" href="../../../assets/css/main-css/leitor-css/leitor.css">
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    
-    <style>
-        /* Estilos específicos para centralizar o layout "mobile" na tela */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            margin: 0;
-        }
-
-        .MatQrcode {
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            margin: 0 auto;
-        }
-
-        /* Área onde a câmera vai aparecer */
-        #leitor-camera {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px; /* Arredondar cantos do vídeo */
-        }
-
-        /* Ajuste do botão fechar para ser clicável */
-        .link-fechar {
-            text-decoration: none;
-            cursor: pointer;
-            position: absolute;
-            left: 340px; /* Ajuste manual baseado no layout absoluto */
-            top: 62px;
-            z-index: 20;
-        }
-    </style>
 </head>
+
 <body>
+    <div class="container">
 
-    <div data-layer="Mat_QrCode" class="MatQrcode" style="width: 440px; height: 956px; position: relative; background: white; overflow: hidden">
-        
-        <div data-layer="Frame 67" class="Frame67" style="width: 400px; height: 400px; left: 20px; top: 332px; position: absolute; border-radius: 16px; border: 5px var(--cor-texto-escuro, #161614) solid; z-index: 10;">
-            <div id="reader" style="width: 100%; height: 100%;"></div>
-        </div>
+        <header class="cabecalho">
+            <h1 class="titulo-pagina">PROCURAR <br> MATERIAL</h1>
 
-        <div data-layer="CENTRALIZE O QR CODE NO QUADRADO" class="CentralizeOQrCodeNoQuadrado" style="width: 378px; left: 31px; top: 217px; position: absolute; text-align: center; color: black; font-size: 32px; font-family: Ubuntu; font-weight: 700; word-wrap: break-word">CENTRALIZE O QR CODE NO QUADRADO</div>
-        
-        <div data-layer="TÍTULO" class="TTulo" style="left: 18px; top: 62px; position: absolute; justify-content: flex-start; align-items: flex-start; display: inline-flex">
-            <div data-layer="PROCURAR MATERIAL" class="ProcurarMaterial" style="width: 330px; color: var(--cor-texto-escuro, #161614); font-size: 32px; font-family: Ubuntu; font-weight: 700; word-wrap: break-word">PROCURAR <br/>MATERIAL</div>
-        </div>
+            <a href="../../main-pages/home/home-material.html" class="botao-fechar"
+                aria-label="Fechar cadastro de projeto">
+                <img src="../../../assets/icons/botao-fechar.svg" alt="">
+            </a>
+        </header>
 
-        <a href="../home/home-material.html" class="link-fechar">
-            <div data-layer="Button_Fechar" class="ButtonFechar" style="width: 75px; height: 75px; position: relative; box-shadow: 0px -4px 0px 1.5px rgba(0, 52, 16, 0.50) inset; border-radius: 10px; overflow: hidden;">
-                <div data-layer="Rectangle 11" class="Rectangle11" style="width: 75px; height: 75px; left: 0px; top: 0px; position: absolute; background: var(--cor-primaria, #1F731D);"></div>
-                <div style="left: 22px; top: 22px; position: absolute">
-                    <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.43929 0.732339C2.4156 -0.243973 3.99852 -0.243972 4.97483 0.732339L15.2279 10.9854L25.4809 0.732339C26.4572 -0.243971 28.0401 -0.243973 29.0165 0.732339L29.7236 1.43945C30.6999 2.41576 30.6999 3.99867 29.7236 4.97498L19.4705 15.228L29.7236 25.4811C30.6999 26.4574 30.6999 28.0403 29.7236 29.0166L29.0165 29.7237C28.0401 30.7 26.4572 30.7 25.4809 29.7237L15.2279 19.4707L4.97483 29.7237C3.99852 30.7 2.4156 30.7 1.43929 29.7237L0.732186 29.0166C-0.244126 28.0403 -0.244125 26.4574 0.732186 25.4811L10.9852 15.228L0.732186 4.97498C-0.244125 3.99867 -0.244126 2.41576 0.732186 1.43945L1.43929 0.732339Z" fill="var(--cor-texto-claro, #FEFEFE)"/>
-                    </svg>
+        <main class="conteudo">
+            <section class="secao-qrcode">
+                <h1 class="titulo-qrcode">CENTRALIZE O QR CODE NO QUADRADO</h1>
+                <div class="container-qrcode">
+                    <div id="reader" class="leitor-qrcode"></div>
                 </div>
-            </div>
-        </a>
-
-        <img data-layer="Sem título 1" class="SemTTulo1" style="width: 357px; height: 357px; left: 41px; top: 355px; position: absolute; z-index: 0; opacity: 0.5;" src="data:image/png;base64,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" />
+            </section>
+        </main>
     </div>
 
     <script src="../../../assets/js/main-js/ler-qrcode.js"></script>
 </body>
+
 </html>

@@ -1,36 +1,38 @@
-const API_BASE = `http://${window.location.hostname}:3000`;
-
 document.addEventListener("DOMContentLoaded", () => {
     
     function onScanSuccess(decodedText, decodedResult) {
-        console.log(`Texto lido: ${decodedText}`, decodedResult);
-        
         const idLimpo = parseInt(decodedText.replace(/\D/g, ""), 10);
 
         if (!idLimpo) {
-            alert("QR Code inválido ou sem números identificáveis: " + decodedText);
+            alert("QR Code inválido: " + decodedText);
             return;
         }
 
-        html5QrcodeScanner.clear().then(() => {
-            window.location.href = `../../material-pages/editar-material.html?id=${idLimpo}`;
-        }).catch(error => {
-            console.error("Erro ao parar scanner", error);
+        html5QrCode.stop().then(() => {
+            window.location.href = `../../material-pages/perfil-material.html?id=${idLimpo}`;
+        }).catch(err => {
+            console.error(err);
         });
     }
 
-    function onScanFailure(error) {
-        // Erros de leitura ignorados para não poluir o console
-    }
+    const html5QrCode = new Html5Qrcode("reader");
 
-    let html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader", 
-        { 
-            fps: 10, 
-            qrbox: { width: 250, height: 250 } 
-        },
-        false
-    );
+    const config = { 
+        fps: 10, 
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0 
+    };
 
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    html5QrCode.start(
+        { facingMode: "environment" }, 
+        config, 
+        onScanSuccess
+    ).catch(err => {
+        console.error(err);
+        html5QrCode.start(
+            { facingMode: "user" }, 
+            config, 
+            onScanSuccess
+        );
+    });
 });
