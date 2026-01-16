@@ -53,12 +53,24 @@
 .rotulo-dado {
   font-size: 1.5rem;
   font-weight: 700;
+
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  flex-shrink: 0;
 }
 
 /* Coluna direita: valores */
 .valor-dado {
   font-size: 1.25rem;
   font-weight: 500;
+  text-align: right;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 70%;
+  display: block;
 }
 
 .qrcode-wrapper {
@@ -86,6 +98,12 @@
 .texto-observacoes {
   font-size: 1rem;
   font-weight: 400;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+
+  width: 100%;
 }
 
 .imagem-material {

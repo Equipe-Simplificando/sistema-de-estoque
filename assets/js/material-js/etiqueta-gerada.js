@@ -54,4 +54,31 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = `editar-material.html?${paramsEdit.toString()}`;
         });
     }
+
+    const btnDeletar = document.querySelector(".botao-vermelho");
+    const perfilUsuario = localStorage.getItem("perfilUsuario");
+
+    if (btnDeletar) {
+        if (perfilUsuario === "admin") {
+            btnDeletar.onclick = async () => {
+                if (confirm("ATENÇÃO: Tem certeza que deseja excluir este material?")) {
+                    try {
+                        const res = await fetch(`http://localhost:3000/api/deletar/${id}`, { method: 'DELETE' });
+                        if (res.ok) {
+                            alert("Material excluído com sucesso!");
+                            window.location.href = "../main-pages/home/home-material.html";
+                        } else {
+                            const erro = await res.json();
+                            alert("Erro ao excluir: " + (erro.error || "Erro desconhecido"));
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        alert("Erro de conexão com o servidor.");
+                    }
+                }
+            };
+        } else {
+            btnDeletar.style.display = "none";
+        }
+    }
 });
