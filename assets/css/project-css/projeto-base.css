@@ -1,0 +1,44 @@
+.cabecalho {
+    margin-bottom: 2.5rem;
+}
+
+.secao-cadastro {
+    width: 100%;
+}
+
+.grupo-itens {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.grupo-acoes {
+    margin-top: 1.5rem;
+    gap: 2rem;
+}
+
+.tabela-itens thead th {
+    background: var(--cor-secundaria);
+}
+
+.tabela-itens th:nth-child(1) {
+  width: 70px;
+}
+
+.tabela-itens th:nth-child(2) {
+  width: auto;
+}
+
+.tabela-itens th:nth-child(3) {
+  width: 85px;
+}
+
+.tabela-itens th:nth-child(4) {
+  width: 45px;
+}
+
+.tabela-itens td {
+    cursor: default;
+}
+
+.ativo { display: block !important; }

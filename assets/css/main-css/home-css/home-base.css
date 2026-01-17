@@ -18,23 +18,6 @@
     margin-bottom: 2.5rem;
 }
 
-.grupo-pesquisa-qrcode {
-    display: flex;
-    width: 100%;
-    gap: 24px;
-    align-items: center;
-}
-
-.icone-qrcode {
-    cursor: pointer;
-}
-
-.botao-qrcode {
-    border: none;
-    background: none;
-    padding: 0;
-}
-
 /*  3. RADIO BUTTONS (ABAS DE NAVEGAÇÃO MATERIAL/PROJETO) */
 .grupo-radio {
     height: 3.4375rem;
@@ -61,16 +44,3 @@
 }
 
 /* 5. TABELA */
-.tabela-itens td, 
-.tabela-itens td img {
-    cursor: pointer;
-}
-
-.tabela-itens th div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: row;
-    gap: 0.3rem;
-    cursor: pointer;
-}

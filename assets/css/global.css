@@ -169,13 +169,22 @@ body {
 
 .icone-pesquisa {
   position: absolute;
-  top: 50%;
   right: 15px;
-  transform: translateY(-50%);
   cursor: pointer;
   z-index: 10;
-  width: 25px;
-  height: 29px;
+
+  width: 1.5rem;
+  height: 1.5rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.icone-pesquisa.botao-pesquisa, 
+.icone-pesquisa img {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 #pesquisa-item,
@@ -351,7 +360,6 @@ body {
 .botao-fechar,
 .botao-excluir,
 .botao-pesquisa,
-.botao-filtro,
 .botao-cadastro,
 .icone-setor {
   background: none;
@@ -373,27 +381,16 @@ body {
   opacity: 0.85;
 }
 
-.botao-pesquisa img {
-  width: 25px;
-  height: 29px;
-  display: block;
-}
-
-.botao-filtro {
-  width: 35px;
-  height: 39px;
-}
-
-.botao-filtro img {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
 .botao-cadastro,
 .botao-cadastro img {
   width: 6.25rem;
   height: 6.25rem;
+}
+
+.botao-excluir, 
+.botao-excluir img {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* Ícone não clicável dentro da tabela */
@@ -504,6 +501,20 @@ body {
 /* Scrollbar */
 .grupo-tabela::-webkit-scrollbar {
   display: none;
+}
+
+.tabela-itens td, 
+.tabela-itens td img {
+    cursor: pointer;
+}
+
+.tabela-itens th div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 0.3rem;
+    cursor: pointer;
 }
 
 /* MENU INFERIOR E NAVEGAÇÃO */
@@ -675,4 +686,53 @@ body {
 /* Ajuste nos botões para ficarem proporcionais */
 .popup-acoes .botao {
   flex: 1;
+}
+
+/* 2. PESQUISA E QRCODE */
+.grupo-pesquisa-qrcode {
+  display: flex;
+  width: 100%;
+  gap: 24px;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.icone-qrcode {
+  cursor: pointer;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.botao-qrcode {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.botao-qrcode img {
+  cursor: pointer;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.container-qrcode {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    border: 4px solid var(--cor-texto-escuro);
+    border-radius: var(--radius);
+
+    overflow: hidden; 
+    position: relative;
+    background-color: var(--cor-texto-escuro); 
+}
+
+#reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    border-radius: var(--radius);
 }

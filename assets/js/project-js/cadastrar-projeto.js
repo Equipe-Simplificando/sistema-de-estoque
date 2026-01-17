@@ -1,5 +1,71 @@
 const API_BASE = `http://${window.location.hostname}:3000`;
 
+// --- ESTADO GLOBAL ---
+let listaMateriaisSelecionados = [];
+let estadoOrdenacao = {
+  coluna: "id",
+  direcao: "asc",
+};
+let html5QrCode; // Variável para controlar o leitor
+
+// --- FUNÇÕES DE ORDENAÇÃO E RENDERIZAÇÃO (Mantidas iguais, apenas compactadas para leitura) ---
+window.ordenarPor = function (coluna) {
+  if (estadoOrdenacao.coluna === coluna) {
+    estadoOrdenacao.direcao =
+      estadoOrdenacao.direcao === "asc" ? "desc" : "asc";
+  } else {
+    estadoOrdenacao.coluna = coluna;
+    estadoOrdenacao.direcao = "asc";
+  }
+  ordenarLista();
+  renderizarTabelaSelecionada();
+};
+
+function ordenarLista() {
+  const coluna = estadoOrdenacao.coluna;
+  listaMateriaisSelecionados.sort((a, b) => {
+    let valorA = a[coluna];
+    let valorB = b[coluna];
+    if (coluna === "id" || coluna === "quantidade") {
+      valorA = Number(valorA) || 0;
+      valorB = Number(valorB) || 0;
+    } else {
+      valorA = (valorA || "").toString().toLowerCase();
+      valorB = (valorB || "").toString().toLowerCase();
+    }
+    if (valorA < valorB) return estadoOrdenacao.direcao === "asc" ? -1 : 1;
+    if (valorA > valorB) return estadoOrdenacao.direcao === "asc" ? 1 : -1;
+    return 0;
+  });
+}
+
+function renderizarTabelaSelecionada() {
+  const tabelaCorpo = document.getElementById("tabela-corpo");
+  tabelaCorpo.innerHTML = "";
+
+  listaMateriaisSelecionados.forEach((material, index) => {
+    const novaLinha = document.createElement("tr");
+    novaLinha.dataset.index = index;
+    const qtdReal =
+      material.quantidade !== undefined && material.quantidade !== null
+        ? material.quantidade
+        : 0;
+
+    novaLinha.innerHTML = `
+      <td class="item-id">${material.id}</td>
+      <td class="item-nome">${material.nome_item}</td>
+      <td class="item-qtd">x${qtdReal}</td>
+      <td>
+          <button type="button" class="botao-excluir" aria-label="Remover item">
+              <img src="../../assets/icons/icon-excluir.svg" alt="">
+          </button>
+      </td>
+    `;
+    tabelaCorpo.appendChild(novaLinha);
+  });
+}
+
+// --- LÓGICA PRINCIPAL ---
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formulario");
   const inputPesquisa = document.getElementById("pesquisa-item");
@@ -7,18 +73,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabelaCorpo = document.getElementById("tabela-corpo");
   const dataListMateriais = document.getElementById("lista-materiais");
 
+  // Elementos novos do QR Code
+  const btnLerQrcode = document.getElementById("btn-ler-qrcode");
+  const readerDiv = document.getElementById("reader");
+
   let materiaisDisponiveis = [];
 
+  // 1. Carregar Materiais da API
   async function carregarMateriais() {
     try {
       const response = await fetch(`${API_BASE}/api/materiais`);
-      if (!response.ok) throw new Error('Falha ao buscar materiais');
-      
+      if (!response.ok) throw new Error("Falha ao buscar materiais");
+
       materiaisDisponiveis = await response.json();
-      
-      dataListMateriais.innerHTML = '';
-      materiaisDisponiveis.forEach(material => {
-        const option = document.createElement('option');
+
+      dataListMateriais.innerHTML = "";
+      materiaisDisponiveis.forEach((material) => {
+        const option = document.createElement("option");
         option.value = material.nome_item;
         dataListMateriais.appendChild(option);
       });
@@ -28,45 +99,110 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   carregarMateriais();
 
-  function adicionarMaterialNaTabela() {
+  // 2. Função Helper: Adiciona o objeto material na lista (Usada pelo Input e pelo QR)
+  function adicionarItemAoArray(materialEncontrado) {
+    // Adiciona ao array
+    listaMateriaisSelecionados.push(materialEncontrado);
+
+    // Ordena e Renderiza
+    ordenarLista();
+    renderizarTabelaSelecionada();
+  }
+
+  // 3. Adicionar via Input de Texto
+  function adicionarViaInput() {
     const termoPesquisado = inputPesquisa.value.trim();
     if (!termoPesquisado) return;
 
-    const materialEncontrado = materiaisDisponiveis.find(m => 
-      m.nome_item.toLowerCase() === termoPesquisado.toLowerCase()
+    const materialEncontrado = materiaisDisponiveis.find(
+      (m) => m.nome_item.toLowerCase() === termoPesquisado.toLowerCase()
     );
 
     if (materialEncontrado) {
-      const novaLinha = document.createElement('tr');
-      
-      const qtdReal = (materialEncontrado.quantidade !== undefined && materialEncontrado.quantidade !== null) 
-                      ? materialEncontrado.quantidade 
-                      : 0;
-
-      novaLinha.innerHTML = `
-        <td class="item-id">${materialEncontrado.id}</td>
-        <td class="item-nome">${materialEncontrado.nome_item}</td>
-        <td class="item-qtd">x${qtdReal}</td>
-        <td>
-            <button type="button" class="botao-excluir" aria-label="Remover item">
-                <img src="../../assets/icons/icon-excluir.svg" alt="">
-            </button>
-        </td>
-      `;
-      tabelaCorpo.appendChild(novaLinha);
-      inputPesquisa.value = '';
+      adicionarItemAoArray(materialEncontrado);
+      inputPesquisa.value = "";
       inputPesquisa.focus();
     } else {
       alert("Material não encontrado no estoque.");
     }
   }
 
-  if (btnAdicionar) btnAdicionar.addEventListener("click", adicionarMaterialNaTabela);
+  // 4. Lógica do QR Code
+  if (btnLerQrcode) {
+    // Instancia o objeto do leitor uma única vez
+    html5QrCode = new Html5Qrcode("reader");
+
+    btnLerQrcode.addEventListener("click", () => {
+      // Se o leitor já estiver escaneando (div visível), nós paramos
+      if (readerDiv.classList.contains("ativo")) {
+        pararLeitor();
+      } else {
+        iniciarLeitor();
+      }
+    });
+  }
+
+  function iniciarLeitor() {
+    readerDiv.classList.add("ativo"); // Mostra a div
+
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+    // Tenta câmera traseira, se falhar, tenta user
+    html5QrCode
+      .start({ facingMode: "environment" }, config, onScanSuccess)
+      .catch((err) => {
+        console.error("Erro câmera traseira, tentando frontal", err);
+        html5QrCode.start({ facingMode: "user" }, config, onScanSuccess);
+      });
+  }
+
+  function pararLeitor() {
+    html5QrCode
+      .stop()
+      .then(() => {
+        readerDiv.classList.remove("ativo"); // Esconde a div
+        console.log("Câmera parada.");
+      })
+      .catch((err) => console.error("Erro ao parar câmera", err));
+  }
+
+  function onScanSuccess(decodedText, decodedResult) {
+    // Limpa o ID (exatamente como no seu ler-qrcode.js)
+    const idLimpo = parseInt(decodedText.replace(/\D/g, ""), 10);
+
+    if (!idLimpo) {
+      alert("QR Code inválido: " + decodedText);
+      return;
+    }
+
+    // Procura o ID no array de materiais carregados
+    const materialEncontrado = materiaisDisponiveis.find(
+      (m) => parseInt(m.id) === idLimpo
+    );
+
+    if (materialEncontrado) {
+      // Se achou, adiciona na tabela
+      adicionarItemAoArray(materialEncontrado);
+
+      // Feedback visual e para a câmera automaticamente após ler com sucesso
+      pararLeitor();
+    } else {
+      alert(
+        `ID ${idLimpo} escaneado, mas não encontrado na lista de materiais disponíveis.`
+      );
+      // Opcional: pararLeitor(); se quiser que pare ao errar
+    }
+  }
+
+  // --- EVENT LISTENERS GERAIS ---
+
+  if (btnAdicionar) btnAdicionar.addEventListener("click", adicionarViaInput);
+
   if (inputPesquisa) {
     inputPesquisa.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        adicionarMaterialNaTabela();
+        adicionarViaInput();
       }
     });
   }
@@ -74,7 +210,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (tabelaCorpo) {
     tabelaCorpo.addEventListener("click", (e) => {
       const botaoExcluir = e.target.closest(".botao-excluir");
-      if (botaoExcluir) botaoExcluir.closest("tr").remove();
+      if (botaoExcluir) {
+        const row = botaoExcluir.closest("tr");
+        const index = row.dataset.index;
+        listaMateriaisSelecionados.splice(index, 1);
+        renderizarTabelaSelecionada();
+      }
     });
   }
 
@@ -92,36 +233,40 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const materiaisParaSalvar = [];
-    const materiaisVisualizacao = [];
+    // Se a câmera estiver aberta quando enviar, é bom garantir que pare
+    if (readerDiv.classList.contains("ativo")) {
+      await html5QrCode.stop().catch((err) => console.log(err));
+    }
 
-    document.querySelectorAll('#tabela-corpo tr').forEach(row => {
-        const id = row.querySelector('.item-id').textContent;
-        const nomeItem = row.querySelector('.item-nome').textContent;
-        const qtd = row.querySelector('.item-qtd').textContent;
-
-        materiaisParaSalvar.push(parseInt(id)); 
-        materiaisVisualizacao.push({ id, item: nomeItem, qtd });
-    });
+    const materiaisParaSalvar = listaMateriaisSelecionados.map((m) =>
+      parseInt(m.id)
+    );
+    const materiaisVisualizacao = listaMateriaisSelecionados.map((m) => ({
+      id: m.id,
+      item: m.nome_item,
+      qtd: `x${m.quantidade || 0}`,
+    }));
 
     try {
       const response = await fetch(`${API_BASE}/api/cadastrar-projeto`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            item: nome, 
-            destino: setor, 
-            observacoes: obs, 
-            preco: preco,
-            materiais: materiaisParaSalvar 
+        body: JSON.stringify({
+          item: nome,
+          destino: setor,
+          observacoes: obs,
+          preco: preco,
+          materiais: materiaisParaSalvar,
         }),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        sessionStorage.setItem('ultimoProjetoMateriais', JSON.stringify(materiaisVisualizacao));
-
+        sessionStorage.setItem(
+          "ultimoProjetoMateriais",
+          JSON.stringify(materiaisVisualizacao)
+        );
         const params = new URLSearchParams({
           id: result.id,
           nome: nome,
@@ -129,7 +274,6 @@ document.addEventListener("DOMContentLoaded", () => {
           obs: obs,
           preco: preco || "0,00",
         });
-
         window.location.href = `projeto-cadastrado.html?${params.toString()}`;
       } else {
         alert("Erro: " + result.error);
