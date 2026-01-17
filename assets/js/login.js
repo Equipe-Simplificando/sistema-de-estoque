@@ -14,10 +14,10 @@ form.addEventListener("submit", function (e) {
     setTimeout(() => {
         if (usuario === "admin" && senha === "admin") {
             localStorage.setItem("perfilUsuario", "admin");
-            window.location.href = "../main-pages/home/home-material.html";
+            window.location.href = "./pages/main-pages/home/home-material.html";
         } else if (usuario === "logistico" && senha === "1234") {
             localStorage.setItem("perfilUsuario", "logistico");
-            window.location.href = "../main-pages/home/home-material.html";
+            window.location.href = "./pages/main-pages/home/home-material.html";
         } else {
             loader.style.display = "none";
             msg.textContent = "USUÁRIO OU SENHA INCORRETOS!";
