@@ -1,8 +1,17 @@
 const API_BASE = `http://${window.location.hostname}:3000`;
+let html5QrCode; // Variável global para o leitor
 
 document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
+    
+    // Elementos do DOM
+    const readerDiv = document.getElementById("reader");
+    const btnLerQrcode = document.getElementById("btn-ler-qrcode");
+    const btnAdicionar = document.getElementById("btn-adicionar-material");
+    const inputPesquisa = document.getElementById("pesquisa-item");
+    const tabelaCorpo = document.getElementById("tabela-corpo");
+    const campoPreco = document.getElementById("preco"); // Referência ao campo preço
     
     let materiaisDisponiveis = [];
 
@@ -15,8 +24,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     const inputId = document.getElementById("id-projeto");
     if(inputId) inputId.value = id;
 
+    // --- LOGICA DO CAMPO PREÇO (NOVO) ---
+    if (campoPreco) {
+        // Evento ao clicar no campo (Foco)
+        campoPreco.addEventListener("focus", function() {
+            // Se o valor for 0.00 ou 0,00, limpa para o usuário digitar
+            if (this.value === "0.00" || this.value === "0,00") {
+                this.value = "";
+            }
+        });
+
+        // Evento ao sair do campo (Blur)
+        campoPreco.addEventListener("blur", function() {
+            // Se o usuário deixou vazio, volta o 0.00
+            if (this.value === "") {
+                this.value = "0.00";
+            } else {
+                // Opcional: Se digitou um número (ex: 5), formata para 5.00 ao sair
+                const valorNumerico = parseFloat(this.value.replace(',', '.'));
+                if (!isNaN(valorNumerico)) {
+                    this.value = valorNumerico.toFixed(2);
+                }
+            }
+        });
+    }
+    // ------------------------------------
+
+    // 1. Carrega materiais para preencher o datalist e usar na busca/qr
     await carregarMateriaisGlobais();
 
+    // 2. Busca dados do projeto atual
     try {
         const response = await fetch(`${API_BASE}/api/projetos/${id}`);
         if (!response.ok) throw new Error("Erro ao buscar projeto");
@@ -26,9 +63,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("item").value = projeto.nome_projeto || "";
         document.getElementById("observacoes").value = projeto.observacoes || "";
         
-        const campoPreco = document.getElementById("preco");
+        // Ajuste no carregamento do preço: garante formato 0.00
         if(campoPreco) {
-            campoPreco.value = projeto.preco ? projeto.preco : "";
+            const precoBanco = parseFloat(projeto.preco);
+            // Se tiver preço válido, formata. Se não, coloca "0.00"
+            campoPreco.value = !isNaN(precoBanco) ? precoBanco.toFixed(2) : "0.00";
         }
 
         if (projeto.setor) {
@@ -41,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Erro ao carregar dados do projeto. Verifique o console.");
     }
 
+    // 3. Busca os materiais JÁ vinculados ao projeto e preenche a tabela
     try {
         const resMateriais = await fetch(`${API_BASE}/api/materiais/projeto/${id}`);
         if(resMateriais.ok) {
@@ -51,11 +91,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Erro ao carregar itens do projeto:", error);
     }
 
-    const btnAdicionar = document.getElementById("btn-adicionar-material");
-    const inputPesquisa = document.getElementById("pesquisa-item");
+    // --- LÓGICA DE ADICIONAR ITEM (COMPARTILHADA) ---
+    
+    function tentarAdicionarMaterial(materialEncontrado) {
+        if (!materialEncontrado) {
+            alert("Material não encontrado no estoque.");
+            return false;
+        }
+
+        const idsNaTabela = Array.from(document.querySelectorAll('.item-id'))
+                                    .map(td => td.textContent);
+        
+        if(idsNaTabela.includes(String(materialEncontrado.id))){
+            alert(`O item "${materialEncontrado.nome_item}" já está na lista.`);
+            return false;
+        }
+
+        adicionarLinhaNaTabela(
+            materialEncontrado.nome_item, 
+            materialEncontrado.quantidade, 
+            materialEncontrado.id
+        );
+        return true;
+    }
+
+    // --- LÓGICA DO INPUT DE TEXTO ---
 
     if(btnAdicionar && inputPesquisa) {
-        const adicionarItem = () => {
+        const acaoBotaoAdicionar = () => {
             const termoPesquisado = inputPesquisa.value.trim();
             if(!termoPesquisado) return;
 
@@ -63,38 +126,77 @@ document.addEventListener("DOMContentLoaded", async () => {
                 m.nome_item.toLowerCase() === termoPesquisado.toLowerCase()
             );
 
-            if (materialEncontrado) {
-                const idsNaTabela = Array.from(document.querySelectorAll('.item-id'))
-                                         .map(td => td.textContent);
-                if(idsNaTabela.includes(String(materialEncontrado.id))){
-                    alert("Este item já está na lista.");
-                    inputPesquisa.value = "";
-                    return;
-                }
-
-                adicionarLinhaNaTabela(
-                    materialEncontrado.nome_item, 
-                    materialEncontrado.quantidade, 
-                    materialEncontrado.id
-                );
-                
+            const adicionou = tentarAdicionarMaterial(materialEncontrado);
+            
+            if (adicionou || materialEncontrado) {
                 inputPesquisa.value = ""; 
                 inputPesquisa.focus();
-            } else {
-                alert("Material não encontrado no estoque.");
             }
         };
 
-        btnAdicionar.addEventListener("click", adicionarItem);
+        btnAdicionar.addEventListener("click", acaoBotaoAdicionar);
         inputPesquisa.addEventListener("keypress", (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
-                adicionarItem();
+                acaoBotaoAdicionar();
             }
         });
     }
 
-    const tabelaCorpo = document.getElementById("tabela-corpo");
+    // --- LÓGICA DO LEITOR DE QR CODE ---
+
+    if (btnLerQrcode) {
+        html5QrCode = new Html5Qrcode("reader");
+
+        btnLerQrcode.addEventListener("click", () => {
+            if (readerDiv.classList.contains("ativo")) {
+                pararLeitor();
+            } else {
+                iniciarLeitor();
+            }
+        });
+    }
+
+    function iniciarLeitor() {
+        readerDiv.classList.add("ativo");
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        
+        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+        .catch(err => {
+            console.error("Erro câmera traseira, tentando frontal", err);
+            html5QrCode.start({ facingMode: "user" }, config, onScanSuccess);
+        });
+    }
+
+    function pararLeitor() {
+        html5QrCode.stop().then(() => {
+            readerDiv.classList.remove("ativo");
+        }).catch(err => console.error("Erro ao parar câmera", err));
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        const idLimpo = parseInt(decodedText.replace(/\D/g, ""), 10);
+
+        if (!idLimpo) {
+            console.warn("QR Code lido mas sem ID numérico válido:", decodedText);
+            return;
+        }
+
+        const materialEncontrado = materiaisDisponiveis.find(m => parseInt(m.id) === idLimpo);
+
+        if (materialEncontrado) {
+            const sucesso = tentarAdicionarMaterial(materialEncontrado);
+            if (sucesso) {
+                alert(`Item adicionado via QR: ${materialEncontrado.nome_item}`);
+                pararLeitor(); 
+            }
+        } else {
+            alert(`ID ${idLimpo} escaneado, mas item não encontrado no banco de dados.`);
+        }
+    }
+
+    // --- OUTRAS FUNÇÕES ---
+
     if (tabelaCorpo) {
         tabelaCorpo.addEventListener("click", (e) => {
             const botaoExcluir = e.target.closest(".botao-excluir");
@@ -104,47 +206,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    const perfil = localStorage.getItem("perfilUsuario");
-    if (perfil === "admin") {
-        const grupoAcoes = document.querySelector(".grupo-acoes");
-        
-        if (!document.getElementById("btn-excluir-dinamico")) {
-            const btnExcluir = document.createElement("button");
-            btnExcluir.id = "btn-excluir-dinamico";
-            btnExcluir.type = "button";
-            btnExcluir.textContent = "EXCLUIR PROJETO";
-            btnExcluir.className = "botao";
-            btnExcluir.style.backgroundColor = "#d32f2f"; 
-            btnExcluir.style.boxShadow = "inset 0 -4px 0 1px #b71c1c";
-            btnExcluir.style.marginTop = "1rem";
-            
-            btnExcluir.onclick = async function() {
-                if (confirm("ATENÇÃO: Excluir este projeto irá desvincular todos os materiais associados a ele. Continuar?")) {
-                    try {
-                        const res = await fetch(`${API_BASE}/api/deletar-projeto/${id}`, { method: 'DELETE' });
-                        if (res.ok) {
-                            alert("Projeto excluído com sucesso!");
-                            window.location.href = "../main-pages/home/home-projeto.html";
-                        } else {
-                            alert("Erro ao excluir projeto.");
-                        }
-                    } catch (e) {
-                        console.error(e);
-                        alert("Erro de conexão.");
-                    }
-                }
-            };
-
-            if(grupoAcoes) {
-                grupoAcoes.appendChild(btnExcluir);
-            }
-        }
-    }
-
     const form = document.getElementById("formulario");
     if(form){
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+            
+            if (readerDiv.classList.contains("ativo")) {
+                await html5QrCode.stop().catch(err => console.log(err));
+            }
 
             const radioSelecionado = document.querySelector('input[name="destino"]:checked');
             const setorValor = radioSelecionado ? radioSelecionado.value : "";
