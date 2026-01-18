@@ -352,7 +352,7 @@ body {
 .botao-branco {
   background: var(--cor-fundo);
   color: var(--cor-texto-escuro);
-  box-shadow: none;
+  box-shadow: inset 0 -4px 0 1.5px rgba(0, 0, 0, 0.25);
 }
 
 /* Botões de Ícone (Reset Geral) 
@@ -621,16 +621,20 @@ body {
 
 /* Container Principal (Fundo escurecido/Posicionamento) */
 .popup-overlay {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup-overlay.ativo {
+    display: flex;
 }
 
 /* Card do Popup */
@@ -688,7 +692,7 @@ body {
   flex: 1;
 }
 
-/* 2. PESQUISA E QRCODE */
+/* PESQUISA E QRCODE */
 .grupo-pesquisa-qrcode {
   display: flex;
   width: 100%;
@@ -736,3 +740,4 @@ body {
   object-fit: cover;
   border-radius: var(--radius);
 }
+
