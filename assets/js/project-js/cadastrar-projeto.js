@@ -1,14 +1,12 @@
 const API_BASE = `http://${window.location.hostname}:3000`;
 
-// --- ESTADO GLOBAL ---
 let listaMateriaisSelecionados = [];
 let estadoOrdenacao = {
   coluna: "id",
   direcao: "asc",
 };
-let html5QrCode; // Variável para controlar o leitor
+let html5QrCode;
 
-// --- FUNÇÕES DE ORDENAÇÃO E RENDERIZAÇÃO (Mantidas iguais, apenas compactadas para leitura) ---
 window.ordenarPor = function (coluna) {
   if (estadoOrdenacao.coluna === coluna) {
     estadoOrdenacao.direcao =
@@ -65,21 +63,42 @@ function renderizarTabelaSelecionada() {
   });
 }
 
-// --- LÓGICA PRINCIPAL ---
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formulario");
   const inputPesquisa = document.getElementById("pesquisa-item");
   const btnAdicionar = document.getElementById("btn-adicionar-material");
   const tabelaCorpo = document.getElementById("tabela-corpo");
   const dataListMateriais = document.getElementById("lista-materiais");
+  const campoPreco = document.getElementById("preco");
 
-  // Elementos novos do QR Code
   const btnLerQrcode = document.getElementById("btn-ler-qrcode");
   const readerDiv = document.getElementById("reader");
 
   let materiaisDisponiveis = [];
 
-  // 1. Carregar Materiais da API
+  if (campoPreco) {
+      campoPreco.addEventListener("focus", function() {
+          if (this.value === "0.00" || this.value === "0,00") {
+              this.value = "";
+          }
+      });
+
+      campoPreco.addEventListener("blur", function() {
+          if (this.value === "") {
+              this.value = "0.00";
+          } else {
+              let valor = this.value.replace(',', '.');
+              let valorFloat = parseFloat(valor);
+
+              if (!isNaN(valorFloat)) {
+                  this.value = valorFloat.toFixed(2);
+              } else {
+                  this.value = "0.00";
+              }
+          }
+      });
+  }
+
   async function carregarMateriais() {
     try {
       const response = await fetch(`${API_BASE}/api/materiais`);
@@ -99,17 +118,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   carregarMateriais();
 
-  // 2. Função Helper: Adiciona o objeto material na lista (Usada pelo Input e pelo QR)
   function adicionarItemAoArray(materialEncontrado) {
-    // Adiciona ao array
     listaMateriaisSelecionados.push(materialEncontrado);
-
-    // Ordena e Renderiza
     ordenarLista();
     renderizarTabelaSelecionada();
   }
 
-  // 3. Adicionar via Input de Texto
   function adicionarViaInput() {
     const termoPesquisado = inputPesquisa.value.trim();
     if (!termoPesquisado) return;
@@ -127,13 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 4. Lógica do QR Code
   if (btnLerQrcode) {
-    // Instancia o objeto do leitor uma única vez
     html5QrCode = new Html5Qrcode("reader");
 
     btnLerQrcode.addEventListener("click", () => {
-      // Se o leitor já estiver escaneando (div visível), nós paramos
       if (readerDiv.classList.contains("ativo")) {
         pararLeitor();
       } else {
@@ -143,11 +154,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function iniciarLeitor() {
-    readerDiv.classList.add("ativo"); // Mostra a div
-
+    readerDiv.classList.add("ativo");
     const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-    // Tenta câmera traseira, se falhar, tenta user
     html5QrCode
       .start({ facingMode: "environment" }, config, onScanSuccess)
       .catch((err) => {
@@ -160,14 +169,13 @@ document.addEventListener("DOMContentLoaded", () => {
     html5QrCode
       .stop()
       .then(() => {
-        readerDiv.classList.remove("ativo"); // Esconde a div
+        readerDiv.classList.remove("ativo");
         console.log("Câmera parada.");
       })
       .catch((err) => console.error("Erro ao parar câmera", err));
   }
 
   function onScanSuccess(decodedText, decodedResult) {
-    // Limpa o ID (exatamente como no seu ler-qrcode.js)
     const idLimpo = parseInt(decodedText.replace(/\D/g, ""), 10);
 
     if (!idLimpo) {
@@ -175,26 +183,17 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Procura o ID no array de materiais carregados
     const materialEncontrado = materiaisDisponiveis.find(
       (m) => parseInt(m.id) === idLimpo
     );
 
     if (materialEncontrado) {
-      // Se achou, adiciona na tabela
       adicionarItemAoArray(materialEncontrado);
-
-      // Feedback visual e para a câmera automaticamente após ler com sucesso
       pararLeitor();
     } else {
-      alert(
-        `ID ${idLimpo} escaneado, mas não encontrado na lista de materiais disponíveis.`
-      );
-      // Opcional: pararLeitor(); se quiser que pare ao errar
+      alert(`ID ${idLimpo} não encontrado.`);
     }
   }
-
-  // --- EVENT LISTENERS GERAIS ---
 
   if (btnAdicionar) btnAdicionar.addEventListener("click", adicionarViaInput);
 
@@ -233,7 +232,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Se a câmera estiver aberta quando enviar, é bom garantir que pare
     if (readerDiv.classList.contains("ativo")) {
       await html5QrCode.stop().catch((err) => console.log(err));
     }
@@ -241,6 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const materiaisParaSalvar = listaMateriaisSelecionados.map((m) =>
       parseInt(m.id)
     );
+    
     const materiaisVisualizacao = listaMateriaisSelecionados.map((m) => ({
       id: m.id,
       item: m.nome_item,
@@ -267,13 +266,15 @@ document.addEventListener("DOMContentLoaded", () => {
           "ultimoProjetoMateriais",
           JSON.stringify(materiaisVisualizacao)
         );
+
         const params = new URLSearchParams({
           id: result.id,
           nome: nome,
           setor: setor,
           obs: obs,
-          preco: preco || "0,00",
+          preco: preco || "0.00",
         });
+
         window.location.href = `projeto-cadastrado.html?${params.toString()}`;
       } else {
         alert("Erro: " + result.error);

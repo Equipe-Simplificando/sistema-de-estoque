@@ -3,6 +3,7 @@ const API_BASE = `http://${window.location.hostname}:3000`;
 document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
+    const projetoUrl = params.get("projeto");
 
     if (!id) {
         alert("ID não encontrado!");
@@ -21,58 +22,79 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        const idVisual = "#" + String(material.id).padStart(4, '0');
-        document.getElementById("view_id").textContent = idVisual;
+        let nomeProjeto = "-";
+        
+        if (projetoUrl && projetoUrl !== "undefined" && projetoUrl !== "null" && projetoUrl !== "-") {
+            nomeProjeto = projetoUrl;
+        } 
+        else if (material.projeto) {
+            try {
+                const resProj = await fetch(`${API_BASE}/api/projetos/${material.projeto}`);
+                if (resProj.ok) {
+                    const dadosProjeto = await resProj.json();
+                    nomeProjeto = dadosProjeto.nome_projeto || "-";
+                }
+            } catch (err) {}
+        }
 
-        document.getElementById("view_item").textContent = material.nome_item || "-";
-        
-        const destino = material.destino ? material.destino.charAt(0).toUpperCase() + material.destino.slice(1) : "-";
-        document.getElementById("view_destino").textContent = destino;
-        
-        document.getElementById("view_quantidade").textContent = material.quantidade || "0";
-        document.getElementById("view_projeto").textContent = material.projeto || "-";
-        document.getElementById("view_obs").textContent = material.observacoes || "Sem observações.";
+        const idVisual = "#" + String(material.id).padStart(4, '0');
+        document.getElementById("view_id").innerText = idVisual;
+
+        const nome = material.nome_item;
+        document.getElementById("view_item").innerText = nome || "-";
+
+        const destino = material.destino;
+        if (destino) {
+            document.getElementById("view_destino").innerText =
+                destino.charAt(0).toUpperCase() + destino.slice(1);
+        } else {
+            document.getElementById("view_destino").innerText = "-";
+        }
+
+        document.getElementById("view_quantidade").innerText = material.quantidade || "0";
+
+        document.getElementById("view_projeto").innerText = nomeProjeto;
+
+        const obs = material.observacoes;
+        document.getElementById("view_obs").innerText =
+            (obs && obs !== "null" && obs !== "") ? obs : "Sem observações.";
 
         const containerImagem = document.getElementById("view_imagem");
-        
         if (material.arquivo_nome && material.arquivo_tipo && material.arquivo_tipo.startsWith('image/')) {
-            containerImagem.innerHTML = ''; 
-            
+            containerImagem.innerHTML = '';
             const img = document.createElement('img');
             img.src = `${API_BASE}/api/materiais/arquivo/${material.id}?t=${Date.now()}`;
             img.alt = "Imagem do material";
-            
             containerImagem.appendChild(img);
         }
 
         const qrContainer = document.getElementById("qrcode");
         qrContainer.innerHTML = "";
-        
-        const conteudoQR = material.cod || `MAT-${String(material.id).padStart(4, '0')}`;
+        const codigoParaQRCode = material.cod || `MAT-${String(material.id).padStart(4, '0')}`;
 
         new QRCode(qrContainer, {
-            text: conteudoQR,
+            text: codigoParaQRCode,
             width: 128,
             height: 128,
             colorDark: "#000000",
             colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
+            correctLevel: QRCode.CorrectLevel.H,
         });
 
         const btnEditar = document.getElementById("btn-editar");
         if (btnEditar) {
-            btnEditar.onclick = () => {
+            btnEditar.addEventListener("click", () => {
                 window.location.href = `editar-material.html?id=${id}`;
-            };
+            });
         }
 
-        const btnExcluir = document.querySelector(".botao-vermelho");
+        const btnDeletar = document.querySelector(".botao-vermelho");
         const perfilUsuario = localStorage.getItem("perfilUsuario");
 
-        if (btnExcluir) {
+        if (btnDeletar) {
             if (perfilUsuario === "admin") {
-                btnExcluir.onclick = async () => {
-                    if (confirm("Tem certeza que deseja EXCLUIR este material permanentemente?")) {
+                btnDeletar.onclick = async () => {
+                    if (confirm("ATENÇÃO: Tem certeza que deseja excluir este material?")) {
                         try {
                             const res = await fetch(`${API_BASE}/api/deletar/${id}`, { method: 'DELETE' });
                             if (res.ok) {
@@ -84,12 +106,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                             }
                         } catch (err) {
                             console.error(err);
-                            alert("Erro de conexão.");
+                            alert("Erro de conexão com o servidor.");
                         }
                     }
                 };
             } else {
-                btnExcluir.style.display = "none";
+                btnDeletar.style.display = "none";
             }
         }
 

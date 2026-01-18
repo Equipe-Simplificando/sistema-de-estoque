@@ -143,7 +143,8 @@ app.put('/api/atualizar-projeto', (req, res) => {
 });
 
 app.get('/api/projetos', (req, res) => {
-    db.query('SELECT id, nome_projeto, setor, preco FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
+    // CORREÇÃO AQUI: Mudado para SELECT * para trazer as observações
+    db.query('SELECT * FROM projetos ORDER BY nome_projeto ASC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Erro ao listar' });
         res.json(results);
     });

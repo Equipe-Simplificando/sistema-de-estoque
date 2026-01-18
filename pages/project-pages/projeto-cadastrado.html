@@ -6,55 +6,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto Cadastrado</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/project-css/projeto-cadastrado.css">
+    <link rel="stylesheet" href="../../assets/css/project-css/perfil-base-projeto.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
 <body>
     <div class="container">
 
         <header class="cabecalho">
-            <a href="../main-pages/home/home-projeto.html" class="botao-fechar" type="button" aria-label="Fechar janela">
-                <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="Botão fechar">
-            </a>
+            <button class="botao-fechar" type="button"
+                onclick="window.location.href='../main-pages/home/home-projeto.html'" aria-label="Voltar para a home">
+                <img src="../../assets/icons/botao-fechar-amarelo.svg" alt="" aria-hidden="true">
+            </button>
         </header>
 
         <main class="conteudo">
-            <h1 class="titulo-pagina">PROJETO <br> CADASTRADO!</h1>
 
-            <section class="secao-projeto">
+            <h1 class="titulo">PROJETO<br> CADASTRADO!</h1>
 
-                <section class="dados-projeto">
-                    <span class="rotulo-dado">NOME:</span>
-                    <span class="valor-dado" id="nome"></span>
+            <article class="secao-etiqueta">
+                <dl class="dados-etiqueta">
+                    <div>
+                        <dt class="rotulo-dado">NOME:</dt>
+                        <dd class="valor-dado" id="view_nome">Carregando...</dd>
+                    </div>
+                    <div>
+                        <dt class="rotulo-dado">SETOR:</dt>
+                        <dd class="valor-dado" id="view_setor">Carregando...</dd>
+                    </div>
 
-                    <span class="rotulo-dado">SETOR:</span>
-                    <span class="valor-dado" id="setor"></span>
+                    <div>
+                        <dt class="rotulo-dado">PREÇO:</dt>
+                        <dd class="valor-dado" id="view_preco">-</dd>
+                    </div>
+                </dl>
 
-                    <span class="rotulo-dado">PREÇO:</span>
-                    <span class="valor-dado" id="preco"></span>
-
-                    <span class="rotulo-dado">OBS:</span>
-                    <span class="valor-dado" id="obs"></span>
+                <section class="secao-observacoes">
+                    <h2 class="titulo-secao">OBSERVAÇÕES:</h2>
+                    <p class="texto-observacoes" id="view_obs">-</p>
                 </section>
 
-                <section class="secao-tabela">
+                <div class="grupo-tabela">
                     <table class="tabela-itens">
                         <thead>
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">ITEM</th>
-                                <th scope="col">QTD</th>
+                                <th scope="col" onclick="ordenarPor('id')" title="Clique para ordenar por ID">
+                                    <div>
+                                        <img src="../../../assets/icons/icon-filtro-tabela.svg" alt="">
+                                        ID
+                                    </div>
+                                </th>
+                                <th scope="col" onclick="ordenarPor('nome_item')" title="Clique para ordenar por Item">
+                                    <div>
+                                        <img src="../../../assets/icons/icon-filtro-tabela.svg" alt="">
+                                        ITEM
+                                    </div>
+                                </th>
+                                <th scope="col" onclick="ordenarPor('quantidade')"
+                                    title="Clique para ordenar por Quantidade">
+                                    <div>
+                                        <img src="../../../assets/icons/icon-filtro-tabela.svg" alt="">
+                                        QTD
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
-
-                        <tbody id="tabela-materiais-leitura">
-                            </tbody>
+                        <tbody id="tabela-corpo">
+                        </tbody>
                     </table>
-                </section>
+                </div>
 
-                <div class="grupo-acoes">
-
-                    <a href="../project-pages/cadastrar-projeto.html" class="botao botao-amarelo">
+                <section class="grupo-acoes">
+                    <a href="../material-pages/cadastrar-material.html" class="botao botao-amarelo">
                         CADASTRAR MAIS
                     </a>
 
@@ -62,9 +85,11 @@
                         EDITAR
                     </button>
 
-                </div>
-
-            </section>
+                    <button type="button" id="btn-deletar" class="botao botao-vermelho">
+                        DELETAR
+                    </button>
+                </section>
+            </article>
         </main>
     </div>
 

@@ -7,10 +7,12 @@ async function carregarProjetos() {
     const selectProjeto = document.getElementById("projeto");
 
     if (selectProjeto) {
+      // Opção vazia para permitir salvar sem projeto
       selectProjeto.innerHTML = '<option value="" selected disabled hidden></option>';
+      
       projetos.forEach((proj) => {
         const option = document.createElement("option");
-        option.value = proj.nome_projeto;
+        option.value = proj.id; // ID para o banco
         option.textContent = proj.nome_projeto;
         selectProjeto.appendChild(option);
       });
@@ -46,14 +48,23 @@ document.addEventListener("DOMContentLoaded", () => {
 async function enviarFormulario(e) {
   e.preventDefault();
 
+  const destinoSelecionado = document.querySelector('input[name="destino"]:checked');
+  const selectProjeto = document.getElementById("projeto");
+  
+  // Validação APENAS do Destino (Projeto agora é opcional)
+  if (!destinoSelecionado) {
+    alert("Por favor, selecione o Destino (Setor).");
+    return;
+  }
+
   const formData = new FormData();
   formData.append("item", document.getElementById("item").value);
   formData.append("quantidade", document.getElementById("quantidade").value);
-
-  const destinoSelecionado = document.querySelector('input[name="destino"]:checked');
-  formData.append("destino", destinoSelecionado ? destinoSelecionado.value : "");
-
-  formData.append("projeto", document.getElementById("projeto").value);
+  formData.append("destino", destinoSelecionado.value);
+  
+  // Se tiver valor selecionado, envia o ID. Se não, envia vazio ou null.
+  formData.append("projeto", selectProjeto.value || ""); 
+  
   formData.append("observacoes", document.getElementById("observacoes").value);
 
   const arquivoInput = document.getElementById("arquivo");
@@ -70,23 +81,31 @@ async function enviarFormulario(e) {
     const result = await response.json();
 
     if (result.success) {
+      // Define o texto do projeto para a etiqueta (Visual)
+      let nomeProjetoTexto = "-";
+      // Se tiver algo selecionado que não seja vazio
+      if (selectProjeto.value) {
+          nomeProjetoTexto = selectProjeto.options[selectProjeto.selectedIndex].text;
+      }
+
       const idFormatado = String(result.id).padStart(4, "0");
+      
       const params = new URLSearchParams({
         id: idFormatado,
         nome: document.getElementById("item").value,
-        destino: destinoSelecionado ? destinoSelecionado.value : "",
-        projeto: document.getElementById("projeto").value || "-",
+        destino: destinoSelecionado.value,
+        projeto: nomeProjetoTexto, // Manda o nome ou "-"
         obs: document.getElementById("observacoes").value || "-",
         cod: "MAT-" + idFormatado,
       });
 
-      // Redireciona para a página de etiqueta com os dados na URL
       window.location.href = `etiqueta-gerada.html?${params.toString()}`;
     } else {
-      alert("Erro ao cadastrar: " + (result.error || "Erro desconhecido"));
+      console.error("Erro do servidor:", result);
+      alert("Erro ao cadastrar: " + (result.error || "Erro desconhecido."));
     }
   } catch (err) {
-    console.error(err);
+    console.error("Erro de conexão:", err);
     alert("Erro de conexão. Verifique se o servidor está rodando.");
   }
 }

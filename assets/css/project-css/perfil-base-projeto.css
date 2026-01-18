@@ -1,0 +1,99 @@
+.cabecalho {
+  justify-content: flex-end;
+  margin-bottom: 2.5rem;
+}
+
+.titulo {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+.secao-etiqueta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.secao-etiqueta dl {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 1.5rem;
+}
+
+.dados-etiqueta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* Coluna esquerda: rótulos */
+.rotulo-dado {
+  font-size: 1.5rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  flex-shrink: 0;
+}
+
+/* Coluna direita: valores */
+.valor-dado {
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: right;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 70%;
+  display: block;
+}
+
+.secao-observacoes {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  gap: 0.5rem;
+}
+
+.texto-observacoes {
+  font-size: 1rem;
+  font-weight: 400;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+
+  width: 100%;
+}
+
+.grupo-acoes {
+  gap: 2rem;
+}
+
+.tabela-itens thead th {
+    background: var(--cor-secundaria);
+}
+
+.tabela-itens th:nth-child(1) {
+  width: 70px;
+}
+
+.tabela-itens th:nth-child(2) {
+  width: auto;
+}
+
+.tabela-itens th:nth-child(3) {
+  width: 85px;
+}
+
+.tabela-itens td {
+    cursor: default;
+}
+
+

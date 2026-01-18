@@ -126,6 +126,10 @@ details[open] .icone-seta {
 }
 
 /* 6. TABELA */
+.tabela-itens thead {
+  z-index: 0;
+}
+
 details.aba-projeto .tabela-itens thead th {
     background: var(--cor-secundaria);
     color: var(--cor-texto-escuro);
@@ -179,4 +183,23 @@ details.aba-projeto .tabela-itens thead th {
     gap: 0.5rem;
     justify-content: flex-end;
     padding-left: 2rem;
+    margin-top: 0.5rem;
+}
+
+.secao-observacoes {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  gap: 0.5rem;
+}
+
+.texto-observacoes {
+  font-size: 1rem;
+  font-weight: 400;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+
+  width: 100%;
 }

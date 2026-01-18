@@ -161,6 +161,17 @@ function renderizarProjetos(projetos, materiais) {
           `;
     }
 
+    const obsTexto = (projeto.observacoes && projeto.observacoes.trim() !== "") ? projeto.observacoes : "-";
+    
+    const htmlObs = `
+        <section 
+          class="secao-observacoes">
+          <strong>OBSERVAÇÕES:</strong>
+          <p class="texto-observacoes">${obsTexto}</p>
+        </section>
+        
+    `;
+
     let htmlBotoes = `
               <button type="button" class="botao acao-amarelo acao-editar" data-id="${projeto.id}">EDITAR</button>
           `;
@@ -183,8 +194,8 @@ function renderizarProjetos(projetos, materiais) {
               </div>
   
               ${htmlVerMais}
-  
-              <div class="grupo-acoes">
+
+              ${htmlObs} <div class="grupo-acoes">
                   ${htmlBotoes}
               </div>
           `;
@@ -205,6 +216,7 @@ function configurarAcoesBotoes() {
 
     if (botao.classList.contains("acao-editar")) {
       const id = botao.dataset.id;
+      // Ajuste o caminho conforme sua estrutura de pastas
       window.location.href = `../../project-pages/editar-projeto.html?id=${id}`;
     }
 
