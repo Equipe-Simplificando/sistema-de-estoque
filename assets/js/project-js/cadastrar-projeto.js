@@ -74,6 +74,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnLerQrcode = document.getElementById("btn-ler-qrcode");
   const readerDiv = document.getElementById("reader");
 
+  const btnFecharCabecalho = document.querySelector(".botao-fechar");
+  const popup = document.querySelector(".popup-overlay");
+
+  if (btnFecharCabecalho && popup) {
+      const btnVoltarPopup = popup.querySelector(".acao-voltar");
+      const btnConfirmarPopup = popup.querySelector(".acao-confirmar");
+
+      btnFecharCabecalho.addEventListener("click", (e) => {
+          e.preventDefault();
+          popup.classList.add("ativo");
+      });
+
+      if (btnVoltarPopup) {
+          btnVoltarPopup.addEventListener("click", (e) => {
+              e.preventDefault();
+              popup.classList.remove("ativo");
+          });
+      }
+
+      if (btnConfirmarPopup) {
+          btnConfirmarPopup.addEventListener("click", (e) => {
+              e.preventDefault();
+              window.location.href = "../main-pages/home/home-projeto.html";
+          });
+      }
+  }
+
   let materiaisDisponiveis = [];
 
   if (campoPreco) {

@@ -16,6 +16,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     const form = document.getElementById("formulario");
     const inputId = document.getElementById("id-projeto");
 
+    const btnFecharCabecalho = document.querySelector(".botao-fechar");
+    const popup = document.querySelector(".popup-overlay");
+
+    if (btnFecharCabecalho && popup) {
+        const btnVoltarPopup = popup.querySelector(".botao-amarelo"); 
+        const btnConfirmarPopup = popup.querySelector(".botao-branco");
+
+        btnFecharCabecalho.addEventListener("click", (e) => {
+            e.preventDefault();
+            popup.classList.add("ativo");
+        });
+
+        if (btnVoltarPopup) {
+            btnVoltarPopup.addEventListener("click", (e) => {
+                e.preventDefault();
+                popup.classList.remove("ativo");
+            });
+        }
+
+        if (btnConfirmarPopup) {
+            btnConfirmarPopup.addEventListener("click", (e) => {
+                e.preventDefault();
+                window.location.href = "../main-pages/home/home-projeto.html";
+            });
+        }
+    }
+
     let materiaisDisponiveis = [];
 
     if (!id) {

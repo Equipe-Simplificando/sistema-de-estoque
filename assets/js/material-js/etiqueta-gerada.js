@@ -1,4 +1,5 @@
 const API_BASE = `http://${window.location.hostname}:3000`; 
+
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
@@ -44,6 +45,46 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // --- LÓGICA DO POP-UP DE IMPRESSÃO ---
+    const btnReimprimir = document.getElementById("btn-acao-imprimir");
+    const popup = document.querySelector(".popup-overlay");
+
+    if (btnReimprimir && popup) {
+        const btnVoltarPopup = popup.querySelector(".acao-voltar");
+        const btnConfirmarPopup = popup.querySelector(".acao-confirmar");
+        
+        // Elementos de texto dentro do pop-up
+        const popNome = document.getElementById("pop-nome-material");
+        const popId = document.getElementById("pop-id-material");
+
+        // 1. Abrir Pop-up e Preencher dados
+        btnReimprimir.addEventListener("click", () => {
+            // Pega o que está na tela no momento
+            popNome.innerText = document.getElementById("view_nome").innerText;
+            popId.innerText = document.getElementById("view_id").innerText;
+            
+            popup.classList.add("ativo");
+        });
+
+        // 2. Voltar (Fechar)
+        if (btnVoltarPopup) {
+            btnVoltarPopup.addEventListener("click", () => {
+                popup.classList.remove("ativo");
+            });
+        }
+
+        // 3. Confirmar (Imprimir)
+        if (btnConfirmarPopup) {
+            btnConfirmarPopup.addEventListener("click", () => {
+                popup.classList.remove("ativo");
+                setTimeout(() => {
+                    window.print();
+                }, 300); // Pequeno delay para garantir que o modal sumiu visualmente antes de imprimir
+            });
+        }
+    }
+    // -------------------------------------
+
     // Botão Editar
     const btnEditar = document.getElementById("btn-editar");
     if (btnEditar) {
@@ -60,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Lógica de Exclusão
-    const btnDeletar = document.querySelector(".botao-vermelho");
+    const btnDeletar = document.querySelector(".botao-vermelho"); // Botão original da página (DELETAR)
     const perfilUsuario = localStorage.getItem("perfilUsuario");
 
     if (btnDeletar) {
@@ -68,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btnDeletar.onclick = async () => {
                 if (confirm("ATENÇÃO: Tem certeza que deseja excluir este material?")) {
                     try {
-                        // Usa a URL dinâmica para deletar via rede local
                         const res = await fetch(`${API_BASE}/api/deletar/${id}`, { method: 'DELETE' });
                         if (res.ok) {
                             alert("Material excluído com sucesso!");

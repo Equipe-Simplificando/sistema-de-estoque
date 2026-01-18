@@ -73,13 +73,28 @@
                         DELETAR
                     </button>
 
-                    <button type="button" class="botao-imprimir" onclick="window.print()">
+                    <button type="button" class="botao-imprimir" id="btn-acao-imprimir">
                         REIMPRIMIR ETIQUETA
                     </button>
                 </section>
 
             </article>
         </main>
+    </div>
+
+    <div class="popup-overlay">
+        <div class="popup-container">
+            <div class="popup-conteudo">
+                <h2 class="popup-titulo">IMPRIMIR?</h2>
+                <p class="popup-texto">
+                    CONFIRMA A IMPRESSÃO PARA <strong id="pop-nome-material" style="text-transform: uppercase;">[MATERIAL]</strong> <span id="pop-id-material">#000</span>?
+                </p>
+            </div>
+            <div class="popup-acoes">
+                <button class="botao acao-voltar">VOLTAR</button>
+                <button class="botao botao-branco acao-confirmar">SIM</button>
+            </div>
+        </div>
     </div>
 
     <script src="../../assets/js/material-js/etiqueta-gerada.js"></script>

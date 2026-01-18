@@ -36,8 +36,10 @@
                         <div class="campo-grupo col-qtd">
                             <label for="quantidade" class="campo-rotulo">QTD*</label>
                             <div class="campo-quantidade">
-                                <button type="button" class="botao-qtd botao-menos" onclick="decrementarQtd()">-</button>
-                                <input type="number" id="quantidade" name="quantidade" class="campo-entrada input-qtd-central" value="1" min="1" required>
+                                <button type="button" class="botao-qtd botao-menos"
+                                    onclick="decrementarQtd()">-</button>
+                                <input type="number" id="quantidade" name="quantidade"
+                                    class="campo-entrada input-qtd-central" value="1" min="1" required>
                                 <button type="button" class="botao-qtd botao-mais" onclick="incrementarQtd()">+</button>
                             </div>
                         </div>
@@ -88,10 +90,11 @@
 
                         <label for="arquivo" class="campo-entrada">
                             <img src="../../assets/icons/icon-camera.svg" alt="Ícone Câmera" class="icone-camera">
-                            
+
                             <span id="nome-arquivo" class="texto-arquivo"></span>
 
-                            <input type="file" id="arquivo" name="arquivo" class="input-escondido" accept="image/*,video/*">
+                            <input type="file" id="arquivo" name="arquivo" class="input-escondido"
+                                accept="image/*,video/*">
                         </label>
                         <small>
                             Se você selecionar um novo arquivo, o "Arquivo Atual" será substituído.
@@ -103,14 +106,15 @@
                             OBSERVAÇÕES <span class="texto-opcional">(OPCIONAL)</span>
                         </label>
 
-                        <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4" maxlength="200"></textarea>
+                        <textarea id="observacoes" name="observacoes" class="campo-texto" rows="4"
+                            maxlength="200"></textarea>
                     </div>
 
                     <div class="grupo-acoes" id="container-botoes">
                         <button type="submit" class="botao">
                             SALVAR
                         </button>
-                        
+
                         <button type="button" class="botao botao-vermelho">
                             DELETAR
                         </button>
@@ -119,6 +123,21 @@
                 </form>
             </section>
         </main>
+    </div>
+
+    <div class="popup-overlay">
+        <div class="popup-container">
+            <div class="popup-conteudo">
+                <h2 class="popup-titulo">DESCARTAR?</h2>
+                <p class="popup-texto">
+                    AS ALTERAÇÕES NÃO SALVAS SERÃO PERDIDAS.
+                </p>
+            </div>
+            <div class="popup-acoes">
+                <button class="botao acao-voltar">VOLTAR</button>
+                <button class="botao botao-branco acao-confirmar">SIM</button>
+            </div>
+        </div>
     </div>
 
     <script src="../../assets/js/material-js/editar-material.js"></script>

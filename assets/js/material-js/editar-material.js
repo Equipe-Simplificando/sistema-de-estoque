@@ -41,13 +41,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    // --- LÓGICA DO POP-UP (DESCARTAR) ---
+    const btnFechar = document.querySelector(".botao-fechar");
+    const popup = document.querySelector(".popup-overlay");
+
+    if (btnFechar && popup) {
+        const btnVoltarPopup = popup.querySelector(".acao-voltar");
+        const btnConfirmarPopup = popup.querySelector(".acao-confirmar");
+
+        // 1. ABRIR
+        btnFechar.addEventListener("click", (e) => {
+            e.preventDefault();
+            popup.classList.add("ativo");
+        });
+
+        // 2. FECHAR (VOLTAR)
+        if (btnVoltarPopup) {
+            btnVoltarPopup.addEventListener("click", () => {
+                popup.classList.remove("ativo");
+            });
+        }
+
+        // 3. CONFIRMAR (DESCARTAR E SAIR)
+        if (btnConfirmarPopup) {
+            btnConfirmarPopup.addEventListener("click", () => {
+                window.location.href = "../main-pages/home/home-material.html";
+            });
+        }
+    }
+    // ------------------------------------
+
     await carregarListaDeProjetos();
     await carregarDadosDoMaterial(id);
     configurarBotaoExcluir(id);
 
     async function carregarListaDeProjetos() {
         try {
-            // Busca projetos usando a URL dinâmica
             const res = await fetch(`${API_BASE}/api/projetos`);
             const projetos = await res.json();
             const select = document.getElementById("projeto");
@@ -104,7 +133,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     
                     if (material.arquivo_tipo && material.arquivo_tipo.startsWith('image/')) {
                         const img = document.createElement('img');
-                        // Garante que a imagem carregue corretamente no celular usando o IP do notebook
                         img.src = `${API_BASE}/api/materiais/arquivo/${id}?t=${Date.now()}`;
                         img.style.maxWidth = "100%";
                         img.style.maxHeight = "200px";
@@ -183,7 +211,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-            // Envia a atualização para o IP dinâmico
             const response = await fetch(`${API_BASE}/api/atualizar`, {
                 method: "PUT",
                 body: formData,

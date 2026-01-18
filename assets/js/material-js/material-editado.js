@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
 
+    // Tenta pegar o nome do projeto se vier pela URL (otimização)
+    const projetoUrl = params.get("projeto");
+
     if (!id) {
         alert("ID não identificado.");
         window.location.href = "../main-pages/home/home-material.html";
@@ -21,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+        // --- 1. PREENCHIMENTO DOS DADOS ---
         const idVisual = "#" + String(material.id).padStart(4, '0');
         document.getElementById("view_id").innerText = idVisual;
 
@@ -33,12 +37,31 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById("view_destino").innerText = "-";
         }
 
-        document.getElementById("view_projeto").innerText = 
-            (material.projeto && material.projeto !== "") ? material.projeto : "-";
+        // Lógica Inteligente do Projeto (URL ou Busca no Banco)
+        const viewProjeto = document.getElementById("view_projeto");
+        viewProjeto.innerText = "-"; // Padrão
+
+        if (projetoUrl && projetoUrl !== "undefined" && projetoUrl !== "null") {
+            // Se veio na URL, usa direto
+            viewProjeto.innerText = projetoUrl;
+        } 
+        else if (material.projeto) {
+            // Se não, busca no banco pelo ID
+            try {
+                const resProj = await fetch(`${API_BASE}/api/projetos/${material.projeto}`);
+                if (resProj.ok) {
+                    const dadosProj = await resProj.json();
+                    viewProjeto.innerText = dadosProj.nome_projeto || "-";
+                }
+            } catch (err) {
+                console.error("Erro ao buscar projeto:", err);
+            }
+        }
 
         document.getElementById("view_obs").innerText = 
-            (material.observacoes && material.observacoes !== "") ? material.observacoes : "-";
+            (material.observacoes && material.observacoes !== "") ? material.observacoes : "Sem observações.";
 
+        // --- 2. IMAGEM ---
         const containerImagem = document.getElementById("view_imagem");
         
         if (material.arquivo_nome && material.arquivo_tipo && material.arquivo_tipo.startsWith('image/')) {
@@ -53,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             containerImagem.appendChild(img);
         } 
 
+        // --- 3. QR CODE ---
         const qrContainer = document.getElementById("qrcode");
         qrContainer.innerHTML = ""; 
 
@@ -67,6 +91,43 @@ document.addEventListener("DOMContentLoaded", async () => {
             correctLevel: QRCode.CorrectLevel.H
         });
 
+        // --- 4. LÓGICA DO POP-UP DE IMPRESSÃO ---
+        // (Funciona se você tiver colocado o HTML do Exemplo 3 e um botão com classe .botao-imprimir)
+        const btnReimprimir = document.querySelector(".botao-imprimir");
+        const popup = document.querySelector(".popup-overlay");
+
+        if (btnReimprimir && popup) {
+            const btnVoltarPopup = popup.querySelector(".acao-voltar");
+            const btnConfirmarPopup = popup.querySelector(".acao-confirmar");
+            
+            const popNome = document.getElementById("pop-nome-material");
+            const popId = document.getElementById("pop-id-material");
+
+            btnReimprimir.addEventListener("click", () => {
+                // Preenche o pop-up com os dados da tela
+                if(popNome) popNome.innerText = document.getElementById("view_nome").innerText;
+                if(popId) popId.innerText = document.getElementById("view_id").innerText;
+                
+                popup.classList.add("ativo");
+            });
+
+            if (btnVoltarPopup) {
+                btnVoltarPopup.addEventListener("click", () => {
+                    popup.classList.remove("ativo");
+                });
+            }
+
+            if (btnConfirmarPopup) {
+                btnConfirmarPopup.addEventListener("click", () => {
+                    popup.classList.remove("ativo");
+                    setTimeout(() => {
+                        window.print();
+                    }, 300);
+                });
+            }
+        }
+
+        // --- 5. BOTÕES DE AÇÃO ---
         const btnEditar = document.getElementById("btn-editar");
         if (btnEditar) {
             btnEditar.addEventListener("click", () => {
