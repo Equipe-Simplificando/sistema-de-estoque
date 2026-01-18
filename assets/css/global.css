@@ -1,40 +1,32 @@
-/* 1. IMPORTAÇÕES E VARIÁVEIS */
-
-/* Fontes */
+/* importações e variáveis */
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
 
 :root {
-  /* Cores Institucionais e Interface */
+  /* cores institucionais */
   --cor-fundo: #FFF;
-
   --cor-primaria: #04A51D;
-  /* Verde Padrão */
   --cor-secundaria: #f2d16d;
-  /* Amarelo Padrão */
 
-  /* Texto */
+  /* texto */
   --cor-texto-escuro: #161614;
   --cor-texto-claro: #fefefe;
 
-  /* Feedback */
+  /* feedback */
   --cor-sucesso: var(--cor-primaria);
   --cor-erro: #B82323;
   --sombra-erro: rgba(80, 0, 0, 0.5);
 
-  /* Estrutura */
+  /* estrutura e dimensões */
   --cor-input: #E9E8E3;
   --cor-borda: var(--cor-texto-escuro);
   --sombra-primaria: rgba(0, 52, 16, 0.5);
   --sombra-secundaria: rgba(69, 11, 0, 0.5);
-
-  /* Dimensões */
   --font-principal: "Ubuntu";
-  --radius: 1rem;
-  --borda: 2px solid var(--cor-borda);
+  --radius: 1rem; 
+  --borda: 2px solid var(--cor-borda); 
 }
 
-/* 2. RESET E ESTRUTURA BASE */
-
+/* reset e base */
 * {
   margin: 0;
   padding: 0;
@@ -42,19 +34,19 @@
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100vh; /* Viewport Height para tela cheia */
   background: var(--cor-fundo);
   font-family: var(--font-principal);
   color: var(--cor-texto-escuro);
 }
 
-/* Layout Principal */
+/* layout geral */
 .container {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 3rem 1.5rem;
+  padding: 3rem 1.5rem; /* Espaçamento relativo */
 }
 
 .conteudo {
@@ -64,15 +56,13 @@ body {
   align-items: center;
 }
 
-/* Cabeçalho da Página (Título + Botão Fechar) */
 .cabecalho {
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
 
-/* 3. TIPOGRAFIA */
-
+/* tipografia */
 .titulo-pagina {
   color: var(--cor-texto-escuro);
   font-size: 2rem;
@@ -91,10 +81,7 @@ body {
   color: var(--cor-texto-escuro);
 }
 
-/* 
-   4. FORMULÁRIOS E INPUTS
-    */
-
+/* formulários e inputs */
 .formulario {
   display: flex;
   flex-direction: column;
@@ -107,7 +94,6 @@ body {
   gap: 0.5rem;
 }
 
-/* Estilo Base para Inputs */
 .campo-entrada,
 .campo-texto {
   width: 100%;
@@ -115,8 +101,6 @@ body {
   border-radius: var(--radius);
   background: var(--cor-input);
   font-size: 1.25rem;
-
-  /* Remove estilos nativos do navegador */
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -134,7 +118,7 @@ body {
   resize: vertical;
 }
 
-/* Select Customizado */
+/* select customizado */
 .container-select {
   position: relative;
   width: 100%;
@@ -150,10 +134,9 @@ body {
   right: 1rem;
   transform: translateY(-50%);
   pointer-events: none;
-  /* Permite clicar através do ícone */
 }
 
-/* Barra de Pesquisa */
+/* pesquisa e filtros */
 .container-pesquisa {
   display: flex;
   position: relative;
@@ -163,20 +146,17 @@ body {
 .grupo-pesquisa-filtro {
   display: flex;
   width: 100%;
-  gap: 24px;
+  gap: 1.5rem; /* 24px */
   align-items: center;
 }
 
 .icone-pesquisa {
   position: absolute;
-  right: 15px;
+  right: 1rem; /*  ~15px */
   cursor: pointer;
   z-index: 10;
-
   width: 1.5rem;
   height: 1.5rem;
-  position: absolute;
-  right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -190,7 +170,6 @@ body {
 #pesquisa-item,
 #pesquisa-projeto {
   padding-right: 3rem;
-  /* Abre espaço para o ícone da lupa não cobrir o texto */
 }
 
 #pesquisa-item::-webkit-calendar-picker-indicator,
@@ -203,11 +182,11 @@ body {
   display: none;
 }
 
-/* Radio Buttons (Abas) */
+/* radio buttons (abas) */
 .grupo-radio {
   display: flex;
   width: 100%;
-  height: 55px;
+  height: 3.43rem; /* 55px */
   border: var(--borda);
   border-radius: var(--radius);
   background: var(--cor-input);
@@ -217,7 +196,6 @@ body {
 
 .grupo-radio input[type="radio"] {
   display: none;
-  /* Esconde a bolinha padrão */
 }
 
 .rotulo-radio {
@@ -231,16 +209,15 @@ body {
   cursor: pointer;
 }
 
-/* Estados Selecionados (Material/Projeto) */
+/* estados selecionados (material/projeto) */
 #material:checked+.rotulo-radio {
   background: var(--cor-primaria);
   opacity: 1;
   color: var(--cor-texto-escuro);
   border-radius: 1.3rem 0 0 1.3rem;
-  /* Arredonda a esquerda */
   border-right: 2px solid var(--cor-texto-escuro);
   border-radius: 0 1.5rem 1.5rem 0;
-  box-shadow: inset -2px -2px 0 1.5px var(--sombra-primaria);
+  box-shadow: inset -2px -2px 0 1.5px var(--sombra-primaria); /* Pixels mantidos para sombra/detalhe */
   font-size: 1.5rem;
 }
 
@@ -249,20 +226,18 @@ body {
   opacity: 1;
   color: var(--cor-texto-escuro);
   border-radius: 0 1.3rem 1.3rem 0;
-  /* Arredonda a direita */
   border-left: 2px solid var(--cor-texto-escuro);
   border-radius: 1.5rem 0 0 1.5rem;
   box-shadow: inset 2px -2px 0 1.5px var(--sombra-secundaria);
   font-size: 1.5rem;
 }
 
-/* Estados Selecionados (Robótica/Manutenção) */
+/* estados selecionados (robótica/manutenção) */
 #robotica:checked+.rotulo-radio {
   background: var(--cor-primaria);
   color: var(--cor-texto-claro);
   opacity: 1;
   border-radius: var(--radius) 0 0 var(--radius);
-  /* Arredonda esquerda */
   box-shadow: inset -2px -2px 0 1.5px var(--sombra-primaria);
 }
 
@@ -271,11 +246,10 @@ body {
   color: var(--cor-texto-escuro);
   opacity: 1;
   border-radius: 0 var(--radius) var(--radius) 0;
-  /* Arredonda direita */
   box-shadow: inset 2px -2px 0 1.5px var(--sombra-secundaria);
 }
 
-/* Campo de Preço */
+/* campo de preço */
 .campo-preco {
   position: relative;
   width: 100%;
@@ -299,13 +273,11 @@ body {
   width: 100%;
   height: 100%;
   padding-left: 3rem;
-  /* Espaço para o prefixo R$ */
   border: none;
   background: transparent;
 }
 
-/* 5. BOTÕES E ÍCONES INTERATIVOS */
-
+/* botões e interações */
 .grupo-acoes {
   width: 100%;
   display: flex;
@@ -313,26 +285,21 @@ body {
   align-items: center;
 }
 
-/* Botões Principais (Com Borda/Fundo) */
 .botao {
   width: 20rem;
   height: 3.5rem;
   padding: 1rem 0;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   border-radius: var(--radius);
   border: var(--borda);
   background: var(--cor-primaria);
   box-shadow: inset 0 -4px 0 1.5px var(--sombra-primaria);
-
   font-family: var(--font-principal);
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--cor-texto-claro);
-
   cursor: pointer;
   text-decoration: none;
 }
@@ -355,8 +322,7 @@ body {
   box-shadow: inset 0 -4px 0 1.5px rgba(0, 0, 0, 0.25);
 }
 
-/* Botões de Ícone (Reset Geral) 
-   Remove fundo e borda de todos os botões que são apenas imagens */
+/* botões de ícone */
 .botao-fechar,
 .botao-excluir,
 .botao-pesquisa,
@@ -371,10 +337,9 @@ body {
   justify-content: center;
 }
 
-/* Ajustes Específicos */
 .botao-fechar {
-  width: 75px;
-  height: 75px;
+  width: 4.7rem; /* 75px */
+  height: 4.7rem;
 }
 
 .botao-fechar:hover {
@@ -393,7 +358,6 @@ body {
   height: 1.5rem;
 }
 
-/* Ícone não clicável dentro da tabela */
 .icone-setor {
   cursor: default;
 }
@@ -403,16 +367,12 @@ body {
   height: 2rem;
 }
 
-/* TABELA */
-
+/* tabelas e listagens */
 .grupo-tabela {
   width: 100%;
-
-  /* Controle de Scroll */
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-
   border-radius: var(--radius);
   border: var(--borda);
 }
@@ -424,7 +384,6 @@ body {
   border-spacing: 0;
 }
 
-/* Células Gerais */
 .tabela-itens th,
 .tabela-itens td {
   text-align: center;
@@ -434,11 +393,9 @@ body {
 .tabela-itens tbody td {
   font-size: 1rem;
   padding: 0.4rem 0.3rem;
-
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-
   border-right: var(--borda);
   border-bottom: var(--borda);
 }
@@ -446,33 +403,18 @@ body {
 .tabela-itens thead th {
   background: var(--cor-primaria);
   color: var(--cor-texto-escuro);
-
   font-size: 1.5rem;
   font-weight: 700;
-
   padding: 0.6rem 0.3rem;
-
   z-index: 100;
   border-bottom: var(--borda);
 }
 
-.tabela-itens th:nth-child(1) {
-  width: 45px;
-}
+.tabela-itens th:nth-child(1) { width: 2.8rem; } /* ~45px */
+.tabela-itens th:nth-child(2) { width: 4.4rem; } /* ~70px */
+.tabela-itens th:nth-child(3) { width: auto; }
+.tabela-itens th:nth-child(4) { width: 5.3rem; } /* ~85px */
 
-.tabela-itens th:nth-child(2) {
-  width: 70px;
-}
-
-.tabela-itens th:nth-child(3) {
-  width: auto;
-}
-
-.tabela-itens th:nth-child(4) {
-  width: 85px;
-}
-
-/* Remove bordas duplicadas nas extremidades */
 .tabela-itens th:last-child,
 .tabela-itens td:last-child {
   border-right: none;
@@ -482,14 +424,12 @@ body {
   border-bottom: none;
 }
 
-/* Cabeçalho Fixo */
 .tabela-itens thead {
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-/* Linhas alternadas */
 .tabela-itens tbody tr:nth-child(odd) {
   background: var(--cor-fundo);
 }
@@ -498,7 +438,6 @@ body {
   background: var(--cor-input);
 }
 
-/* Scrollbar */
 .grupo-tabela::-webkit-scrollbar {
   display: none;
 }
@@ -517,9 +456,7 @@ body {
   cursor: pointer;
 }
 
-/* MENU INFERIOR E NAVEGAÇÃO */
-
-/* Container fixo na base da tela */
+/* navegação e menu inferior */
 .espaco-inferior {
   display: flex;
   flex-direction: column;
@@ -529,10 +466,8 @@ body {
   width: 100%;
   gap: 1.5rem;
   pointer-events: none;
-  /* Permite clicar "através" da área vazia */
 }
 
-/* Reabilita cliques nos elementos interativos */
 .botao-cadastro,
 .menu-inferior {
   pointer-events: auto;
@@ -540,7 +475,6 @@ body {
 
 .botao-cadastro {
   align-self: end;
-  /* Joga o botão FAB para a direita */
   margin-right: 1rem;
 }
 
@@ -548,31 +482,25 @@ body {
   width: 100%;
   height: 6rem;
   background: var(--cor-primaria);
-
   display: flex;
   justify-content: space-around;
   align-items: center;
-
   border-radius: 1rem 1rem 0 0;
   box-shadow: var(--sombra-primaria);
   z-index: 1000;
 }
 
-/* Itens Individuais do Menu */
 .item-menu {
   width: 4.5rem;
   height: 4.5rem;
   position: relative;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
   text-decoration: none;
   color: var(--cor-texto-escuro);
 }
 
-/* Feedback de toque */
 .item-menu:active {
   transform: scale(0.95);
 }
@@ -601,7 +529,6 @@ body {
   position: relative;
 }
 
-/* Estado Ativo do Menu (Sublinhado) */
 .item-menu.ativo {
   font-weight: 700;
 }
@@ -612,14 +539,12 @@ body {
   left: 0;
   bottom: -0.25rem;
   width: 100%;
-  height: 3px;
+  height: 3px; 
   background: #000;
   border-radius: 2px;
 }
 
-/* Pop-Up */
-
-/* Container Principal (Fundo escurecido/Posicionamento) */
+/* popups e modais */
 .popup-overlay {
   display: none;
   position: fixed;
@@ -634,26 +559,21 @@ body {
 }
 
 .popup-overlay.ativo {
-    display: flex;
+  display: flex;
 }
 
-/* Card do Popup */
 .popup-container {
   background: var(--cor-texto-claro);
-
   width: 80%;
-  max-width: 450px;
+  max-width: 28rem; 
   aspect-ratio: 4 / 3;
-
   padding: 1.25rem;
   border-radius: var(--radius);
-
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 10px var(--sombra-primaria);
 }
 
-/* Conteúdo de Texto */
 .popup-conteudo {
   display: flex;
   flex-direction: column;
@@ -687,18 +607,16 @@ body {
   width: 100%;
 }
 
-/* Ajuste nos botões para ficarem proporcionais */
 .popup-acoes .botao {
   flex: 1;
 }
 
-/* PESQUISA E QRCODE */
+/* qr code e leitores */
 .grupo-pesquisa-qrcode {
   display: flex;
   width: 100%;
-  gap: 24px;
+  gap: 1.5rem; 
   align-items: center;
-  gap: 1.5rem;
 }
 
 .icone-qrcode {
@@ -726,9 +644,8 @@ body {
   width: 100%;
   aspect-ratio: 1 / 1;
   margin: 0 auto;
-  border: 4px solid var(--cor-texto-escuro);
+  border: 4px solid var(--cor-texto-escuro); 
   border-radius: var(--radius);
-
   overflow: hidden;
   position: relative;
   background-color: var(--cor-texto-escuro);
@@ -740,4 +657,3 @@ body {
   object-fit: cover;
   border-radius: var(--radius);
 }
-
