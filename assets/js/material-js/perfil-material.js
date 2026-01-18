@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         document.getElementById("view_quantidade").innerText = material.quantidade || "0";
-
         document.getElementById("view_projeto").innerText = nomeProjeto;
 
         const obs = material.observacoes;
@@ -80,6 +79,39 @@ document.addEventListener("DOMContentLoaded", async () => {
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H,
         });
+
+        const btnImprimir = document.getElementById("btn-acao-imprimir");
+        const popup = document.querySelector(".popup-overlay");
+
+        if (btnImprimir && popup) {
+            const btnVoltarPopup = popup.querySelector(".acao-voltar");
+            const btnConfirmarPopup = popup.querySelector(".acao-confirmar");
+            
+            const popNome = document.getElementById("pop-nome-material");
+            const popId = document.getElementById("pop-id-material");
+
+            btnImprimir.addEventListener("click", () => {
+                if(popNome) popNome.innerText = document.getElementById("view_item").innerText;
+                if(popId) popId.innerText = document.getElementById("view_id").innerText;
+                
+                popup.classList.add("ativo");
+            });
+
+            if (btnVoltarPopup) {
+                btnVoltarPopup.addEventListener("click", () => {
+                    popup.classList.remove("ativo");
+                });
+            }
+
+            if (btnConfirmarPopup) {
+                btnConfirmarPopup.addEventListener("click", () => {
+                    popup.classList.remove("ativo");
+                    setTimeout(() => {
+                        window.print();
+                    }, 300);
+                });
+            }
+        }
 
         const btnEditar = document.getElementById("btn-editar");
         if (btnEditar) {
